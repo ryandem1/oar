@@ -1,17 +1,17 @@
 package models
 
-type Outcome int32
+type Outcome string
 
 const (
-	Passed Outcome = iota
-	Failed
-	Skipped
+	Passed  Outcome = "Passed"
+	Failed  Outcome = "Failed"
+	Skipped Outcome = "Skipped"
 )
 
-type ActionTaken int32
+type ActionTaken string
 
 const (
-	BugCreated ActionTaken = iota
-	FalsePositive
-	QuickFix
+	BugCreated    ActionTaken = "BugCreated"
+	FalsePositive ActionTaken = "FalsePositive"
+	QuickFix      ActionTaken = "QuickFix"
 )
