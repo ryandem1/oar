@@ -1,0 +1,9 @@
+services:
+  testable-backend:
+    build:
+      context: .
+
+    image: testable-backend
+    container_name: testable
+    ports:
+      - 8080:8080
