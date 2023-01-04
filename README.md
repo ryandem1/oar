@@ -1,18 +1,17 @@
-# OAR Test Manager
+# The OAR Framework for Software Testing
 
 ## Outcome, Analysis, Resolution
 
 ## Background
 
 There seems to be a fundamental flaw with most common test case management systems that are currently widely
-used. Many of these systems come from the days where software was tested mostly manually and many of them are bloated and
+used. Many of these systems come from the days when software was tested mostly manually and many of them are bloated and
 do not seem to aim to solve any specific issue with software quality. They often serve as a historical ledger of test 
 results and a loose bank of test "cases" that are often out-of-date or constantly changing and analysis of such "cases" can
-often result in insights that are less than insightful. Part of the change in ideology is that tests are point-in-time, 
-there is no need to store test definitions in a separate places.
+often result in insights that are less than insightful.
 
 The reality is that simply the act of gathering test results and looking at pass/fail 
-results are not enough to determine defect presence/risk and software quality. This also does not do anything to improve
+results are not enough to assess defect presence/risk and software quality. This also does not do anything to improve
 the actual tests themselves. The result is a common negative feedback loop where test results become more meaningless 
 over time and tests trust falls. Trust must be preserved in tests and tests must be actively valued or not used at all.
 
@@ -20,13 +19,62 @@ Here is a paradigm that uses aims to create a positive feedback loop that increa
 trust in tests and software, and promotes active engagement in software quality.
 
 #### Outcome
-We start after a test is performed against a system-under-test and we get a "pass" or "failed" result.
+We start after a test is performed against a system-under-test and we get a "pass" or "failed" result. This is our
+**outcome**. An outcome should only ever be binary; if there is any ambiguity in whether a test has failed, then 
+there might be unclear requirements or a test that is testing for things that it doesn't need to test for. By keeping 
+test outcomes as passed or failed, we are able to extract insights from them in a standard way
+
+#### Analysis
+Here comes the more actionable parts. Let's say now that you have a set of test outcomes. Information about outcomes 
+themselves are not very meaningful without **analysis**. Tests can pass or fail for many reasons that tell you 
+different things about your software/test quality. The OAR framwork presents a streamlined way to categorize the 
+result of an outcome's  analysis:
+
+- **True Positive**: The test case failed and correctly indicated a defect on the feature-under-test
+- **False Positive**: The test case failed, but under further inspection, no defect existed for the feature
+- **True Negative**: The test case passed, and the feature-under-test is actually exhibiting correct behavior.
+- **False Negative**: The test case passed, but the feature-under-test was found to have defects.
+
+> **_NOTE:_**  For this definition, we say that a test produces a "positive" result when it fails, indicating positive
+> presence for defect on the feature that it is testing. A "negative" result is a passed test and indicates a
+> "negative" presence for defect on the feature.
+
+> **_NOTE:_**  These basic categories can supply many metrics, but insights from those sort of assume that
+> full test coverage exists, which is almost never the case. A metric that is helpful for tracking if there is 
+> adequate coverage is **test effectiveness**, which can be thought as:
+> 
+> 
+> (Total number of defects found by tests / Total number of defects found outside of tests) * 100
+> 
+> The goal is not always to have 100% test effectiveness, but to find an acceptable threshold for the given test suite
+> that is proportional to how much effort is being put into maintaining the suite.
+
+By using these classic definitions to categorize software test results, we are able to derive insightful metrics about 
+our testing and our software.
+
+#### Resolution
+Okay, more action. The OAR framework aims to improve software/test quality, so there must be action taken depending on the
+analysis results of the tests. Every analysis result (with the exception of true negative), must have a resolution. The 
+OAR framework also sets out to streamline the resolutions tests must have:
+
+For True Positives:
+- **Ticket Created**: A bug ticket or feature ticket was created to track the defect's future resolution.
+- **Quick Fix**: The defect was minor and a quick fix was applied that fixed the defect, there is no need to open a ticket.
+- **Known Issue**: A ticket was previously open for the defect and is still pending resolution
+
+For False Positives or False Negatives:
+- **Test Fixed**: The test that threw the false positive/negative was fixed and can now works as expected. 
+- **Test Disabled**: The test/part of the test that threw the false positive/negative was disabled. Possibly indicating faulty 
+test design to begin with, lack of maintenance, or too narrow/broad of a check.
+
+By sticking to these definitions, the team is sticking to actionability and testing stakeholders are actively engaged in
+software quality.
 
 ### Concepts
 
 #### Test
 A **Test** represents point-in-time information about a **test** that occurred on a system. While the real size of the 
-systems that we test can vary in size, our **system-under-test** should be a logical piece that has a single purpose.
+systems that we test can vary in size, our **feature-under-test** should be a logical piece that has a single purpose.
 
 The **Summary** can be thought of as a title, or a short description describing what the Test accomplished. A good
 rule-of-thumb is that if you cannot describe a test in a Summary, then the Test is probably too broad.
