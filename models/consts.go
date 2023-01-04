@@ -3,15 +3,23 @@ package models
 type Outcome string
 
 const (
-	Passed  Outcome = "Passed"
-	Failed  Outcome = "Failed"
-	Skipped Outcome = "Skipped"
+	Passed Outcome = "Passed"
+	Failed Outcome = "Failed"
 )
 
-type ActionTaken string
+type Analysis string
 
 const (
-	BugCreated    ActionTaken = "BugCreated"
-	FalsePositive ActionTaken = "FalsePositive"
-	QuickFix      ActionTaken = "QuickFix"
+	TruePositive  Analysis = "TruePositive"
+	FalsePositive Analysis = "FalsePositive"
+	TrueNegative  Analysis = "TrueNegative"
+	FalseNegative Analysis = "FalseNegative"
+)
+
+type Resolution string
+
+const (
+	TicketCreated Resolution = "BugCreated"
+	QuickFix      Resolution = "QuickFix"
+	TestFixed     Resolution = "TestFixed"
 )
