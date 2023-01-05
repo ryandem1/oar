@@ -1,4 +1,4 @@
-// Package helpers context contains Gin context helpers
+// Package utils Package helpers context contains Gin context helpers
 package utils
 
 import (

@@ -16,6 +16,8 @@ func main() {
 	r.GET("/analyses", controllers.GetAnalyses)
 	r.PUT("/analysis", controllers.SetAnalysis)
 
+	r.PUT("/resolution", controllers.SetResolution)
+
 	err := r.Run()
 	if err != nil {
 		panic(err)

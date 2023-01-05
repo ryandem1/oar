@@ -22,7 +22,7 @@ func (ta *TestAnalysis) Validate(test *Test) error {
 	case Failed:
 		validAnalyses = []Analysis{TruePositive, FalsePositive}
 	default:
-		return fmt.Errorf("Unrecognized test outcome: %s", test.Outcome)
+		return fmt.Errorf("unrecognized test outcome: %s", test.Outcome)
 	}
 
 	if !slices.Contains(validAnalyses, ta.Analysis) {

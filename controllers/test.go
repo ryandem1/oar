@@ -11,8 +11,9 @@ import (
 	"strings"
 )
 
-var tests []*models.Test                          // Temp store, will implement DB later
-var analyses = make(map[int]*models.TestAnalysis) // Temp store, will implement DB later
+var tests []*models.Test                               // Temp store, will implement DB later
+var analyses = make(map[int]*models.TestAnalysis)      // Temp store, will implement DB later
+var resolutions = make(map[int]*models.TestResolution) // Temp store, will implement DB later
 
 // CreateTest will create a new test from a Summary, Outcome, and optional Doc
 func CreateTest(c *gin.Context) {
