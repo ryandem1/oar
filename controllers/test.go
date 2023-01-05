@@ -11,8 +11,8 @@ import (
 	"strings"
 )
 
-var tests []*models.Test              // Temp store, will implement DB later
-var analyses map[int]*models.Analysis // Temp store, will implement DB later
+var tests []*models.Test                     // Temp store, will implement DB later
+var analyses = make(map[int]models.Analysis) // Temp store, will implement DB later
 
 // CreateTest will create a new test from a Summary, Outcome, and optional Doc
 func CreateTest(c *gin.Context) {
@@ -65,23 +65,30 @@ func GetTests(c *gin.Context) {
 	c.JSON(http.StatusOK, tests)
 }
 
-// SetAnalysis will set the analysis of a test. A test can only have 1 analysis at a time
+// SetAnalysis will set the analysis of a test. A test can only have 1 analysis at a time.
 func SetAnalysis(c *gin.Context) {
-	test := &models.Test{}
+	ta := &models.TestAnalysis{}
 
-	if err := c.BindJSON(test); err != nil {
+	if err := c.BindJSON(ta); err != nil {
 		c.JSON(http.StatusBadRequest, helpers.ConvertErrToGinH(err))
 		return
 	}
 
 	testExists := slices.ContainsFunc(tests, func(existingTest *models.Test) bool {
-		return test.ID == existingTest.ID
+		return ta.TestID == existingTest.ID
 	})
 
 	if !testExists {
-		err := fmt.Errorf("Cannot set analysis, test with ID: %d does not exist!", test.ID)
+		err := fmt.Errorf("Cannot set analysis, test with ID: %d does not exist!", ta.TestID)
 		c.JSON(http.StatusBadRequest, helpers.ConvertErrToGinH(err))
 		return
 	}
 
+	if err := ta.Validate(); err != nil {
+		c.JSON(http.StatusBadRequest, helpers.ConvertErrToGinH(err))
+		return
+	}
+
+	analyses[ta.TestID] = ta.Analysis
+	c.JSON(http.StatusAccepted, ta)
 }
