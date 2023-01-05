@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"golang.org/x/exp/slices"
 	"net/http"
-	"oar/helpers"
 	"oar/models"
+	"oar/utils"
 	"strings"
 )
 
@@ -19,21 +19,21 @@ func CreateTest(c *gin.Context) {
 	test := &models.Test{}
 
 	// We must copy our request body for the second unmarshal because the bind operation will consume it
-	byteBody, err := helpers.CopyRequestBody(c)
+	byteBody, err := utils.CopyRequestBody(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, helpers.ConvertErrToGinH(err))
+		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
 
 	// First bind binds the test information
 	if err := c.BindJSON(test); err != nil {
-		c.JSON(http.StatusBadRequest, helpers.ConvertErrToGinH(err))
+		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
 
 	// Check if Doc is manually defined, it should not be. If it is, it causes all sorts of conflicts
 	if test.Doc != nil {
-		c.JSON(http.StatusBadRequest, helpers.ConvertErrToGinH(
+		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(
 			fmt.Errorf("'Doc' is reserved! Cannot use that key")),
 		)
 		return
@@ -51,7 +51,7 @@ func CreateTest(c *gin.Context) {
 	}
 
 	if err := test.Validate(); err != nil {
-		c.JSON(http.StatusBadRequest, helpers.ConvertErrToGinH(err))
+		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
 
@@ -70,7 +70,7 @@ func SetAnalysis(c *gin.Context) {
 	ta := &models.TestAnalysis{}
 
 	if err := c.BindJSON(ta); err != nil {
-		c.JSON(http.StatusBadRequest, helpers.ConvertErrToGinH(err))
+		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
 
@@ -80,12 +80,12 @@ func SetAnalysis(c *gin.Context) {
 
 	if !testExists {
 		err := fmt.Errorf("cannot set analysis, test with ID: %d does not exist", ta.TestID)
-		c.JSON(http.StatusBadRequest, helpers.ConvertErrToGinH(err))
+		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
 
 	if err := ta.Validate(); err != nil {
-		c.JSON(http.StatusBadRequest, helpers.ConvertErrToGinH(err))
+		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
 

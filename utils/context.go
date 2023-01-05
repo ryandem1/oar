@@ -1,5 +1,5 @@
 // Package helpers context contains Gin context helpers
-package helpers
+package utils
 
 import (
 	"bytes"
