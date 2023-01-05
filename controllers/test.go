@@ -34,7 +34,7 @@ func CreateTest(c *gin.Context) {
 	// Check if Doc is manually defined, it should not be. If it is, it causes all sorts of conflicts
 	if test.Doc != nil {
 		c.JSON(http.StatusBadRequest, helpers.ConvertErrToGinH(
-			fmt.Errorf("'Doc' is reserved! Cannot use that key!")),
+			fmt.Errorf("'Doc' is reserved! Cannot use that key")),
 		)
 		return
 	}
@@ -44,7 +44,7 @@ func CreateTest(c *gin.Context) {
 		panic(err)
 	}
 	// Removes the keys that are from the first binding
-	for key, _ := range test.Doc {
+	for key := range test.Doc {
 		if slices.Contains([]string{"summary", "id", "outcome"}, strings.ToLower(key)) {
 			delete(test.Doc, key)
 		}
@@ -79,7 +79,7 @@ func SetAnalysis(c *gin.Context) {
 	})
 
 	if !testExists {
-		err := fmt.Errorf("Cannot set analysis, test with ID: %d does not exist!", ta.TestID)
+		err := fmt.Errorf("cannot set analysis, test with ID: %d does not exist", ta.TestID)
 		c.JSON(http.StatusBadRequest, helpers.ConvertErrToGinH(err))
 		return
 	}
