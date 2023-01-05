@@ -12,10 +12,10 @@ import (
 // The Outcome is the 'O' part of the OAR, it is the simple test binary and should remain that way with no ambiguity.
 // The Doc is a free form JSON document that can be used to store any sort of metadata about the Test
 type Test struct {
-	ID      int     `json:"id"`
-	Summary string  `json:"summary"`
-	Outcome Outcome `json:"outcome"`
-	Doc     map[string]any
+	ID      int            `json:"id"`
+	Summary string         `json:"summary"`
+	Outcome Outcome        `json:"outcome"`
+	Doc     map[string]any `json:"doc"`
 }
 
 // Validate will ensure that a Test has a valid Outcome and a non-blank Summary.

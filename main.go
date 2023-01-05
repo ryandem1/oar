@@ -13,6 +13,7 @@ func main() {
 	r.GET("/tests", controllers.GetTests)
 	r.POST("/test", controllers.CreateTest)
 
+	r.GET("/analyses", controllers.GetAnalyses)
 	r.PUT("/analysis", controllers.SetAnalysis)
 
 	err := r.Run()

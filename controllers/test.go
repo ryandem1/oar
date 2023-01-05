@@ -11,8 +11,8 @@ import (
 	"strings"
 )
 
-var tests []*models.Test                     // Temp store, will implement DB later
-var analyses = make(map[int]models.Analysis) // Temp store, will implement DB later
+var tests []*models.Test                          // Temp store, will implement DB later
+var analyses = make(map[int]*models.TestAnalysis) // Temp store, will implement DB later
 
 // CreateTest will create a new test from a Summary, Outcome, and optional Doc
 func CreateTest(c *gin.Context) {
@@ -74,21 +74,27 @@ func SetAnalysis(c *gin.Context) {
 		return
 	}
 
-	testExists := slices.ContainsFunc(tests, func(existingTest *models.Test) bool {
-		return ta.TestID == existingTest.ID
+	iTest := slices.IndexFunc(tests, func(test *models.Test) bool {
+		return test.ID == ta.TestID
 	})
-
-	if !testExists {
+	if iTest == -1 {
 		err := fmt.Errorf("cannot set analysis, test with ID: %d does not exist", ta.TestID)
 		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
+	test := tests[iTest]
 
-	if err := ta.Validate(); err != nil {
+	if err := ta.Validate(test); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
 
-	analyses[ta.TestID] = ta.Analysis
+	analyses[ta.TestID] = ta
 	c.JSON(http.StatusAccepted, ta)
+}
+
+// GetAnalyses will return all analyses
+func GetAnalyses(c *gin.Context) {
+	c.JSON(http.StatusOK, analyses)
+	return
 }
