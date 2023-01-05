@@ -1,5 +1,5 @@
 build:
-	docker-compose build testable-backend
+	docker-compose build oar-service
 
 run:
-	docker-compose up -d testable-backend
+	docker-compose up -d oar-service

@@ -3,8 +3,8 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"testable/helpers"
-	"testable/models"
+	"oar/helpers"
+	"oar/models"
 )
 
 var tests []*models.Test

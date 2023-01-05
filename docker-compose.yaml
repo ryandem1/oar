@@ -1,9 +1,9 @@
 services:
-  testable-backend:
+  oar-service:
     build:
       context: .
 
-    image: testable-backend
-    container_name: testable
+    image: oar-service
+    container_name: oar-service
     ports:
       - 8080:8080

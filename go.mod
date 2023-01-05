@@ -1,4 +1,4 @@
-module testable
+module oar
 
 go 1.19
 
