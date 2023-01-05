@@ -1,4 +1,4 @@
-# The OAR Framework for Software Testing
+# The OAR Framework for Software Test Reporting
 
 ## Outcome, Analysis, Resolution
 
@@ -27,7 +27,7 @@ test outcomes as passed or failed, we are able to extract insights from them in 
 #### Analysis
 Here comes the more actionable parts. Let's say now that you have a set of test outcomes. Information about outcomes 
 themselves are not very meaningful without **analysis**. Tests can pass or fail for many reasons that tell you 
-different things about your software/test quality. The OAR framwork presents a streamlined way to categorize the 
+different things about your software/test quality. The OAR framework presents a streamlined way to categorize the 
 result of an outcome's  analysis:
 
 - **True Positive**: The test case failed and correctly indicated a defect on the feature-under-test
@@ -54,7 +54,7 @@ our testing and our software.
 
 #### Resolution
 Okay, more action. The OAR framework aims to improve software/test quality, so there must be action taken depending on the
-analysis results of the tests. Every analysis result (with the exception of true negative), must have a resolution. The 
+analysis results of the tests. Every analysis result (except true negative), must have a resolution. The 
 OAR framework also sets out to streamline the resolutions tests must have:
 
 For True Positives:
@@ -63,12 +63,27 @@ For True Positives:
 - **Known Issue**: A ticket was previously open for the defect and is still pending resolution
 
 For False Positives or False Negatives:
-- **Test Fixed**: The test that threw the false positive/negative was fixed and can now works as expected. 
+- **Test Fixed**: The test that threw the false positive/negative was fixed and can now work as expected. 
 - **Test Disabled**: The test/part of the test that threw the false positive/negative was disabled. Possibly indicating faulty 
 test design to begin with, lack of maintenance, or too narrow/broad of a check.
 
 By sticking to these definitions, the team is sticking to actionability and testing stakeholders are actively engaged in
 software quality.
+
+## Application
+
+While the OAR framework does not have to necessarily be tied to any one specific implementation, I set out to make an 
+implementation myself. This implementation includes:
+
+- A minimal backend written in Go that handles CRUD test/action operations
+- A Postgres DB that will be used for minimal relational data, more for the impressive BJSON performance. Most test
+results will be schema-less documents.
+- A UI that will provide: 
+  - an interface into the real-time test result ledger with a JSON filter.
+  - a central place for developers/testers to provide analysis on test results
+  - a simple resolution workflow.
+
+The hope is that test results have streamlined actionability and triaging software quality issues becomes engaging to all. 
 
 ### Concepts
 
