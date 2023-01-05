@@ -21,6 +21,8 @@ func CreateTest(c *gin.Context) {
 		return
 	}
 
+	test.ID = len(tests) + 1
+	test.Clean()
 	tests = append(tests, test)
 	c.JSON(http.StatusCreated, test)
 }
