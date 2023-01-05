@@ -11,9 +11,7 @@ import (
 	"strings"
 )
 
-var tests []*models.Test                               // Temp store, will implement DB later
-var analyses = make(map[int]*models.TestAnalysis)      // Temp store, will implement DB later
-var resolutions = make(map[int]*models.TestResolution) // Temp store, will implement DB later
+var tests []*models.Test // Temp store, will implement DB later
 
 // CreateTest will create a new test from a Summary, Outcome, and optional Doc
 func CreateTest(c *gin.Context) {
@@ -46,18 +44,19 @@ func CreateTest(c *gin.Context) {
 	}
 	// Removes the keys that are from the first binding
 	for key := range test.Doc {
-		if slices.Contains([]string{"summary", "id", "outcome"}, strings.ToLower(key)) {
+		if slices.Contains([]string{"summary", "id", "outcome", "analysis", "resolution"}, strings.ToLower(key)) {
 			delete(test.Doc, key)
 		}
 	}
+
+	test.ID = len(tests) + 1
+	test.Clean()
 
 	if err := test.Validate(); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
 
-	test.ID = len(tests) + 1
-	test.Clean()
 	tests = append(tests, test)
 	c.JSON(http.StatusCreated, test)
 }

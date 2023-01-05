@@ -11,7 +11,7 @@ import (
 
 // SetResolution will set a Test's resolution
 func SetResolution(c *gin.Context) {
-	tr := &models.TestResolution{}
+	tr := &models.Test{}
 
 	if err := c.BindJSON(tr); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
@@ -19,25 +19,20 @@ func SetResolution(c *gin.Context) {
 	}
 
 	iTest := slices.IndexFunc(tests, func(test *models.Test) bool {
-		return test.ID == tr.TestID
+		return test.ID == tr.ID
 	})
 	if iTest == -1 {
-		err := fmt.Errorf("cannot set analysis, test with ID: %d does not exist", tr.TestID)
+		err := fmt.Errorf("cannot set analysis, test with ID: %d does not exist", tr.ID)
 		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
+	test := tests[iTest]
+	test.Resolution = tr.Resolution
 
 	if err := tr.Validate(); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
 
-	resolutions[tr.TestID] = tr
 	c.JSON(http.StatusAccepted, tr)
-}
-
-// GetResolutions will get all resolutions
-func GetResolutions(c *gin.Context) {
-	c.JSON(http.StatusOK, resolutions)
-	return
 }

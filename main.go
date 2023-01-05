@@ -13,10 +13,8 @@ func main() {
 	r.GET("/tests", controllers.GetTests)
 	r.POST("/test", controllers.CreateTest)
 
-	r.GET("/analyses", controllers.GetAnalyses)
-	r.PUT("/analysis", controllers.SetAnalysis)
-
-	r.PUT("/resolution", controllers.SetResolution)
+	r.PATCH("/analysis", controllers.SetAnalysis)
+	r.PATCH("/resolution", controllers.SetResolution)
 
 	err := r.Run()
 	if err != nil {

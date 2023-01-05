@@ -10,6 +10,7 @@ const (
 type Analysis string
 
 const (
+	NotAnalyzed   Analysis = "NotAnalyzed"
 	TruePositive  Analysis = "TruePositive"
 	FalsePositive Analysis = "FalsePositive"
 	TrueNegative  Analysis = "TrueNegative"
@@ -19,6 +20,7 @@ const (
 type Resolution string
 
 const (
+	Unresolved    Resolution = "Unresolved"
 	TicketCreated Resolution = "BugCreated"
 	QuickFix      Resolution = "QuickFix"
 	KnownIssue    Resolution = "KnownIssue"
