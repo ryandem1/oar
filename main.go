@@ -14,6 +14,7 @@ func main() {
 		})
 	})
 	r.POST("/test", controllers.CreateTest)
+	r.PUT("/analysis", controllers.SetAnalysis)
 	r.GET("/tests", controllers.GetTests)
 	err := r.Run()
 	if err != nil {
