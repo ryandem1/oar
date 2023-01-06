@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/exp/slices"
@@ -18,6 +19,13 @@ func SetResolution(c *gin.Context) {
 		return
 	}
 
+	if tr.ID == 0 {
+		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(
+			errors.New("must define an id to set the resolution for")),
+		)
+		return
+	}
+
 	iTest := slices.IndexFunc(tests, func(test *models.Test) bool {
 		return test.ID == tr.ID
 	})
@@ -26,13 +34,14 @@ func SetResolution(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
-	test := tests[iTest]
+	test := *tests[iTest]
 	test.Resolution = tr.Resolution
 
-	if err := tr.Validate(); err != nil {
+	if err := test.Validate(); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
 
-	c.JSON(http.StatusAccepted, tr)
+	tests[iTest] = &test
+	c.JSON(http.StatusAccepted, test)
 }

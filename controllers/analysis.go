@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/exp/slices"
@@ -18,6 +19,13 @@ func SetAnalysis(c *gin.Context) {
 		return
 	}
 
+	if ta.ID == 0 {
+		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(
+			errors.New("must define an id to set the analysis for")),
+		)
+		return
+	}
+
 	iTest := slices.IndexFunc(tests, func(test *models.Test) bool {
 		return test.ID == ta.ID
 	})
@@ -26,7 +34,7 @@ func SetAnalysis(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
-	test := tests[iTest]
+	test := *tests[iTest]
 	test.Analysis = ta.Analysis
 
 	if err := test.Validate(); err != nil {
@@ -34,5 +42,6 @@ func SetAnalysis(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusAccepted, ta)
+	tests[iTest] = &test
+	c.JSON(http.StatusAccepted, test)
 }
