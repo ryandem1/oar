@@ -57,13 +57,8 @@ func PatchTest(c *gin.Context) {
 		return
 	}
 
-	if err := test.Validate(); err != nil {
-		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
-		return
-	}
-
-	// Perform partial update and doc merge
-	existingTest := tests[iTest]
+	// Perform partial update on copy of existing test and doc merge
+	existingTest := *tests[iTest]
 	if test.Summary != "" {
 		existingTest.Summary = test.Summary
 	}
@@ -82,7 +77,14 @@ func PatchTest(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, test)
+	// Validate after update to ensure test is still okay
+	if err := existingTest.Validate(); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
+		return
+	}
+
+	tests[iTest] = &existingTest
+	c.JSON(http.StatusOK, existingTest)
 }
 
 func GetTests(c *gin.Context) {
