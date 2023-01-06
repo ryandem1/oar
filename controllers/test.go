@@ -1,52 +1,23 @@
 package controllers
 
 import (
-	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/exp/slices"
 	"net/http"
 	"oar/models"
 	"oar/utils"
-	"strings"
 )
 
 var tests []*models.Test // Temp store, will implement DB later
 
 // CreateTest will create a new test from a Summary, Outcome, and optional Doc
 func CreateTest(c *gin.Context) {
-	test := &models.Test{}
-
-	// We must copy our request body for the second unmarshal because the bind operation will consume it
-	byteBody, err := utils.CopyRequestBody(c)
+	test, err := utils.DoubleBindTest(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
-	}
-
-	// First bind binds the test information
-	if err := c.BindJSON(test); err != nil {
-		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
-		return
-	}
-
-	// Check if Doc is manually defined, it should not be. If it is, it causes all sorts of conflicts
-	if test.Doc != nil {
-		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(
-			fmt.Errorf("'Doc' is reserved! Cannot use that key")),
-		)
-		return
-	}
-
-	// Second bind will move all dynamic fields to test.Doc
-	if err := json.Unmarshal(byteBody, &test.Doc); err != nil {
-		panic(err)
-	}
-	// Removes the keys that are from the first binding
-	for key := range test.Doc {
-		if slices.Contains([]string{"summary", "id", "outcome", "analysis", "resolution"}, strings.ToLower(key)) {
-			delete(test.Doc, key)
-		}
 	}
 
 	test.ID = len(tests) + 1
@@ -59,6 +30,59 @@ func CreateTest(c *gin.Context) {
 
 	tests = append(tests, test)
 	c.JSON(http.StatusCreated, test)
+}
+
+// PatchTest will perform a patch (partial update) operation on an existing test if it exists. Because of the nature of
+// the Test enrichment process, I imagine this will be used more than a PUT would be.
+func PatchTest(c *gin.Context) {
+	test, err := utils.DoubleBindTest(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
+		return
+	}
+
+	if test.ID == 0 {
+		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(
+			errors.New("must define an id of an existing test to update")),
+		)
+		return
+	}
+
+	iTest := slices.IndexFunc(tests, func(t *models.Test) bool {
+		return t.ID == test.ID
+	})
+	if iTest == -1 {
+		err := fmt.Errorf("cannot update test, test with ID: %d does not exist", test.ID)
+		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
+		return
+	}
+
+	if err := test.Validate(); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
+		return
+	}
+
+	// Perform partial update and doc merge
+	existingTest := tests[iTest]
+	if test.Summary != "" {
+		existingTest.Summary = test.Summary
+	}
+	if test.Outcome != "" {
+		existingTest.Outcome = test.Outcome
+	}
+	if test.Analysis != "" {
+		existingTest.Analysis = test.Analysis
+	}
+	if test.Resolution != "" {
+		existingTest.Resolution = test.Resolution
+	}
+	if test.Doc != nil && len(test.Doc) > 0 {
+		for k, v := range test.Doc {
+			existingTest.Doc[k] = v
+		}
+	}
+
+	c.JSON(http.StatusOK, test)
 }
 
 func GetTests(c *gin.Context) {
