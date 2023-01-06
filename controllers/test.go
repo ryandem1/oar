@@ -87,6 +87,36 @@ func PatchTest(c *gin.Context) {
 	c.JSON(http.StatusOK, existingTest)
 }
 
+// DeleteTests is a bulk endpoint that can mark tests as deleted. These tests will no longer be visible from the UI, but
+// will still remain in the DB unless manually removed just-in-case they need to be recovered.
+// DeleteTests will silently ignore if the caller passes in test IDs that already don't exist.
+// DeleteTests will respond with a http.StatusNotModified (304) status code if it does not delete a single test.
+// DeleteTests will respond with a http.StatusOK (200) status code if it deletes at least 1 test.
+func DeleteTests(c *gin.Context) {
+	var testsToDelete *[]models.Test
+
+	if err := c.BindJSON(testsToDelete); err != nil {
+		c.JSON(http.StatusBadRequest, err)
+		return
+	}
+	statusCode := http.StatusNotModified
+
+	for _, test := range *testsToDelete {
+		iTest := slices.IndexFunc(tests, func(t *models.Test) bool {
+			return t.ID == test.ID
+		})
+		// Silently ignore tests that do not exist
+		if iTest == -1 {
+			continue
+		}
+
+		statusCode = http.StatusOK // If we have deleted at least 1 item, we use status code 200 instead of 304
+		tests = slices.Delete(tests, iTest, iTest+1)
+	}
+
+	c.Status(statusCode)
+}
+
 func GetTests(c *gin.Context) {
 	c.JSON(http.StatusOK, tests)
 }

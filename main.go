@@ -11,6 +11,8 @@ func main() {
 	r.GET("/health", controllers.Health)
 
 	r.GET("/tests", controllers.GetTests)
+	r.DELETE("/tests", controllers.DeleteTests)
+
 	r.POST("/test", controllers.CreateTest)
 	r.PATCH("/test", controllers.PatchTest)
 
