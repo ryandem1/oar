@@ -88,11 +88,42 @@ The hope is that test results have streamlined actionability and triaging softwa
 ### Concepts
 
 #### Test
-A **Test** represents point-in-time information about a **test** that occurred on a system. While the real size of the 
+
+In the application, there is only 1 main data structure that get enriched through the OAR process.
+
+A **Test** represents point-in-time information about a **test** that occurred on a feature. While the real size of the 
 systems that we test can vary in size, our **feature-under-test** should be a logical piece that has a single purpose.
 
 The **Summary** can be thought of as a title, or a short description describing what the Test accomplished. A good
 rule-of-thumb is that if you cannot describe a test in a Summary, then the Test is probably too broad.
 
 The **Outcome** is the 'O' part of the OAR, it is the simple test binary and should remain that way with no ambiguity.
-If there is ambiguity whether a test passed or failed, then there could be 
+If there is ambiguity whether a test passed or failed, then there could be undefined requirements that the test
+should probably not test for.
+
+The **Analysis** is the 'A' and will most likely be done after the initial Test upload. It should be performed by 
+someone that has some sort of ownership of the test. An accurate analysis is important for proper statistic and 
+resolution. An analysis can change, but should not change after a **resolution** is added.
+
+The **Resolution** is the 'R'. A resolution is the end of the OAR framework, the application follows the pre-defined 
+resolutions that are laid out.
+
+The **Doc** is an unstructured part of a test. It is primarily here to store test diagnostic information and test 
+metadata. It can be used to filter by in the UI, and can include helpful information for the analysis/resolution 
+portion of the process. This also allows the test to become further enriched with more data at the analysis/resolution 
+phase. This can include information like ticket number/comments/trace links.
+
+
+#### Service
+
+The backend is quite simple, it is there to provide an interface for the CRUD test operations. It also has endpoints to 
+facilitate test enrichment in the analysis/resolution phases. It connects to a Postgres database and stores tests as 
+partially structured, partially unstructured data. 
+
+> **POST /test**  
+> Sending a post request to the ``/test`` endpoint will create a new test result. The fields:
+> "id", "summary", "outcome", "analysis", and "resolution" are the structured part of the test and will be treated 
+> differently from other fields.
+> 
+> You are able to also send any arbitrary JSON data in the request body, and it will be stored as the unstructured data.
+> This can include any relevant test metadata and helpful diagnostic information for the analysis/resolution.
