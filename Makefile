@@ -1,8 +1,12 @@
 clean:
-	docker-compose down
+	docker-compose down --remove-orphans
+	rm -Rf dbData
 
 build:
 	docker-compose build oar-service
 
-run:
+service:
 	docker-compose up -d oar-service
+
+db:
+	docker-compose -f docker-compose.yaml -f docker-compose.local.yaml up -d postgres

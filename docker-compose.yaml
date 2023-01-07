@@ -2,8 +2,5 @@ services:
   oar-service:
     build:
       context: .
-
     image: oar-service
     container_name: oar-service
-    ports:
-      - 8080:8080
