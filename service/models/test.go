@@ -26,10 +26,6 @@ type Test struct {
 func (t *Test) Validate() error {
 	validOutcomes := []Outcome{Passed, Failed}
 
-	if t.ID < 1 {
-		return fmt.Errorf("invalid test ID: %d, test ID must be > 0", t.ID)
-	}
-
 	if !slices.Contains(validOutcomes, t.Outcome) {
 		return fmt.Errorf("invalid outcome: '%s', must be one of outcomes: %s", t.Outcome, validOutcomes)
 	}
