@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx"
 	"golang.org/x/exp/slices"
 	"net/http"
 	"oar/models"
@@ -12,8 +13,13 @@ import (
 
 var tests []*models.Test // Temp store, will implement DB later
 
+// TestController will maintain a database pool for all test controllers
+type TestController struct {
+	DBPool *pgx.ConnPool
+}
+
 // CreateTest will create a new test from a Summary, Outcome, and optional Doc
-func CreateTest(c *gin.Context) {
+func (tc *TestController) CreateTest(c *gin.Context) {
 	test, err := utils.DoubleBindTest(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
@@ -34,7 +40,7 @@ func CreateTest(c *gin.Context) {
 
 // PatchTest will perform a patch (partial update) operation on an existing test if it exists. Because of the nature of
 // the Test enrichment process, I imagine this will be used more than a PUT would be.
-func PatchTest(c *gin.Context) {
+func (tc *TestController) PatchTest(c *gin.Context) {
 	test, err := utils.DoubleBindTest(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
@@ -92,7 +98,7 @@ func PatchTest(c *gin.Context) {
 // DeleteTests will silently ignore if the caller passes in test IDs that already don't exist.
 // DeleteTests will respond with a http.StatusNotModified (304) status code if it does not delete a single test.
 // DeleteTests will respond with a http.StatusOK (200) status code if it deletes at least 1 test.
-func DeleteTests(c *gin.Context) {
+func (tc *TestController) DeleteTests(c *gin.Context) {
 	var testsToDelete *[]models.Test
 
 	if err := c.BindJSON(testsToDelete); err != nil {
@@ -117,6 +123,6 @@ func DeleteTests(c *gin.Context) {
 	c.Status(statusCode)
 }
 
-func GetTests(c *gin.Context) {
+func (tc *TestController) GetTests(c *gin.Context) {
 	c.JSON(http.StatusOK, tests)
 }
