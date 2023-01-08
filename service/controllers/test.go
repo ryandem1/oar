@@ -134,5 +134,27 @@ func (tc *TestController) DeleteTests(c *gin.Context) {
 }
 
 func (tc *TestController) GetTests(c *gin.Context) {
+	conn, err := tc.DBPool.Acquire()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err)
+		return
+	}
+	defer tc.DBPool.Release(conn)
+
+	var tests []*models.Test
+	rows, err := conn.Query("SELECT * FROM tests")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err)
+		return
+	}
+	for rows.Next() {
+		test := &models.Test{}
+		err = rows.Scan(&test.ID, &test.Summary, &test.Outcome, &test.Analysis, &test.Resolution, &test.Doc)
+		if err != nil {
+			return
+		}
+		tests = append(tests, test)
+	}
+
 	c.JSON(http.StatusOK, tests)
 }
