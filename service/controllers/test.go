@@ -19,6 +19,16 @@ type TestController struct {
 	DBPool *pgx.ConnPool
 }
 
+// GetTests will retrieve test objects from the database. Will take queries/limit/offset
+func (tc *TestController) GetTests(c *gin.Context) {
+	tests, err := drivers.SelectTests(tc.DBPool, "SELECT * FROM tests")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err)
+		return
+	}
+	c.JSON(http.StatusOK, tests)
+}
+
 // CreateTest will create a new test from a Summary, Outcome, and optional Doc
 func (tc *TestController) CreateTest(c *gin.Context) {
 	test, err := utils.DoubleBindTest(c)
@@ -131,14 +141,4 @@ func (tc *TestController) DeleteTests(c *gin.Context) {
 	}
 
 	c.Status(statusCode)
-}
-
-// GetTests will retrieve test objects from the database. Will take queries/limit/offset
-func (tc *TestController) GetTests(c *gin.Context) {
-	tests, err := drivers.SelectTests(tc.DBPool, "SELECT * FROM tests")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, err)
-		return
-	}
-	c.JSON(http.StatusOK, tests)
 }
