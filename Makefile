@@ -6,7 +6,7 @@ build:
 	docker-compose build oar-service
 
 service:
-	docker-compose up -d oar-service
+	docker-compose -f docker-compose.yaml -f docker-compose.local.yaml up -d oar-service
 
 db:
-	docker-compose -f docker-compose.yaml -f docker-compose.local.yaml up -d postgres
+	docker-compose -f docker-compose.yaml -f docker-compose.local.yaml up -d oar-postgres

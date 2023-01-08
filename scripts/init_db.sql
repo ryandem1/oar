@@ -1,4 +1,4 @@
-create table tests
+create table if not exists tests
 (
     id         bigserial
     constraint id

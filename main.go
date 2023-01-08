@@ -13,27 +13,16 @@ func main() {
 	r.GET("/health", controllers.Health)
 
 	pgConnConfig := pgx.ConnConfig{
-		Host:                 "",
-		Port:                 0,
-		Database:             "",
-		User:                 "",
-		Password:             "",
-		TLSConfig:            nil,
-		UseFallbackTLS:       false,
-		FallbackTLSConfig:    nil,
-		Logger:               nil,
-		LogLevel:             0,
-		Dial:                 nil,
-		RuntimeParams:        nil,
-		OnNotice:             nil,
-		CustomConnInfo:       nil,
-		CustomCancel:         nil,
-		PreferSimpleProtocol: false,
-		TargetSessionAttrs:   "",
+		Host:     "172.29.0.2",
+		Port:     5432,
+		Database: "oar",
+		User:     "postgres",
+		Password: "postgres",
+		LogLevel: pgx.LogLevelInfo,
 	}
 	pgConnPoolConfig := pgx.ConnPoolConfig{
 		ConnConfig:     pgConnConfig,
-		MaxConnections: 0,
+		MaxConnections: 4,
 		AfterConnect:   nil,
 		AcquireTimeout: 30,
 	}

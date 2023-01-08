@@ -3,11 +3,12 @@ services:
     ports:
       - 8080:8080
 
-  postgres:
+  oar-postgres:
     image: postgres:15.1-alpine
     restart: always
     container_name: oar-postgres
     environment:
+      - POSTGRES_DB=oar
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
