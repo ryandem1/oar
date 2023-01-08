@@ -13,7 +13,7 @@ func main() {
 	r.GET("/health", controllers.Health)
 
 	pgConnConfig := pgx.ConnConfig{
-		Host:     "192.168.0.2",
+		Host:     "oar-postgres",
 		Port:     5432,
 		Database: "oar",
 		User:     "postgres",

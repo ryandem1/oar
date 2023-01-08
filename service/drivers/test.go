@@ -73,7 +73,7 @@ func SelectTests(pgPool *pgx.ConnPool, query string, args ...any) ([]*models.Tes
 	defer pgPool.Release(conn)
 	var tests []*models.Test
 
-	rows, err := conn.Query(query, args)
+	rows, err := conn.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}

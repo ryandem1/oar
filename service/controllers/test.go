@@ -19,7 +19,7 @@ type TestController struct {
 func (tc *TestController) GetTests(c *gin.Context) {
 	tests, err := drivers.SelectTests(tc.DBPool, "SELECT * FROM tests")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err)
+		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
 	c.JSON(http.StatusOK, tests)
@@ -51,53 +51,60 @@ func (tc *TestController) CreateTest(c *gin.Context) {
 // PatchTest will perform a patch (partial update) operation on an existing test if it exists. Because of the nature of
 // the Test enrichment process, I imagine this will be used more than a PUT would be.
 func (tc *TestController) PatchTest(c *gin.Context) {
-	test, err := utils.DoubleBindTest(c)
+	testPatch, err := utils.DoubleBindTest(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
 
-	if test.ID == 0 {
+	if testPatch.ID == 0 {
 		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(
-			errors.New("must define an id of an existing test to update")),
+			errors.New("must define an id of an existing testPatch to update")),
 		)
 		return
 	}
 
-	// Perform partial update on copy of existing test and doc merge
-	tests, err := drivers.SelectTests(tc.DBPool, "SELECT * FROM tests WHERE id=$1", test.ID)
+	// Perform partial update on copy of existing testPatch and doc merge
+	tests, err := drivers.SelectTests(tc.DBPool, "SELECT * FROM tests WHERE id=$1", testPatch.ID)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err)
+		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
 	if len(tests) < 1 {
-		c.JSON(http.StatusBadRequest, fmt.Errorf("cannot update, test with ID: %d does not exist", test.ID))
+		c.JSON(
+			http.StatusBadRequest,
+			fmt.Errorf("cannot update, testPatch with ID: %d does not exist", testPatch.ID),
+		)
 		return
 	} else if len(tests) > 1 {
-		c.JSON(http.StatusInternalServerError, fmt.Errorf("found >1 test with ID: %d, data is corrupted", test.ID))
+		c.JSON(
+			http.StatusInternalServerError,
+			fmt.Errorf("found >1 testPatch with ID: %d, data is corrupted", testPatch.ID),
+		)
+		return
 	}
 
-	existingTest := tests[0]
-	if test.Summary != "" {
-		existingTest.Summary = test.Summary
+	test := tests[0]
+	if testPatch.Summary != "" {
+		test.Summary = testPatch.Summary
 	}
-	if test.Outcome != "" {
-		existingTest.Outcome = test.Outcome
+	if testPatch.Outcome != "" {
+		test.Outcome = testPatch.Outcome
 	}
-	if test.Analysis != "" {
-		existingTest.Analysis = test.Analysis
+	if testPatch.Analysis != "" {
+		test.Analysis = testPatch.Analysis
 	}
-	if test.Resolution != "" {
-		existingTest.Resolution = test.Resolution
+	if testPatch.Resolution != "" {
+		test.Resolution = testPatch.Resolution
 	}
-	if test.Doc != nil && len(test.Doc) > 0 {
-		for k, v := range test.Doc {
-			existingTest.Doc[k] = v
+	if testPatch.Doc != nil && len(testPatch.Doc) > 0 {
+		for k, v := range testPatch.Doc {
+			test.Doc[k] = v
 		}
 	}
 
-	// Validate after update to ensure test is still okay
-	if err = existingTest.Validate(); err != nil {
+	// Validate after update to ensure testPatch is still okay
+	if err = test.Validate(); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
