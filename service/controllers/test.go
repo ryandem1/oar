@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx"
+	"github.com/ryandem1/oar/drivers"
 	"github.com/ryandem1/oar/models"
 	"github.com/ryandem1/oar/utils"
 	"golang.org/x/exp/slices"
@@ -20,12 +21,6 @@ type TestController struct {
 
 // CreateTest will create a new test from a Summary, Outcome, and optional Doc
 func (tc *TestController) CreateTest(c *gin.Context) {
-	conn, err := tc.DBPool.Acquire()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
-		return
-	}
-
 	test, err := utils.DoubleBindTest(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
@@ -38,25 +33,13 @@ func (tc *TestController) CreateTest(c *gin.Context) {
 		return
 	}
 
-	exec, err := conn.Exec(
-		"INSERT INTO tests (summary, outcome, analysis, resolution, doc) VALUES ($1, $2, $3, $4, $5)",
-		test.Summary,
-		test.Outcome,
-		test.Analysis,
-		test.Resolution,
-		test.Doc,
-	)
+	err = drivers.InsertTest(tc.DBPool, test)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
-	if exec.RowsAffected() != 1 {
-		c.JSON(http.StatusInternalServerError, utils.ConvertErrToGinH(
-			fmt.Errorf("rows affected: %d != 1", exec.RowsAffected())),
-		)
-	}
 
-	c.JSON(http.StatusCreated, exec.RowsAffected())
+	c.Status(http.StatusCreated)
 }
 
 // PatchTest will perform a patch (partial update) operation on an existing test if it exists. Because of the nature of
@@ -105,13 +88,19 @@ func (tc *TestController) PatchTest(c *gin.Context) {
 	}
 
 	// Validate after update to ensure test is still okay
-	if err := existingTest.Validate(); err != nil {
+	if err = existingTest.Validate(); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
 
-	tests[iTest] = &existingTest
-	c.JSON(http.StatusOK, existingTest)
+	// Update in DB
+	err = drivers.UpdateTest(tc.DBPool, test)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
+		return
+	}
+
+	c.Status(http.StatusOK)
 }
 
 // DeleteTests is a bulk endpoint that can mark tests as deleted. These tests will no longer be visible from the UI, but
