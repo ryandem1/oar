@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx"
+	"github.com/ryandem1/oar/models"
+	"github.com/ryandem1/oar/utils"
 	"golang.org/x/exp/slices"
 	"net/http"
-	"oar/models"
-	"oar/utils"
 )
 
 var tests []*models.Test // Temp store, will implement DB later

@@ -1,4 +1,4 @@
-module oar
+module github.com/ryandem1/oar
 
 go 1.19
 

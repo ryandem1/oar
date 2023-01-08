@@ -9,7 +9,7 @@ RUN apk update && apk add --no-cache 'git=~2'
 # Install dependencies
 ENV GO111MODULE=on
 WORKDIR $GOPATH/src/packages/oar/
-COPY . .
+COPY .. .
 
 # Fetch dependencies.
 # Using go get.

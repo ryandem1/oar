@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx"
+	"github.com/ryandem1/oar/controllers"
 	"log"
-	"oar/controllers"
 )
 
 func main() {
@@ -13,7 +13,7 @@ func main() {
 	r.GET("/health", controllers.Health)
 
 	pgConnConfig := pgx.ConnConfig{
-		Host:     "172.29.0.2",
+		Host:     "192.168.0.2",
 		Port:     5432,
 		Database: "oar",
 		User:     "postgres",

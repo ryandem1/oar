@@ -1,6 +1,6 @@
 services:
   oar-service:
     build:
-      context: .
+      context: ./service
     image: oar-service
     container_name: oar-service
