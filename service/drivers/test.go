@@ -61,3 +61,29 @@ func UpdateTest(pgPool *pgx.ConnPool, test *models.Test) error {
 
 	return nil
 }
+
+// SelectTests will take in a query that returns rows that are in the models.Test schema, deserialize them, and return
+// pointers to the models.
+func SelectTests(pgPool *pgx.ConnPool, query string) ([]*models.Test, error) {
+	conn, err := pgPool.Acquire()
+	if err != nil {
+		return nil, err
+	}
+	defer pgPool.Release(conn)
+	var tests []*models.Test
+
+	rows, err := conn.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		test := &models.Test{}
+		err = rows.Scan(&test.ID, &test.Summary, &test.Outcome, &test.Analysis, &test.Resolution, &test.Doc)
+		if err != nil {
+			return nil, err
+		}
+		tests = append(tests, test)
+	}
+
+	return tests, nil
+}
