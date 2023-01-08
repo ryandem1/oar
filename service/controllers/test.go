@@ -68,17 +68,20 @@ func (tc *TestController) PatchTest(c *gin.Context) {
 		return
 	}
 
-	iTest := slices.IndexFunc(tests, func(t *models.Test) bool {
-		return t.ID == test.ID
-	})
-	if iTest == -1 {
-		err := fmt.Errorf("cannot update test, test with ID: %d does not exist", test.ID)
-		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
+	// Perform partial update on copy of existing test and doc merge
+	tests, err := drivers.SelectTests(tc.DBPool, "SELECT * FROM tests WHERE id=$1", test.ID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err)
 		return
 	}
+	if len(tests) < 1 {
+		c.JSON(http.StatusBadRequest, fmt.Errorf("cannot update, test with ID: %d does not exist", test.ID))
+		return
+	} else if len(tests) > 1 {
+		c.JSON(http.StatusInternalServerError, fmt.Errorf("found >1 test with ID: %d, data is corrupted", test.ID))
+	}
 
-	// Perform partial update on copy of existing test and doc merge
-	existingTest := *tests[iTest]
+	existingTest := tests[0]
 	if test.Summary != "" {
 		existingTest.Summary = test.Summary
 	}
