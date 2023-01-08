@@ -6,13 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx"
 	"github.com/ryandem1/oar/drivers"
-	"github.com/ryandem1/oar/models"
 	"github.com/ryandem1/oar/utils"
-	"golang.org/x/exp/slices"
 	"net/http"
 )
-
-var tests []*models.Test // Temp store, will implement DB later
 
 // TestController will maintain a database pool for all test controllers
 type TestController struct {
@@ -122,26 +118,24 @@ func (tc *TestController) PatchTest(c *gin.Context) {
 // DeleteTests will respond with a http.StatusNotModified (304) status code if it does not delete a single test.
 // DeleteTests will respond with a http.StatusOK (200) status code if it deletes at least 1 test.
 func (tc *TestController) DeleteTests(c *gin.Context) {
-	var testsToDelete *[]models.Test
+	var testIDsToDelete *[]int
 
-	if err := c.BindJSON(testsToDelete); err != nil {
+	if err := c.BindJSON(testIDsToDelete); err != nil {
 		c.JSON(http.StatusBadRequest, err)
 		return
 	}
-	statusCode := http.StatusNotModified
 
-	for _, test := range *testsToDelete {
-		iTest := slices.IndexFunc(tests, func(t *models.Test) bool {
-			return t.ID == test.ID
-		})
-		// Silently ignore tests that do not exist
-		if iTest == -1 {
-			continue
-		}
-
-		statusCode = http.StatusOK // If we have deleted at least 1 item, we use status code 200 instead of 304
-		tests = slices.Delete(tests, iTest, iTest+1)
+	testsDeleted, err := drivers.DeleteTests(tc.DBPool, *testIDsToDelete)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err)
+		return
 	}
 
-	c.Status(statusCode)
+	if testsDeleted < 0 {
+		c.Status(http.StatusInternalServerError)
+	} else if testsDeleted == 0 {
+		c.Status(http.StatusNotModified)
+	} else {
+		c.Status(http.StatusOK)
+	}
 }
