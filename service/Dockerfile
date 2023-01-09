@@ -28,6 +28,9 @@ WORKDIR /
 # Copy our static executable.
 COPY --from=builder /go/main /go/main
 
+# Copy any potential config files
+COPY config.* /go
+
 ENV PORT 8080
 ENV GIN_MODE release
 EXPOSE 8080

@@ -13,7 +13,7 @@ func NewPGPool() (*pgx.ConnPool, error) {
 		Port:     uint16(viper.GetInt("PGPort")),
 		Database: viper.GetString("PGDatabase"),
 		User:     viper.GetString("PGUser"),
-		Password: viper.GetString("PGPassword"),
+		Password: viper.GetString("PGPass"),
 		LogLevel: pgx.LogLevel(viper.GetInt("PGLogLevel")),
 	}
 	pgConnPoolConfig := pgx.ConnPoolConfig{
