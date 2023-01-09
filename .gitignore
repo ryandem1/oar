@@ -1,4 +1,5 @@
 .idea
 dbData
 config.*
+!config.go
 .env
