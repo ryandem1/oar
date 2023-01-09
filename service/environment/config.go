@@ -5,18 +5,17 @@ import (
 	"github.com/spf13/viper"
 	"log"
 	"strings"
-	"time"
 )
 
 type PGConfig struct {
-	Host        string        `mapstructure:"PG_HOST"`
-	Port        uint16        `mapstructure:"PG_PORT"`
-	DB          string        `mapstructure:"PG_DB"`
-	User        string        `mapstructure:"PG_USER"`
-	Pass        string        `mapstructure:"PG_PASS"`
-	LogLevel    pgx.LogLevel  `mapstructure:"PG_LL"`
-	PoolSize    int           `mapstructure:"PG_POOL_SIZE"`
-	PollTimeout time.Duration `mapstructure:"PG_POOL_TIMEOUT"`
+	Host        string `mapstructure:"HOST"`
+	Port        uint16 `mapstructure:"PORT"`
+	DB          string `mapstructure:"DB"`
+	User        string `mapstructure:"USER"`
+	Pass        string `mapstructure:"PASS"`
+	LogLevel    uint8  `mapstructure:"LL"`
+	PoolSize    int    `mapstructure:"POOL_SIZE"`
+	PollTimeout int    `mapstructure:"POOL_TIMEOUT"`
 }
 
 type Config struct {
@@ -24,10 +23,10 @@ type Config struct {
 }
 
 func NewConfig() (*Config, error) {
-	SetDefaultConfigValues()
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
+	SetDefaultConfigValues()
 
 	config := &Config{}
 	if err := viper.ReadInConfig(); err != nil {

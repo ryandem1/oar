@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/ryandem1/oar/controllers"
 	"github.com/ryandem1/oar/drivers"
@@ -14,7 +13,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(config)
 
 	pgPool, err := drivers.NewPGPool(config.PG)
 	if err != nil {
