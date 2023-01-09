@@ -74,13 +74,13 @@ func (tc *TestController) PatchTest(c *gin.Context) {
 	if len(tests) < 1 {
 		c.JSON(
 			http.StatusBadRequest,
-			fmt.Errorf("cannot update, testPatch with ID: %d does not exist", testPatch.ID),
+			utils.ConvertErrToGinH(fmt.Errorf("cannot update, testPatch with ID: %d does not exist", testPatch.ID)),
 		)
 		return
 	} else if len(tests) > 1 {
 		c.JSON(
 			http.StatusInternalServerError,
-			fmt.Errorf("found >1 testPatch with ID: %d, data is corrupted", testPatch.ID),
+			utils.ConvertErrToGinH(fmt.Errorf("found >1 testPatch with ID: %d, data is corrupted", testPatch.ID)),
 		)
 		return
 	}
