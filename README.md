@@ -127,3 +127,18 @@ partially structured, partially unstructured data.
 > 
 > You are able to also send any arbitrary JSON data in the request body, and it will be stored as the unstructured data.
 > This can include any relevant test metadata and helpful diagnostic information for the analysis/resolution.
+
+> **PATCH /test**  
+> Sending a patch request to the ``/test`` endpoint will apply a partial update to a test result.
+> Because tests get enriched through the OAR process, partial updates are more convenient for applying
+> the updates.
+
+> **GET /tests**  
+> This is the primary way to query for tests. It is meant to be a single endpoint to query tests by both their structured
+> and unstructured parts.
+> 
+> It uses [JSON Path](https://support.smartbear.com/alertsite/docs/monitors/api/endpoint/jsonpath.html) to query tests
+> by their ``doc`` attributes.
+
+> **DELETE /tests**  
+> Can batch delete tests by IDs.
