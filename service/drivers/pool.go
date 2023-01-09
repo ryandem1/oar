@@ -1,22 +1,26 @@
 package drivers
 
-import "github.com/jackc/pgx"
+import (
+	"github.com/jackc/pgx"
+	"github.com/spf13/viper"
+	"time"
+)
 
 // NewPGPool will establish a new connection with postgres and return a pointer to a  connection pool
 func NewPGPool() (*pgx.ConnPool, error) {
 	pgConnConfig := pgx.ConnConfig{
-		Host:     "oar-postgres",
-		Port:     5432,
-		Database: "oar",
-		User:     "postgres",
-		Password: "postgres",
-		LogLevel: pgx.LogLevelInfo,
+		Host:     viper.GetString("PGHost"),
+		Port:     uint16(viper.GetInt("PGPort")),
+		Database: viper.GetString("PGDatabase"),
+		User:     viper.GetString("PGUser"),
+		Password: viper.GetString("PGPassword"),
+		LogLevel: pgx.LogLevel(viper.GetInt("PGLogLevel")),
 	}
 	pgConnPoolConfig := pgx.ConnPoolConfig{
 		ConnConfig:     pgConnConfig,
-		MaxConnections: 4,
+		MaxConnections: viper.GetInt("PGPoolSize"),
 		AfterConnect:   nil,
-		AcquireTimeout: 30,
+		AcquireTimeout: time.Duration(viper.GetInt("PGPoolTimeout")),
 	}
 	pgPool, err := pgx.NewConnPool(pgConnPoolConfig)
 	if err != nil {
