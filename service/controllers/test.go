@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx"
 	"github.com/ryandem1/oar/drivers"
+	"github.com/ryandem1/oar/models"
 	"github.com/ryandem1/oar/utils"
 	"net/http"
 )
@@ -125,16 +126,20 @@ func (tc *TestController) PatchTest(c *gin.Context) {
 // DeleteTests will respond with a http.StatusNotModified (304) status code if it does not delete a single test.
 // DeleteTests will respond with a http.StatusOK (200) status code if it deletes at least 1 test.
 func (tc *TestController) DeleteTests(c *gin.Context) {
-	var testIDsToDelete *[]int
+	var testsToDelete []models.Test
 
-	if err := c.BindJSON(testIDsToDelete); err != nil {
-		c.JSON(http.StatusBadRequest, err)
+	if err := c.BindJSON(&testsToDelete); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
+	var testIDsToDelete []int64
+	for _, testToDelete := range testsToDelete {
+		testIDsToDelete = append(testIDsToDelete, testToDelete.ID)
+	}
 
-	testsDeleted, err := drivers.DeleteTests(tc.DBPool, *testIDsToDelete)
+	testsDeleted, err := drivers.DeleteTests(tc.DBPool, testIDsToDelete)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err)
+		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
 	}
 

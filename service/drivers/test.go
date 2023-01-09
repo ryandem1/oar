@@ -3,6 +3,7 @@ package drivers
 import (
 	"fmt"
 	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/pgtype"
 	"github.com/ryandem1/oar/models"
 )
 
@@ -91,14 +92,20 @@ func SelectTests(pgPool *pgx.ConnPool, query string, args ...any) ([]*models.Tes
 
 // DeleteTests will take in a slice of test IDs and attempt to delete all tests with those IDs. Will return the amount
 // of rows deleted and any error that occurred. If an error occurred, it will return -1 rows deleted, which is invalid.
-func DeleteTests(pgPool *pgx.ConnPool, testIDs []int) (int64, error) {
+func DeleteTests(pgPool *pgx.ConnPool, testIDs []int64) (int64, error) {
 	conn, err := pgPool.Acquire()
 	if err != nil {
 		return -1, err
 	}
 	defer pgPool.Release(conn)
 
-	exec, err := conn.Exec("DELETE FROM tests WHERE id in $1", testIDs)
+	pgTestIDs := &pgtype.Int8Array{}
+	err = pgTestIDs.Set(testIDs)
+	if err != nil {
+		return -1, err
+	}
+
+	exec, err := conn.Exec("DELETE FROM TESTS WHERE ID = ANY($1)", pgTestIDs)
 	if err != nil {
 		return -1, err
 	}

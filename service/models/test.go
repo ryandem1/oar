@@ -14,7 +14,7 @@ import (
 // The Resolution is the 'R' and will most likely take place after the Analysis
 // The Doc is a free form JSON document that can be used to store any sort of metadata about the Test
 type Test struct {
-	ID         int            `json:"id"`
+	ID         int64          `json:"id"`
 	Summary    string         `json:"summary"`
 	Outcome    Outcome        `json:"outcome"`
 	Analysis   Analysis       `json:"analysis"`
