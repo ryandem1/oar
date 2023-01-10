@@ -4,12 +4,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ryandem1/oar/controllers"
 	"github.com/ryandem1/oar/drivers"
-	"github.com/ryandem1/oar/environment"
+	"github.com/ryandem1/oar/models"
 	"log"
 )
 
 func main() {
-	config, err := environment.NewConfig()
+	config, err := models.NewConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
