@@ -18,7 +18,7 @@ type TestController struct {
 
 // GetTests will retrieve test objects from the database. Will take queries/limit/offset
 func (tc *TestController) GetTests(c *gin.Context) {
-	tests, err := drivers.SelectTests(tc.DBPool, "SELECT * FROM tests")
+	tests, err := drivers.SelectTests(tc.DBPool, "SELECT * FROM OAR_TESTS")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return
@@ -66,7 +66,7 @@ func (tc *TestController) PatchTest(c *gin.Context) {
 	}
 
 	// Perform partial update on copy of existing testPatch and doc merge
-	tests, err := drivers.SelectTests(tc.DBPool, "SELECT * FROM tests WHERE id=$1", testPatch.ID)
+	tests, err := drivers.SelectTests(tc.DBPool, "SELECT * FROM OAR_TESTS WHERE id=$1", testPatch.ID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.ConvertErrToGinH(err))
 		return

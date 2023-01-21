@@ -15,4 +15,4 @@ ui:
 	cd ui; npm run dev
 
 
-.PHONY: service, ui
+.PHONY: service ui
