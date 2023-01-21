@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
+    import type { Test } from "$lib/models";
     import { Accordion } from 'flowbite-svelte';
-    import { onMount } from 'svelte';
-    import { Test } from "$lib/models.js";
+    import { onMount } from "svelte";
 
-    let tests: Test[] = []
+    let tests: Test[] = [];
 
     onMount(async function () {
         const response = await fetch("http://localhost:8080/tests")
