@@ -3,11 +3,11 @@
     import { Accordion } from 'flowbite-svelte';
     import { onMount } from "svelte";
 
-    let tests: Test[] = [];
+    let tests: Test[] = []
 
     onMount(async function () {
         const response = await fetch("http://localhost:8080/tests")
-        const data = await response.json()
+        const data = response.json()
 
         for (const rawTest in data) {
             let test: Test = {
