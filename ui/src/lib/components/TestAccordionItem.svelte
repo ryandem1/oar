@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
     import { AccordionItem } from 'flowbite-svelte'
-    import { Test } from "$lib/models.js";
+    import type { Test } from "$lib/models";
 
     export let test: Test
 </script>
