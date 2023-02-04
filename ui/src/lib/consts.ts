@@ -1,6 +1,6 @@
 export enum Outcome {
-    PASSED = "PASSED",
-    FAILED = "FAILED",
+    Passed = "Passed",
+    Failed = "Failed"
 }
 
 export enum Analysis {

@@ -3,6 +3,7 @@
     import { Accordion } from 'flowbite-svelte';
     import { onMount } from "svelte";
     import TestAccordionItem from "$lib/components/TestAccordionItem.svelte";
+    import { Outcome } from "$lib/consts.js";
 
     let tests: Test[] = []
 
@@ -14,7 +15,7 @@
             let test: Test = {
                 id: rawTest["id"],
                 summary: rawTest["summary"],
-                outcome: rawTest["outcome"],
+                outcome: Outcome[rawTest["outcome"]],
                 analysis: rawTest["analysis"],
                 resolution: rawTest["resolution"],
                 doc: rawTest["doc"],
