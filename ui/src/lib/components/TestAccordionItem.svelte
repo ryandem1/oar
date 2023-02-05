@@ -3,7 +3,6 @@
     import OutcomeBadge from "$lib/components/OutcomeBadge.svelte";
     import AnalysisDropdown from "$lib/components/AnalysisDropdown.svelte";
     import type { Test } from "$lib/models";
-    import {Analysis} from "$lib/consts.js";
 
     export let test: Test
 </script>
