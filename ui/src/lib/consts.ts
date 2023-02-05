@@ -13,9 +13,9 @@ export enum Analysis {
 
 export enum Resolution {
     Unresolved = "Unresolved",
-    TicketCreated = "TicketCreated",
-    QuickFix = "QuickFix",
-    KnownIssue = "KnownIssue",
-    TestFixed = "TestFixed",
-    TestDisabled = "TestDisabled"
+    TicketCreated = "Ticket Created",
+    QuickFix = "Quick Fix",
+    KnownIssue = "Known Issue",
+    TestFixed = "Test Fixed",
+    TestDisabled = "Test Disabled"
 }

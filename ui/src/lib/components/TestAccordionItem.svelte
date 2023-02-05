@@ -3,6 +3,7 @@
     import OutcomeBadge from "$lib/components/OutcomeBadge.svelte";
     import AnalysisDropdown from "$lib/components/AnalysisDropdown.svelte";
     import type { Test } from "$lib/models";
+    import ResolutionDropdown from "$lib/components/ResolutionDropdown.svelte";
 
     export let test: Test
 </script>
@@ -13,7 +14,7 @@
         <span id="oar">
             <div id="outcome"><OutcomeBadge outcome="{test.outcome}"/></div>
             <AnalysisDropdown analysis={test.analysis}/>
-            Resolution: {test.resolution}
+            <ResolutionDropdown resolution={test.resolution}/>
         </span>
     </span>
     </AccordionItem>

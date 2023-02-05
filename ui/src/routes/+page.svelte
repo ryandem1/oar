@@ -17,7 +17,7 @@
                 summary: rawTest["summary"],
                 outcome: Outcome[rawTest["outcome"]],
                 analysis: Analysis[Object.keys(Analysis).find(key => key === rawTest["analysis"])],
-                resolution: Resolution[rawTest["resolution"]],
+                resolution: Resolution[Object.keys(Resolution).find(key => key === rawTest["resolution"])],
                 doc: rawTest["doc"],
             }
             tests = [...tests, test]
