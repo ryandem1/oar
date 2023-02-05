@@ -24,8 +24,8 @@
     })
 </script>
 
-<div class="p-8">
-    <TestTable tests={tests}/>
+<div class="p-8 h-max">
+    <TestTable divClass="overflow-x-auto h-max" tests={tests}/>
 </div>
 
 <style>

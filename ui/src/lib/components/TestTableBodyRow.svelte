@@ -16,5 +16,5 @@
     <TableBodyCell><OutcomeBadge outcome={test.outcome}/></TableBodyCell>
     <TableBodyCell><AnalysisDropdown analysis={test.analysis}/></TableBodyCell>
     <TableBodyCell><ResolutionDropdown resolution={test.resolution}/></TableBodyCell>
-    <TableBodyCell><Button>Enrich</Button></TableBodyCell>
+    <TableBodyCell><Button color="light" pill={true}>Enrich</Button></TableBodyCell>
 </TableBodyRow>

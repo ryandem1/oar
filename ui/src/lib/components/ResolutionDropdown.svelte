@@ -6,7 +6,7 @@
     let dropdownOpen = false
 </script>
 
-<Button><Chevron>{resolution}</Chevron></Button>
+<Button color="light" pill={true}><Chevron>{resolution}</Chevron></Button>
 <Dropdown bind:open={dropdownOpen}>
     {#each Object.keys(Resolution) as option}
         <DropdownItem on:click={() => {dropdownOpen = false; resolution = Resolution[option]}}>

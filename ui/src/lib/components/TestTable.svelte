@@ -4,9 +4,10 @@
     import TestTableBodyRow from "$lib/components/TestTableBodyRow.svelte";
 
     export let tests: Test[]
+    export let divClass: string
 </script>
 
-<Table striped={true} hoverable={true} shadow={true} style="border:1px solid rgba(54, 127, 242, 0.4);">
+<Table divClass={divClass} striped={true} hoverable={true} shadow={true} style="border:1px solid rgba(54, 127, 242, 0.4);">
     <TableHead>
         <TableHeadCell><p style="color: white">Summary</p></TableHeadCell>
         <TableHeadCell><p style="color: white">Outcome</p></TableHeadCell>
