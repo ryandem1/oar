@@ -27,3 +27,9 @@
 <div class="p-8">
     <TestTable tests={tests}/>
 </div>
+
+<style>
+    :global(body) {
+        background-color: rgba(54, 127, 211, 0.3)
+    }
+</style>
