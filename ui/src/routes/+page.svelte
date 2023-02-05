@@ -3,7 +3,7 @@
     import {onMount} from "svelte";
     import {Analysis, Outcome, Resolution} from "$lib/consts.js";
     import TestTable from "$lib/components/TestTable.svelte";
-    import OarNavbar from "$lib/components/OarNavbar.svelte";
+    import OarFilterbar from "$lib/components/OarFilterbar.svelte";
 
     let tests: Test[] = []
 
@@ -26,7 +26,8 @@
 </script>
 
 <div class="p-8 h-max">
-    <OarNavbar/>
+    <OarFilterbar/>
+    <br/>
     <TestTable divClass="overflow-x-auto h-max" tests={tests}/>
 </div>
 
