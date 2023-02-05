@@ -4,6 +4,7 @@
     import { onMount } from "svelte";
     import TestAccordionItem from "$lib/components/TestAccordionItem.svelte";
     import { Outcome, Analysis, Resolution } from "$lib/consts.js";
+    import TestTable from "$lib/components/TestTable.svelte";
 
     let tests: Test[] = []
 
@@ -26,9 +27,5 @@
 </script>
 
 <div class="p-8">
-    <Accordion>
-        {#each tests as test}
-            <TestAccordionItem test={test}/>
-        {/each}
-    </Accordion>
+    <TestTable tests={tests}/>
 </div>
