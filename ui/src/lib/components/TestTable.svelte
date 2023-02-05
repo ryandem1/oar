@@ -6,7 +6,7 @@
     export let tests: Test[]
 </script>
 
-<Table>
+<Table hoverable={true}>
     <TableHead>
         <TableHeadCell>Summary</TableHeadCell>
         <TableHeadCell>Outcome</TableHeadCell>
@@ -14,10 +14,8 @@
         <TableHeadCell>Resolution</TableHeadCell>
     </TableHead>
     <TableBody>
-        <TableBody>
-            {#each tests as test}
-            <TestTableBodyRow test={test}/>
-            {/each}
-        </TableBody>
+        {#each tests as test}
+        <TestTableBodyRow test={test}/>
+        {/each}
     </TableBody>
 </Table>
