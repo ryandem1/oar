@@ -1,9 +1,7 @@
 <script lang="ts">
-    import type { Test } from "$lib/models";
-    import { Accordion } from 'flowbite-svelte';
-    import { onMount } from "svelte";
-    import TestAccordionItem from "$lib/components/TestAccordionItem.svelte";
-    import { Outcome, Analysis, Resolution } from "$lib/consts.js";
+    import type {Test} from "$lib/models";
+    import {onMount} from "svelte";
+    import {Analysis, Outcome, Resolution} from "$lib/consts.js";
     import TestTable from "$lib/components/TestTable.svelte";
 
     let tests: Test[] = []
