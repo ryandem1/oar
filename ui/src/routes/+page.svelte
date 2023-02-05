@@ -30,6 +30,6 @@
 
 <style>
     :global(body) {
-        background-color: rgba(54, 127, 211, 0.3)
+        background-color: rgba(54, 127, 211, 0.6)
     }
 </style>

@@ -3,11 +3,14 @@
     import { Analysis } from "$lib/consts";
 
     export let analysis: Analysis
+    let dropdownOpen = false
 </script>
 
 <Button><Chevron>{analysis}</Chevron></Button>
-<Dropdown>
+<Dropdown bind:open={dropdownOpen}>
     {#each Object.keys(Analysis) as option}
-        <DropdownItem on:click={() => {analysis = Analysis[option]}}>{Analysis[option]}</DropdownItem>
+        <DropdownItem on:click={() => {dropdownOpen = false; analysis = Analysis[option]}}>
+            {Analysis[option]}
+        </DropdownItem>
     {/each}
 </Dropdown>

@@ -6,12 +6,12 @@
     export let tests: Test[]
 </script>
 
-<Table striped={true} hoverable={true} shadow={true} color="default" style="border:1px solid rgba(54, 127, 242, 0.4);">
+<Table striped={true} hoverable={true} shadow={true} style="border:1px solid rgba(54, 127, 242, 0.4);">
     <TableHead>
-        <TableHeadCell>Summary</TableHeadCell>
-        <TableHeadCell>Outcome</TableHeadCell>
-        <TableHeadCell>Analysis</TableHeadCell>
-        <TableHeadCell>Resolution</TableHeadCell>
+        <TableHeadCell><p style="color: white">Summary</p></TableHeadCell>
+        <TableHeadCell><p style="color: white">Outcome</p></TableHeadCell>
+        <TableHeadCell><p style="color: white">Analysis</p></TableHeadCell>
+        <TableHeadCell><p style="color: white">Resolution</p></TableHeadCell>
         <TableHeadCell><span class="sr-only">Enrich</span></TableHeadCell>
     </TableHead>
     <TableBody>
