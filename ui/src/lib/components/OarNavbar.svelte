@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Navbar, NavBrand, NavHamburger, NavUl, NavLi, Chevron, MegaMenu } from 'flowbite-svelte'
+    import {Navbar, NavBrand} from 'flowbite-svelte'
 </script>
 
 <Navbar rounded color="form" let:hidden let:toggle>
