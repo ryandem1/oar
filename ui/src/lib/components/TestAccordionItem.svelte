@@ -1,21 +1,28 @@
 <script lang="ts">
     import { AccordionItem } from 'flowbite-svelte'
     import OutcomeBadge from "$lib/components/OutcomeBadge.svelte";
+    import AnalysisDropdown from "$lib/components/AnalysisDropdown.svelte";
     import type { Test } from "$lib/models";
+    import {Analysis} from "$lib/consts.js";
 
     export let test: Test
 </script>
 
-<AccordionItem>
+<div id="testItem">
+    <AccordionItem>
     <span slot="header">{test.summary}
         <span id="oar">
-            <OutcomeBadge outcome="{test.outcome}"/>
-            Analysis: {test.analysis}
+            <div id="outcome"><OutcomeBadge outcome="{test.outcome}"/></div>
+            <AnalysisDropdown analysis={test.analysis}/>
             Resolution: {test.resolution}
         </span>
     </span>
-</AccordionItem>
+    </AccordionItem>
+</div>
 
 <style>
-
+    #outcome {
+        position: relative;
+        left: 100%;
+    }
 </style>

@@ -4,11 +4,11 @@ export enum Outcome {
 }
 
 export enum Analysis {
-    NotAnalyzed = "NotAnalyzed",
-    TruePositive = "TruePositive",
-    FalsePositive = "FalsePositive",
-    TrueNegative = "TrueNegative",
-    FalseNegative = "FalseNegative"
+    NotAnalyzed = "Not Analyzed",
+    TruePositive = "True Positive",
+    FalsePositive = "False Positive",
+    TrueNegative = "True Negative",
+    FalseNegative = "False Negative"
 }
 
 export enum Resolution {
