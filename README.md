@@ -1,3 +1,5 @@
+![OAR Logo](ui/static/oarLogo.png "OAR Logo")
+
 # The OAR Framework for Software Test Reporting
 
 ## Outcome, Analysis, Resolution
