@@ -78,9 +78,19 @@ func SelectTests(pgPool *pgx.ConnPool, query string, args ...any) ([]*models.Tes
 	if err != nil {
 		return nil, err
 	}
+
 	for rows.Next() {
 		test := &models.Test{}
-		err = rows.Scan(&test.ID, &test.Summary, &test.Outcome, &test.Analysis, &test.Resolution, &test.Doc)
+		err = rows.Scan(
+			&test.ID,
+			&test.Summary,
+			&test.Outcome,
+			&test.Analysis,
+			&test.Resolution,
+			&test.Created,
+			&test.Modified,
+			&test.Doc,
+		)
 		if err != nil {
 			return nil, err
 		}

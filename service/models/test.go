@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"golang.org/x/exp/slices"
 	"strings"
+	"time"
 )
 
 // A Test represents point-in-time information about a test that occurred on a subject.
@@ -19,6 +20,8 @@ type Test struct {
 	Outcome    Outcome        `json:"outcome"`
 	Analysis   Analysis       `json:"analysis"`
 	Resolution Resolution     `json:"resolution"`
+	Created    time.Time      `json:"created"`
+	Modified   time.Time      `json:"modified"`
 	Doc        map[string]any `json:"doc"`
 }
 
