@@ -8,6 +8,9 @@ build:
 service:
 	docker-compose -f docker-compose.yaml -f docker-compose.local.yaml up -d oar-service
 
+test-service:
+	cd service; go test -cover
+
 db:
 	docker-compose -f docker-compose.yaml -f docker-compose.local.yaml up -d oar-postgres
 
