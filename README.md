@@ -80,7 +80,7 @@ implementation myself. This implementation includes:
 - A minimal backend written in Go that handles CRUD test/action operations
 - A Postgres DB that will be used for minimal relational data, more for the impressive BJSON performance. Most test
 results will be schema-less documents.
-- A UI that will provide (WORK IN PROGRESS): 
+- A UI that will provide: 
   - an interface into the real-time test result ledger with a JSON filter.
   - a central place for developers/testers to provide analysis on test results
   - a simple resolution workflow.
@@ -135,12 +135,12 @@ partially structured, partially unstructured data.
 > Because tests get enriched through the OAR process, partial updates are more convenient for applying
 > the updates.
 
-> **GET /tests (not super useful at the moment)**  
+> **GET /tests**  
 > This is the primary way to query for tests. It is meant to be a single endpoint to query tests by both their structured
 > and unstructured parts.
 > 
 > It uses [JSON Path](https://support.smartbear.com/alertsite/docs/monitors/api/endpoint/jsonpath.html) to query tests
-> by their ``doc`` attributes. (NOT IMPLEMENTED)
+> by their ``doc`` attributes.
 
 > **DELETE /tests**  
 > Can batch delete tests by IDs.
