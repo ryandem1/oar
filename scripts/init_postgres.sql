@@ -1,3 +1,9 @@
+/*
+Will initialize the needed table in postgres for the OAR app to function. This is the primary staging place for test
+results. If desired, Snowflake is a good place to store test data for archiving/analysis; in this case, data should be
+periodically transferred over to Snowflake.
+*/
+
 create table if not exists OAR_TESTS
 (
     id         bigserial
@@ -13,7 +19,7 @@ create table if not exists OAR_TESTS
     constraint outcome
         check (outcome in ('Passed', 'Failed')),
     constraint resolution
-        check (resolution in ('Unresolved', 'TicketCreated', 'QuickFix', 'KnownIssue', 'TestFixed', 'TestDisabled'))
+        check (resolution in ('Unresolved', 'NotNeeded', 'TicketCreated', 'QuickFix', 'KnownIssue', 'TestFixed', 'TestDisabled'))
 );
 
 comment on table OAR_TESTS is 'tests is the core test ledger where results will be stored. Contains both structured test data and unstructured data that will be stored in BJSON';
