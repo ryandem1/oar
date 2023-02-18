@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"github.com/jackc/pgx"
 	"github.com/jackc/pgx/pgtype"
@@ -20,6 +21,10 @@ type PGConfig struct {
 
 // NewPGPool will establish a new connection with postgres and return a pointer to a  connection pool
 func NewPGPool(config *PGConfig) (*pgx.ConnPool, error) {
+	if config.PoolSize < 1 {
+		return nil, errors.New("cannot create a pgx pool with a size of 0")
+	}
+
 	pgConnConfig := pgx.ConnConfig{
 		Host:     config.Host,
 		Port:     config.Port,
