@@ -23,6 +23,11 @@ func (fake *Faker) integer(min int, max int) int {
 	return min + rand.Intn(max-min)
 }
 
+// func testID will return a random test ID
+func (fake *Faker) testID() uint64 {
+	return uint64(fake.integer(1, 1000000))
+}
+
 // testSummary will return a random test summary
 func (fake *Faker) testSummary() string {
 	summaries := []string{
@@ -154,7 +159,7 @@ func (fake *Faker) test() *Test {
 	resolution := fake.testResolution()
 
 	test := &Test{
-		ID:         uint64(fake.integer(1, 1000000)),
+		ID:         fake.testID(),
 		Summary:    fake.testSummary(),
 		Outcome:    outcome,
 		Analysis:   analysis,

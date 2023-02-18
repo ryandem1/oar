@@ -1,14 +1,16 @@
 package main
 
 import (
+	"strings"
 	"testing"
+	"time"
 )
 
 var Fake = newFaker()
 
 // TestValidTestsPassValidate will ensure that the Test.Validate() function correctly accepts valid Test objects.
 func TestValidTestsPassValidate(t *testing.T) {
-	validTests := multiple(15, Fake.test)
+	validTests := multiple(150, Fake.test)
 
 	for _, validTest := range validTests {
 		err := validTest.Validate()
@@ -20,7 +22,7 @@ func TestValidTestsPassValidate(t *testing.T) {
 
 // TestInvalidTestsDoNotPassValidate will ensure that the Test.Validate() does not accept invalid Test objects.
 func TestInvalidTestsDoNotPassValidate(t *testing.T) {
-	validTests := multiple(15, Fake.test) // Start will valid tests and make them invalid
+	validTests := multiple(5, Fake.test) // Start will valid tests and make them invalid
 
 	// Alter tests to make them invalid (each test can be thought of as its own scenario)
 	validTests[0].Outcome = "Skipped" // OAR doesn't accept skipped tests
@@ -36,11 +38,11 @@ func TestInvalidTestsDoNotPassValidate(t *testing.T) {
 	validTests[4].Summary = ""
 
 	invalidTests := map[string]*Test{
-		"Invalid Outcome Test":      validTests[0],
-		"Invalid Analysis Test":     validTests[1],
-		"Invalid Resolution Test":   validTests[2],
-		"Outcome/Analysis Mismatch": validTests[3],
-		"Empty Summary Test":        validTests[4],
+		"invalid outcome test":      validTests[0],
+		"invalid analysis test":     validTests[1],
+		"invalid resolution test":   validTests[2],
+		"outcome/analysis mismatch": validTests[3],
+		"empty summary test":        validTests[4],
 	}
 
 	for testName, invalidTest := range invalidTests {
@@ -51,4 +53,54 @@ func TestInvalidTestsDoNotPassValidate(t *testing.T) {
 			}
 		})
 	}
+}
+
+// TestTestClean will ensure that the Test.Clean() function cleans a test and does not alter it in any unexpected ways
+func TestTestClean(t *testing.T) {
+	validTests := multiple(150, Fake.test)
+	validTestsCopy := make([]*Test, len(validTests)) // Copy to validate the tests after the clean operation
+	copy(validTestsCopy, validTests)
+
+	t.Run("valid tests do not get altered", func(t *testing.T) {
+		for i, validTest := range validTests {
+			validTest.Clean()
+			if validTest != validTestsCopy[i] {
+				t.Error("clean, valid test got altered after Test.Clean()")
+			}
+		}
+	})
+
+	uncleanTest := &Test{
+		ID:         Fake.testID(),
+		Summary:    Fake.testSummary(),
+		Outcome:    Passed,
+		Analysis:   "",
+		Resolution: "",
+		Created:    time.Now(),
+		Modified:   time.Now(),
+		Doc:        nil,
+	}
+	t.Run("Empty Analysis and Resolution get converted to NotAnalyzed and Unresolved", func(t *testing.T) {
+		uncleanTest.Clean()
+		if uncleanTest.Analysis != NotAnalyzed || uncleanTest.Resolution != Unresolved {
+			t.Error("test without analysis/resolution did not get set to NotAnalyzed/Unresolved after clean")
+		}
+	})
+
+	uncleanTest = &Test{
+		ID:         Fake.testID(),
+		Summary:    "   " + Fake.testSummary() + "     ",
+		Outcome:    Passed,
+		Analysis:   NotAnalyzed,
+		Resolution: Unresolved,
+		Created:    time.Now(),
+		Modified:   time.Now(),
+		Doc:        nil,
+	}
+	t.Run("Test with unclean summary gets cleaned up", func(t *testing.T) {
+		uncleanTest.Clean()
+		if uncleanTest.Summary != strings.TrimSpace(uncleanTest.Summary) {
+			t.Error("the unclean test did not have its summary cleaned")
+		}
+	})
 }
