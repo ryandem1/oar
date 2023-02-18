@@ -48,7 +48,7 @@ func (t *Test) Validate() error {
 		return fmt.Errorf("invalid analysis: '%s', must be one of analyses: %s", t.Analysis, validAnalyses)
 	}
 
-	validResolutions := []Resolution{Unresolved, TicketCreated, QuickFix, KnownIssue, TestFixed, TestDisabled}
+	validResolutions := []Resolution{Unresolved, NotNeeded, TicketCreated, QuickFix, KnownIssue, TestFixed, TestDisabled}
 	if !slices.Contains(validResolutions, t.Resolution) {
 		return fmt.Errorf(
 			"invalid resolution: '%s', must be one of resultions: %s",
