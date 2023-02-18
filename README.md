@@ -1,4 +1,4 @@
-![OAR Logo](static/oarLogo.png "OAR Logo") ![OAR Logo](static/oarLogo.png "OAR Logo") ![OAR Logo](static/oarLogo.png "OAR Logo") ![OAR Logo](static/oarLogo.png "OAR Logo") ![OAR Logo](static/oarLogo.png "OAR Logo") ![OAR Logo](static/oarLogo.png "OAR Logo") ![OAR Logo](static/oarLogo.png "OAR Logo")
+![OAR Logo](static/oarLogo.png "OAR Logo") ![OAR Logo](static/oarLogo.png "OAR Logo") ![OAR Logo](static/oarLogo.png "OAR Logo") ![OAR Logo](static/oarLogo.png "OAR Logo")
 
 # The OAR Framework for Software Test Reporting
 
