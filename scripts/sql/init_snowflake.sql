@@ -1,6 +1,6 @@
 /*
 Initializes a Snowflake table, this is designed to be a space for test data archive/analysis. It should not be used as
-the first place for test data, as Snowflake is crazy expensive.
+the first place for test data, as it is not designed for that and Snowflake is crazy expensive.
 */
 
 create table if not exists OAR_TESTS
@@ -12,6 +12,8 @@ create table if not exists OAR_TESTS
     outcome    varchar(6)  not null,
     analysis   varchar(13) not null,
     resolution varchar(20) not null,
+    created    timestamp   not null,
+    modified   timestamp   not null,
     doc        variant
 );
 
