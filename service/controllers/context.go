@@ -1,5 +1,5 @@
-// Package utils Package helpers context contains Gin context helpers
-package utils
+// Package controllers contains Gin context helpers
+package controllers
 
 import (
 	"bytes"
