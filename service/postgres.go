@@ -1,14 +1,49 @@
-package drivers
+package main
 
 import (
 	"fmt"
 	"github.com/jackc/pgx"
 	"github.com/jackc/pgx/pgtype"
-	"github.com/ryandem1/oar/models"
+	"time"
 )
 
+type PGConfig struct {
+	Host        string        `mapstructure:"HOST"`
+	Port        uint16        `mapstructure:"PORT"`
+	DB          string        `mapstructure:"DB"`
+	User        string        `mapstructure:"USER"`
+	Pass        string        `mapstructure:"PASS"`
+	LogLevel    pgx.LogLevel  `mapstructure:"LL"`
+	PoolSize    int           `mapstructure:"POOL_SIZE"`
+	PollTimeout time.Duration `mapstructure:"POOL_TIMEOUT"`
+}
+
+// NewPGPool will establish a new connection with postgres and return a pointer to a  connection pool
+func NewPGPool(config *PGConfig) (*pgx.ConnPool, error) {
+	pgConnConfig := pgx.ConnConfig{
+		Host:     config.Host,
+		Port:     config.Port,
+		Database: config.DB,
+		User:     config.User,
+		Password: config.Pass,
+		LogLevel: config.LogLevel,
+	}
+	pgConnPoolConfig := pgx.ConnPoolConfig{
+		ConnConfig:     pgConnConfig,
+		MaxConnections: config.PoolSize,
+		AfterConnect:   nil,
+		AcquireTimeout: config.PollTimeout,
+	}
+	pgPool, err := pgx.NewConnPool(pgConnPoolConfig)
+	if err != nil {
+		return nil, err
+	}
+
+	return pgPool, nil
+}
+
 // InsertTest will insert a new models.Test object into the postgres DB
-func InsertTest(pgPool *pgx.ConnPool, test *models.Test) error {
+func InsertTest(pgPool *pgx.ConnPool, test *Test) error {
 	conn, err := pgPool.Acquire()
 	if err != nil {
 		return err
@@ -34,7 +69,7 @@ func InsertTest(pgPool *pgx.ConnPool, test *models.Test) error {
 }
 
 // UpdateTest will update an existing test in the postgres DB by ID
-func UpdateTest(pgPool *pgx.ConnPool, test *models.Test) error {
+func UpdateTest(pgPool *pgx.ConnPool, test *Test) error {
 	conn, err := pgPool.Acquire()
 	if err != nil {
 		return err
@@ -66,13 +101,13 @@ func UpdateTest(pgPool *pgx.ConnPool, test *models.Test) error {
 // SelectTests will take in a query that returns rows that are in the models.Test schema, deserialize them, and return
 // pointers to the models.
 // args will be passed down to Conn.query
-func SelectTests(pgPool *pgx.ConnPool, query string, args ...any) ([]*models.Test, error) {
+func SelectTests(pgPool *pgx.ConnPool, query string, args ...any) ([]*Test, error) {
 	conn, err := pgPool.Acquire()
 	if err != nil {
 		return nil, err
 	}
 	defer pgPool.Release(conn)
-	var tests []*models.Test
+	var tests []*Test
 
 	rows, err := conn.Query(query, args...)
 	if err != nil {
@@ -80,7 +115,7 @@ func SelectTests(pgPool *pgx.ConnPool, query string, args ...any) ([]*models.Tes
 	}
 
 	for rows.Next() {
-		test := &models.Test{}
+		test := &Test{}
 		err = rows.Scan(
 			&test.ID,
 			&test.Summary,

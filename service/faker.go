@@ -1,8 +1,7 @@
-package tests
+package main
 
 import (
 	"fmt"
-	"github.com/ryandem1/oar/models"
 	"math/rand"
 	"time"
 )
@@ -41,10 +40,10 @@ func (fake *Faker) testSummary() string {
 }
 
 // testOutcome will return a random test outcome
-func (fake *Faker) testOutcome() models.Outcome {
-	outcomes := []models.Outcome{
-		models.Passed,
-		models.Failed,
+func (fake *Faker) testOutcome() Outcome {
+	outcomes := []Outcome{
+		Passed,
+		Failed,
 	}
 	outcome := outcomes[fake.integer(0, len(outcomes))]
 	return outcome
@@ -52,28 +51,28 @@ func (fake *Faker) testOutcome() models.Outcome {
 
 // testAnalysis will return a random test analysis. Takes in an outcome, because valid analyses vary based on the
 // outcome of the test. Pass in a nil outcome to get any random testAnalysis
-func (fake *Faker) testAnalysis(outcome *models.Outcome) models.Analysis {
-	var validAnalyses []models.Analysis
+func (fake *Faker) testAnalysis(outcome *Outcome) Analysis {
+	var validAnalyses []Analysis
 
-	if *outcome == models.Passed {
-		validAnalyses = []models.Analysis{
-			models.NotAnalyzed,
-			models.TrueNegative,
-			models.FalseNegative,
+	if *outcome == Passed {
+		validAnalyses = []Analysis{
+			NotAnalyzed,
+			TrueNegative,
+			FalseNegative,
 		}
-	} else if *outcome == models.Failed {
-		validAnalyses = []models.Analysis{
-			models.NotAnalyzed,
-			models.TruePositive,
-			models.FalsePositive,
+	} else if *outcome == Failed {
+		validAnalyses = []Analysis{
+			NotAnalyzed,
+			TruePositive,
+			FalsePositive,
 		}
 	} else if outcome == nil {
-		validAnalyses = []models.Analysis{
-			models.NotAnalyzed,
-			models.TruePositive,
-			models.FalsePositive,
-			models.TrueNegative,
-			models.FalseNegative,
+		validAnalyses = []Analysis{
+			NotAnalyzed,
+			TruePositive,
+			FalsePositive,
+			TrueNegative,
+			FalseNegative,
 		}
 	} else {
 		panic(fmt.Errorf("error with testAnalysis parameter, must be a valid outcome or nil! Got %s", *outcome))
@@ -83,15 +82,15 @@ func (fake *Faker) testAnalysis(outcome *models.Outcome) models.Analysis {
 }
 
 // testResolution will return a random test resolution
-func (fake *Faker) testResolution() models.Resolution {
-	analyses := []models.Resolution{
-		models.Unresolved,
-		models.NotNeeded,
-		models.QuickFix,
-		models.TicketCreated,
-		models.TestFixed,
-		models.TestDisabled,
-		models.KnownIssue,
+func (fake *Faker) testResolution() Resolution {
+	analyses := []Resolution{
+		Unresolved,
+		NotNeeded,
+		QuickFix,
+		TicketCreated,
+		TestFixed,
+		TestDisabled,
+		KnownIssue,
 	}
 	resolution := analyses[fake.integer(0, len(analyses))]
 	return resolution
@@ -149,12 +148,12 @@ func (fake *Faker) testDoc() map[string]any {
 }
 
 // test will generator a random, valid models.Test object and return a pointer to it.
-func (fake *Faker) test() *models.Test {
+func (fake *Faker) test() *Test {
 	outcome := fake.testOutcome()
 	analysis := fake.testAnalysis(&outcome)
 	resolution := fake.testResolution()
 
-	test := &models.Test{
+	test := &Test{
 		ID:         int64(fake.integer(1, 1000000)),
 		Summary:    fake.testSummary(),
 		Outcome:    outcome,

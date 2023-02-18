@@ -1,23 +1,11 @@
-package models
+package main
 
 import (
 	"github.com/jackc/pgx"
 	"github.com/spf13/viper"
 	"log"
 	"strings"
-	"time"
 )
-
-type PGConfig struct {
-	Host        string        `mapstructure:"HOST"`
-	Port        uint16        `mapstructure:"PORT"`
-	DB          string        `mapstructure:"DB"`
-	User        string        `mapstructure:"USER"`
-	Pass        string        `mapstructure:"PASS"`
-	LogLevel    pgx.LogLevel  `mapstructure:"LL"`
-	PoolSize    int           `mapstructure:"POOL_SIZE"`
-	PollTimeout time.Duration `mapstructure:"POOL_TIMEOUT"`
-}
 
 type Config struct {
 	PG *PGConfig

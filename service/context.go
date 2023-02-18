@@ -1,12 +1,11 @@
 // Package controllers contains Gin context helpers
-package controllers
+package main
 
 import (
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/ryandem1/oar/models"
 	"golang.org/x/exp/slices"
 	"io"
 	"strings"
@@ -24,8 +23,8 @@ func CopyRequestBody(c *gin.Context) ([]byte, error) {
 // test, then the second bind will deserialize any dynamic attributes into a models.Test's Doc. Will return a pointer
 // to the fully-bound models.Test object and any potential errors that occurred during the process. Note that it will
 // not be validated or cleaned.
-func DoubleBindTest(c *gin.Context) (*models.Test, error) {
-	test := &models.Test{}
+func DoubleBindTest(c *gin.Context) (*Test, error) {
+	test := &Test{}
 
 	// We must copy our request body for the second unmarshal because the bind operation will consume it
 	byteBody, err := CopyRequestBody(c)

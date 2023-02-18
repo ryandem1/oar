@@ -3,24 +3,22 @@ package main
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/ryandem1/oar/controllers"
-	"github.com/ryandem1/oar/drivers"
-	"github.com/ryandem1/oar/models"
 	"log"
+	"net/http"
 	"time"
 )
 
 func main() {
-	config, err := models.NewConfig()
+	config, err := NewConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	pgPool, err := drivers.NewPGPool(config.PG)
+	pgPool, err := NewPGPool(config.PG)
 	if err != nil {
 		log.Fatal(err)
 	}
-	testController := controllers.TestController{DBPool: pgPool}
+	testController := TestController{DBPool: pgPool}
 
 	r := gin.Default()
 	r.Use(cors.New(cors.Config{
@@ -35,7 +33,10 @@ func main() {
 		MaxAge: 12 * time.Hour,
 	}))
 
-	r.GET("/health", controllers.Health)
+	r.GET("/health", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"health": "healthy"})
+		return
+	})
 	r.GET("/tests", testController.GetTests)
 	r.DELETE("/tests", testController.DeleteTests)
 	r.POST("/test", testController.CreateTest)
