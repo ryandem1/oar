@@ -129,7 +129,7 @@ func (tc *TestController) DeleteTests(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
 		return
 	}
-	var testIDsToDelete []int64
+	var testIDsToDelete []uint64
 	for _, testToDelete := range testsToDelete {
 		testIDsToDelete = append(testIDsToDelete, testToDelete.ID)
 	}

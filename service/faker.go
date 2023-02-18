@@ -154,7 +154,7 @@ func (fake *Faker) test() *Test {
 	resolution := fake.testResolution()
 
 	test := &Test{
-		ID:         int64(fake.integer(1, 1000000)),
+		ID:         uint64(fake.integer(1, 1000000)),
 		Summary:    fake.testSummary(),
 		Outcome:    outcome,
 		Analysis:   analysis,
