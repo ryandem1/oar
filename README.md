@@ -1,4 +1,4 @@
-![OAR Logo](ui/static/oarLogo.png "OAR Logo")
+![OAR Logo](static/oarLogo.png "OAR Logo") ![OAR Logo](static/oarLogo.png "OAR Logo") ![OAR Logo](static/oarLogo.png "OAR Logo") ![OAR Logo](static/oarLogo.png "OAR Logo") ![OAR Logo](static/oarLogo.png "OAR Logo") ![OAR Logo](static/oarLogo.png "OAR Logo") ![OAR Logo](static/oarLogo.png "OAR Logo")
 
 # The OAR Framework for Software Test Reporting
 
@@ -19,6 +19,8 @@ over time and tests trust falls. Trust must be preserved in tests and tests must
 
 Here is a paradigm that uses aims to create a positive feedback loop that increases software and test quality, builds 
 trust in tests and software, and promotes active engagement in software quality.
+
+## Methodology
 
 #### Outcome
 We start after a test is performed against a system-under-test and we get a "pass" or "failed" result. This is our
@@ -58,16 +60,14 @@ our testing and our software.
 Okay, more action. The OAR framework aims to improve software/test quality, so there must be action taken depending on the
 analysis results of the tests. Every analysis result (except true negative), must have a resolution. The 
 OAR framework also sets out to streamline the resolutions tests must have:
-
-For True Positives:
 - **Ticket Created**: A bug ticket or feature ticket was created to track the defect's future resolution.
 - **Quick Fix**: The defect was minor and a quick fix was applied that fixed the defect, there is no need to open a ticket.
 - **Known Issue**: A ticket was previously open for the defect and is still pending resolution
-
-For False Positives or False Negatives:
 - **Test Fixed**: The test that threw the false positive/negative was fixed and can now work as expected. 
 - **Test Disabled**: The test/part of the test that threw the false positive/negative was disabled. Possibly indicating faulty 
 test design to begin with, lack of maintenance, or too narrow/broad of a check.
+- **Unresolved**: The test has not been resolved yet and needs a resolution
+- **Not Needed**: The test does not need a resolution. Most likely because it is a True Negative, no further action is needed.
 
 By sticking to these definitions, the team is sticking to actionability and testing stakeholders are actively engaged in
 software quality.
@@ -77,14 +77,11 @@ software quality.
 While the OAR framework does not have to necessarily be tied to any one specific implementation, I set out to make an 
 implementation myself. This implementation includes:
 
-- A minimal backend written in Go that handles CRUD test/action operations
+- A minimal backend written in Go that handles CUD test/action operations
 - A Postgres DB that will be used for minimal relational data, more for the impressive BJSON performance. Most test
 results will be schema-less documents.
-- A UI that will provide: 
-  - an interface into the real-time test result ledger with a JSON filter.
-  - a central place for developers/testers to provide analysis on test results
-  - a simple resolution workflow.
 
+The 
 The hope is that test results have streamlined actionability and triaging software quality issues becomes engaging to all. 
 
 ### Concepts
@@ -118,9 +115,9 @@ phase. This can include information like ticket number/comments/trace links.
 
 #### Service
 
-The backend is quite simple, it is there to provide an interface for the CRUD test operations. It also has endpoints to 
+The backend is quite simple, it is there to provide an interface for the CUD test operations. It also has endpoints to 
 facilitate test enrichment in the analysis/resolution phases. It connects to a Postgres database and stores tests as 
-partially structured, partially unstructured data. 
+partially structured, partially unstructured data.
 
 > **POST /test**  
 > Sending a post request to the ``/test`` endpoint will create a new test result. The fields:
@@ -135,12 +132,15 @@ partially structured, partially unstructured data.
 > Because tests get enriched through the OAR process, partial updates are more convenient for applying
 > the updates.
 
-> **GET /tests**  
-> This is the primary way to query for tests. It is meant to be a single endpoint to query tests by both their structured
-> and unstructured parts.
-> 
-> It uses [JSON Path](https://support.smartbear.com/alertsite/docs/monitors/api/endpoint/jsonpath.html) to query tests
-> by their ``doc`` attributes.
-
 > **DELETE /tests**  
 > Can batch delete tests by IDs.
+
+
+### Insights
+Once the tests have been staged in the Postgres table, the idea is to query/analyze your results to gather insights.
+
+Some helpful common measurements to track will be:
+
+- Accuracy = ``(TruePositives + TrueNegatives) / (TruePositives + TrueNegatives + FalsePositives + FalseNegatives) ``
+- Precision = ``TruePositives / (TruePositives + FalsePositives)``
+- Recall = ``TruePositives / (TruePositives + FalseNegatives)``

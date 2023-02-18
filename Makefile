@@ -14,8 +14,5 @@ test-service:
 db:
 	docker-compose -f docker-compose.yaml -f docker-compose.local.yaml up -d oar-postgres
 
-ui:
-	cd ui; npm run dev
 
-
-.PHONY: service ui
+.PHONY: service
