@@ -8,7 +8,8 @@ import (
 	"time"
 )
 
-// TestTestController_CreateTest will
+// TestTestController_CreateTest will ensure that the CreateTest controller accepts valid Test objects and does not
+// accept invalid tests
 func TestTestController_CreateTest(t *testing.T) {
 	controller := Fake.testController()
 
@@ -62,7 +63,7 @@ func TestTestController_CreateTest(t *testing.T) {
 			Summary:    "    ",
 			Outcome:    outcome,
 			Analysis:   analysis,
-			Resolution: "Some resoltuion",
+			Resolution: "Some resolution",
 			Created:    time.Now(),
 			Modified:   time.Now(),
 			Doc:        nil,
