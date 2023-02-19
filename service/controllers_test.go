@@ -7,7 +7,6 @@ import (
 	"github.com/jackc/pgx"
 	"github.com/magiconair/properties/assert"
 	"net/http"
-	"net/http/httptest"
 	"testing"
 	"time"
 )
@@ -118,8 +117,7 @@ func TestTestController_DeleteTests(t *testing.T) {
 			t.Error("setup error", err)
 		}
 
-		w := httptest.NewRecorder()
-		c, _ := gin.CreateTestContext(w)
+		c, w := Fake.ginContext()
 
 		c.Request = req
 		controller.DeleteTests(c)
@@ -139,6 +137,27 @@ func TestTestController_DeleteTests(t *testing.T) {
 		controller.DeleteTests(c)
 
 		assert.Equal(t, w.Code, 200)
+	})
+
+	t.Run("delete with just ids", func(t *testing.T) {
+		body := []uint64{testID, testID2}
+
+		jsonValue, err = json.Marshal(body)
+		if err != nil {
+			t.Error("setup error", err)
+		}
+
+		req, err := http.NewRequest(http.MethodDelete, "/tests", bytes.NewBuffer(jsonValue))
+		if err != nil {
+			t.Error("setup error", err)
+		}
+
+		c, w := Fake.ginContext()
+
+		c.Request = req
+		controller.DeleteTests(c)
+
+		assert.Equal(t, w.Code, 400)
 	})
 }
 

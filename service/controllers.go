@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx"
 	"net/http"
@@ -56,19 +55,6 @@ func (tc *TestController) PatchTest(c *gin.Context) {
 	tests, err := SelectTests(tc.DBPool, "SELECT * FROM OAR_TESTS WHERE id=$1", testPatch.ID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
-		return
-	}
-	if len(tests) < 1 {
-		c.JSON(
-			http.StatusBadRequest,
-			ConvertErrToGinH(fmt.Errorf("cannot update, testPatch with ID: %d does not exist", testPatch.ID)),
-		)
-		return
-	} else if len(tests) > 1 {
-		c.JSON(
-			http.StatusInternalServerError,
-			ConvertErrToGinH(fmt.Errorf("found >1 testPatch with ID: %d, data is corrupted", testPatch.ID)),
-		)
 		return
 	}
 

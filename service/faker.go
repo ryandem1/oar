@@ -84,14 +84,6 @@ func (fake *Faker) testAnalysis(outcome *Outcome) Analysis {
 			TruePositive,
 			FalsePositive,
 		}
-	} else if outcome == nil {
-		validAnalyses = []Analysis{
-			NotAnalyzed,
-			TruePositive,
-			FalsePositive,
-			TrueNegative,
-			FalseNegative,
-		}
 	} else {
 		panic(fmt.Errorf("error with testAnalysis parameter, must be a valid outcome or nil! Got %s", *outcome))
 	}
