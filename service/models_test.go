@@ -102,3 +102,24 @@ func TestTestClean(t *testing.T) {
 		}
 	})
 }
+
+// TestTest_Equal ensures that Test.Equal correctly identifies tests that are equal or not
+func TestTest_Equal(t *testing.T) {
+	t.Run("identical tests should be equal", func(t *testing.T) {
+		test := Fake.test()
+		copiedTest := test
+
+		if !test.Equal(copiedTest) {
+			t.Error("identical tests were marked as not equal")
+		}
+	})
+
+	t.Run("different tests should be marked unequal", func(t *testing.T) {
+		test := Fake.test()
+		comparedTest := Fake.test()
+
+		if test.Equal(comparedTest) {
+			t.Error("different tests were marked equal")
+		}
+	})
+}
