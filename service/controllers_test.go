@@ -72,6 +72,18 @@ func TestTestController_CreateTest(t *testing.T) {
 			Modified:   time.Now(),
 			Doc:        nil,
 		},
+		"doc field defined": {
+			ID:         Fake.testID(),
+			Summary:    Fake.testSummary(),
+			Outcome:    outcome,
+			Analysis:   analysis,
+			Resolution: Fake.testResolution(),
+			Created:    time.Now(),
+			Modified:   time.Now(),
+			Doc: map[string]any{
+				"doc": "something",
+			},
+		},
 	}
 	for scenario, invalidTest := range invalidTests {
 		t.Run(scenario, func(t *testing.T) {
