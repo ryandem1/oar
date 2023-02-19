@@ -199,6 +199,11 @@ func TestUpdateTest(t *testing.T) {
 				"test left merge field": []any{"some", "list", "of", "values"},
 			},
 		},
+		"doc value update": {
+			Doc: map[string]any{
+				"test left merge field": "different value, different type",
+			},
+		},
 	}
 
 	for scenario, testPatch := range testPatches {
@@ -220,4 +225,21 @@ func TestUpdateTest(t *testing.T) {
 			}
 		})
 	}
+
+	t.Run("Test test must be valid to be updated", func(t *testing.T) {
+		test.Summary = ""
+
+		err = UpdateTest(pgPool, test)
+		if err == nil {
+			t.Error("invalid test did not throw error")
+		}
+		tests, err = SelectTests(pgPool, "select * from oar_tests where id=$1", test.ID)
+		if err != nil {
+			t.Error("setup error", err)
+		}
+		updatedTest := tests[0]
+		if test.Equal(updatedTest) {
+			t.Error("test got updated with invalid data")
+		}
+	})
 }

@@ -102,10 +102,10 @@ func (t *Test) Merge(testPatch *Test) {
 // Equal will deeply check the comparedTest against the current instance of the test and return a bool if the test is
 // equal in values. Does not check timestamps
 func (t *Test) Equal(comparedTest *Test) bool {
-	oarDetailsAreEqual := t.ID == comparedTest.ID ||
-		t.Summary == comparedTest.Summary ||
-		t.Outcome == comparedTest.Outcome ||
-		t.Analysis == comparedTest.Analysis ||
+	oarDetailsAreEqual := t.ID == comparedTest.ID &&
+		t.Summary == comparedTest.Summary &&
+		t.Outcome == comparedTest.Outcome &&
+		t.Analysis == comparedTest.Analysis &&
 		t.Resolution == comparedTest.Resolution
 
 	if !oarDetailsAreEqual {
