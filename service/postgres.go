@@ -48,20 +48,20 @@ func NewPGPool(config *PGConfig) (*pgx.ConnPool, error) {
 }
 
 // InsertTest will insert a new models.Test object into the postgres DB
-func InsertTest(pgPool *pgx.ConnPool, test *Test) error {
+func InsertTest(pgPool *pgx.ConnPool, test *Test) (uint64, error) {
 	conn, err := pgPool.Acquire()
 	if err != nil {
-		return err
+		return 0, err
 	}
 	defer pgPool.Release(conn)
 
 	err = test.Validate()
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	exec, err := conn.Exec(
-		"INSERT INTO OAR_TESTS (summary, outcome, analysis, resolution, doc) VALUES ($1, $2, $3, $4, $5)",
+	row := conn.QueryRow(
+		"insert into oar_tests (summary, outcome, analysis, resolution, doc) values ($1, $2, $3, $4, $5) returning id",
 		test.Summary,
 		test.Outcome,
 		test.Analysis,
@@ -69,13 +69,16 @@ func InsertTest(pgPool *pgx.ConnPool, test *Test) error {
 		test.Doc,
 	)
 	if err != nil {
-		return err
-	}
-	if exec.RowsAffected() != 1 {
-		return fmt.Errorf("rows affected: %d != 1", exec.RowsAffected())
+		return 0, err
 	}
 
-	return nil
+	var createdID uint64
+	err = row.Scan(&createdID)
+	if err != nil {
+		return 0, err
+	}
+
+	return createdID, nil
 }
 
 // UpdateTest will update an existing test in the postgres DB by ID

@@ -73,7 +73,7 @@ func TestSelectCreateTests(t *testing.T) {
 	validTests := multiple(amountOfTests, Fake.test)
 
 	for _, validTest := range validTests {
-		err := InsertTest(pgPool, validTest)
+		_, err := InsertTest(pgPool, validTest)
 		if err != nil {
 			t.Error("error during data setup", err)
 		}
@@ -106,7 +106,7 @@ func TestDeleteTests(t *testing.T) {
 	validTests := multiple(amountOfTests, Fake.test)
 
 	for _, validTest := range validTests {
-		err := InsertTest(pgPool, validTest)
+		_, err := InsertTest(pgPool, validTest)
 		if err != nil {
 			t.Error("error during data setup", err)
 		}
@@ -148,11 +148,11 @@ func TestUpdateTest(t *testing.T) {
 	validTest := Fake.test()
 
 	pgPool := Fake.pgPool()
-	err := InsertTest(pgPool, validTest)
+	testID, err := InsertTest(pgPool, validTest)
 	if err != nil {
 		t.Error("setup error", err)
 	}
-	tests, err := SelectTests(pgPool, "select * from oar_tests order by created desc limit 1")
+	tests, err := SelectTests(pgPool, "select * from oar_tests where id=$1", testID)
 	if err != nil {
 		t.Error("setup error", err)
 	}

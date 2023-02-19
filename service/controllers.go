@@ -37,13 +37,13 @@ func (tc *TestController) CreateTest(c *gin.Context) {
 		return
 	}
 
-	err = InsertTest(tc.DBPool, test)
+	testID, err := InsertTest(tc.DBPool, test)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
 		return
 	}
 
-	c.Status(http.StatusCreated)
+	c.JSON(http.StatusCreated, testID)
 }
 
 // PatchTest will perform a patch (partial update) operation on an existing test if it exists. Because of the nature of

@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx"
 	"math/rand"
+	"net/http"
 	"net/http/httptest"
 	"time"
 )
@@ -200,6 +203,40 @@ func (fake *Faker) pgPool() *pgx.ConnPool {
 		panic(err)
 	}
 	return pgPool
+}
+
+// testController will return a fake TestController with a pgPool connection
+func (fake *Faker) testController() *TestController {
+	controller := &TestController{DBPool: fake.pgPool()}
+	return controller
+}
+
+// testRequest will return a fake Test http.Request that can be sent through a testController
+func (fake *Faker) testRequest(method string) *http.Request {
+	test := fake.test()
+	body := gin.H{
+		"summary":    test.Summary,
+		"outcome":    test.Outcome,
+		"analysis":   test.Analysis,
+		"resolution": test.Resolution,
+	}
+
+	// Right-merges doc
+	if test.Doc != nil && len(test.Doc) > 0 {
+		for k, v := range test.Doc {
+			body[k] = v
+		}
+	}
+
+	jsonValue, err := json.Marshal(body)
+	if err != nil {
+		panic(err)
+	}
+	req, err := http.NewRequest(method, "/test", bytes.NewBuffer(jsonValue))
+	if err != nil {
+		panic(err)
+	}
+	return req
 }
 
 // multiple will call a specific fakeMethod function n times and return the results as a slice
