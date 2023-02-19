@@ -55,6 +55,11 @@ func InsertTest(pgPool *pgx.ConnPool, test *Test) error {
 	}
 	defer pgPool.Release(conn)
 
+	err = test.Validate()
+	if err != nil {
+		return err
+	}
+
 	exec, err := conn.Exec(
 		"INSERT INTO OAR_TESTS (summary, outcome, analysis, resolution, doc) VALUES ($1, $2, $3, $4, $5)",
 		test.Summary,
@@ -81,9 +86,11 @@ func UpdateTest(pgPool *pgx.ConnPool, test *Test) error {
 	}
 	defer pgPool.Release(conn)
 
+	err = test.Validate()
 	if err != nil {
 		return err
 	}
+
 	exec, err := conn.Exec(
 		"UPDATE OAR_TESTS SET summary=$1, outcome=$2, analysis=$3, resolution=$4, doc=$5 WHERE id=$6",
 		test.Summary,

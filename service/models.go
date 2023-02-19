@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/google/go-cmp/cmp"
 	"golang.org/x/exp/slices"
 	"strings"
 	"time"
@@ -74,4 +75,42 @@ func (t *Test) Clean() {
 	if t.Resolution == "" {
 		t.Resolution = Unresolved
 	}
+}
+
+// Merge will right-merge the current test instance with a different instance of a test. All values that are in the test
+// to be merged with will be preferred.
+func (t *Test) Merge(testPatch *Test) {
+	if testPatch.Summary != "" {
+		t.Summary = testPatch.Summary
+	}
+	if testPatch.Outcome != "" {
+		t.Outcome = testPatch.Outcome
+	}
+	if testPatch.Analysis != "" {
+		t.Analysis = testPatch.Analysis
+	}
+	if testPatch.Resolution != "" {
+		t.Resolution = testPatch.Resolution
+	}
+	if testPatch.Doc != nil && len(testPatch.Doc) > 0 {
+		for k, v := range testPatch.Doc {
+			t.Doc[k] = v
+		}
+	}
+}
+
+// Equal will deeply check the comparedTest against the current instance of the test and return a bool if the test is
+// equal in values. Does not check timestamps
+func (t *Test) Equal(comparedTest *Test) bool {
+	oarDetailsAreEqual := t.ID == comparedTest.ID ||
+		t.Summary == comparedTest.Summary ||
+		t.Outcome == comparedTest.Outcome ||
+		t.Analysis == comparedTest.Analysis ||
+		t.Resolution == comparedTest.Resolution
+
+	if !oarDetailsAreEqual {
+		return false
+	}
+
+	return cmp.Equal(t.Doc, comparedTest.Doc)
 }

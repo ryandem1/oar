@@ -83,23 +83,7 @@ func (tc *TestController) PatchTest(c *gin.Context) {
 	}
 
 	test := tests[0]
-	if testPatch.Summary != "" {
-		test.Summary = testPatch.Summary
-	}
-	if testPatch.Outcome != "" {
-		test.Outcome = testPatch.Outcome
-	}
-	if testPatch.Analysis != "" {
-		test.Analysis = testPatch.Analysis
-	}
-	if testPatch.Resolution != "" {
-		test.Resolution = testPatch.Resolution
-	}
-	if testPatch.Doc != nil && len(testPatch.Doc) > 0 {
-		for k, v := range testPatch.Doc {
-			test.Doc[k] = v
-		}
-	}
+	test.Merge(testPatch)
 
 	// Validate after update to ensure testPatch is still okay
 	if err = test.Validate(); err != nil {

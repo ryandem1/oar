@@ -164,3 +164,60 @@ func TestDeleteTests(t *testing.T) {
 		t.Error("consecutive delete call deleted more rows")
 	}
 }
+
+// TestUpdateTest will check that we can update a valid test with valid details and rejects invalid tests.
+func TestUpdateTest(t *testing.T) {
+	validTest := Fake.test()
+
+	pgPool, err := getPoolFromConfig()
+	if err != nil {
+		t.Error("setup error", err)
+	}
+	err = InsertTest(pgPool, validTest)
+	if err != nil {
+		t.Error("setup error", err)
+	}
+	tests, err := SelectTests(pgPool, "select * from oar_tests order by created desc limit 1")
+	if err != nil {
+		t.Error("setup error", err)
+	}
+	test := tests[0]
+
+	outcomeUpdate := Fake.testOutcome()
+	analysisUpdate := Fake.testAnalysis(&outcomeUpdate)
+	resolutionUpdate := Fake.testResolution()
+
+	testPatches := map[string]*Test{
+		"updated oar field": {
+			ID:         test.ID,
+			Outcome:    outcomeUpdate,
+			Analysis:   analysisUpdate,
+			Resolution: resolutionUpdate,
+		},
+		"left merge check": {
+			Doc: map[string]any{
+				"test left merge field": []any{"some", "list", "of", "values"},
+			},
+		},
+	}
+
+	for scenario, testPatch := range testPatches {
+		t.Run(scenario, func(t *testing.T) {
+			test.Merge(testPatch)
+
+			err = UpdateTest(pgPool, test)
+			if err != nil {
+				t.Error(err)
+			}
+
+			tests, err = SelectTests(pgPool, "select * from oar_tests where id=$1", test.ID)
+			if err != nil {
+				t.Error("setup error", err)
+			}
+			updatedTest := tests[0]
+			if !test.Equal(updatedTest) {
+				t.Error("test did not get updated")
+			}
+		})
+	}
+}
