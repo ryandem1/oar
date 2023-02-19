@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/google/go-cmp/cmp"
 	"strings"
 	"testing"
 	"time"
@@ -53,8 +54,8 @@ func TestInvalidTestsDoNotPassValidate(t *testing.T) {
 	}
 }
 
-// TestTestClean will ensure that the Test.Clean() function cleans a test and does not alter it in any unexpected ways
-func TestTestClean(t *testing.T) {
+// TestTest_Clean will ensure that the Test.Clean() function cleans a test and does not alter it in any unexpected ways
+func TestTest_Clean(t *testing.T) {
 	validTests := multiple(150, Fake.test)
 	validTestsCopy := make([]*Test, len(validTests)) // Copy to validate the tests after the clean operation
 	copy(validTestsCopy, validTests)
@@ -120,6 +121,60 @@ func TestTest_Equal(t *testing.T) {
 
 		if test.Equal(comparedTest) {
 			t.Error("different tests were marked equal")
+		}
+	})
+}
+
+// TestTest_Merge will check that a test can be successfully right-merged with another test
+func TestTest_Merge(t *testing.T) {
+	t.Run("valid test merge with valid test", func(t *testing.T) {
+		targetTest := Fake.test()
+		originalTargetTest := targetTest
+		sourceTest := Fake.test()
+		targetTest.Merge(sourceTest)
+		oarDetailsAreEqual := sourceTest.Summary == targetTest.Summary &&
+			sourceTest.Outcome == targetTest.Outcome &&
+			sourceTest.Analysis == targetTest.Analysis &&
+			sourceTest.Resolution == targetTest.Resolution
+
+		if !oarDetailsAreEqual {
+			t.Error("right merge failed")
+		}
+
+		for k, v := range sourceTest.Doc {
+			if !cmp.Equal(targetTest.Doc[k], v) {
+				t.Error("right merge on Doc failed")
+			}
+		}
+
+		for k, v := range originalTargetTest.Doc {
+			if !cmp.Equal(targetTest.Doc[k], v) {
+				t.Error("right merge on Doc failed. source values did not get preserved")
+			}
+		}
+	})
+
+	t.Run("invalid test details do not get merged", func(t *testing.T) {
+		targetTest := Fake.test()
+		originalTargetTest := targetTest
+		invalidSourceTest := &Test{
+			ID:         Fake.testID(),
+			Summary:    "",
+			Outcome:    "",
+			Analysis:   "",
+			Resolution: "",
+			Created:    time.Now(),
+			Modified:   time.Now(),
+			Doc:        nil,
+		}
+		targetTest.Merge(invalidSourceTest)
+		oarDetailsAreEqual := originalTargetTest.Summary == targetTest.Summary &&
+			originalTargetTest.Outcome == targetTest.Outcome &&
+			originalTargetTest.Analysis == targetTest.Analysis &&
+			originalTargetTest.Resolution == targetTest.Resolution
+
+		if !oarDetailsAreEqual || targetTest.Doc == nil {
+			t.Error("target test got merged with invalid details")
 		}
 	})
 }
