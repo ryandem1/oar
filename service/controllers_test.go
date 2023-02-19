@@ -5,6 +5,7 @@ import (
 	"github.com/magiconair/properties/assert"
 	"net/http/httptest"
 	"testing"
+	"time"
 )
 
 // TestTestController_CreateTest will
@@ -15,10 +16,67 @@ func TestTestController_CreateTest(t *testing.T) {
 		w := httptest.NewRecorder()
 		c, _ := gin.CreateTestContext(w)
 
-		c.Request = Fake.testRequest("POST")
+		c.Request = Fake.testRequest("POST", Fake.test())
 		controller.CreateTest(c)
 
-		t.Log(w.Body)
 		assert.Equal(t, 201, w.Code)
 	})
+
+	outcome := Fake.testOutcome()
+	analysis := Fake.testAnalysis(&outcome)
+	resolution := Fake.testResolution()
+
+	invalidTests := map[string]*Test{
+		"blank summary": {
+			ID:         Fake.testID(),
+			Summary:    "    ",
+			Outcome:    outcome,
+			Analysis:   analysis,
+			Resolution: resolution,
+			Created:    time.Now(),
+			Modified:   time.Now(),
+			Doc:        nil,
+		},
+		"invalid outcome": {
+			ID:         Fake.testID(),
+			Summary:    Fake.testSummary(),
+			Outcome:    "Skipped",
+			Analysis:   analysis,
+			Resolution: resolution,
+			Created:    time.Now(),
+			Modified:   time.Now(),
+			Doc:        nil,
+		},
+		"invalid analysis": {
+			ID:         Fake.testID(),
+			Summary:    "    ",
+			Outcome:    outcome,
+			Analysis:   "Some Analysis",
+			Resolution: resolution,
+			Created:    time.Now(),
+			Modified:   time.Now(),
+			Doc:        nil,
+		},
+		"invalid resolution": {
+			ID:         Fake.testID(),
+			Summary:    "    ",
+			Outcome:    outcome,
+			Analysis:   analysis,
+			Resolution: "Some resoltuion",
+			Created:    time.Now(),
+			Modified:   time.Now(),
+			Doc:        nil,
+		},
+	}
+	for scenario, invalidTest := range invalidTests {
+		t.Run(scenario, func(t *testing.T) {
+			w := httptest.NewRecorder()
+			c, _ := gin.CreateTestContext(w)
+
+			c.Request = Fake.testRequest("POST", invalidTest)
+			controller.CreateTest(c)
+
+			assert.Equal(t, 400, w.Code)
+		})
+	}
 }

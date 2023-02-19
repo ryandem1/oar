@@ -13,16 +13,6 @@ type TestController struct {
 	DBPool *pgx.ConnPool
 }
 
-// GetTests will retrieve test objects from the database. Will take queries/limit/offset
-func (tc *TestController) GetTests(c *gin.Context) {
-	tests, err := SelectTests(tc.DBPool, "SELECT * FROM OAR_TESTS")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
-		return
-	}
-	c.JSON(http.StatusOK, tests)
-}
-
 // CreateTest will create a new test from a Summary, Outcome, and optional Doc
 func (tc *TestController) CreateTest(c *gin.Context) {
 	test, err := DoubleBindTest(c)

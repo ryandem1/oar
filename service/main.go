@@ -37,7 +37,6 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"health": "healthy"})
 		return
 	})
-	r.GET("/tests", testController.GetTests)
 	r.DELETE("/tests", testController.DeleteTests)
 	r.POST("/test", testController.CreateTest)
 	r.PATCH("/test", testController.PatchTest)

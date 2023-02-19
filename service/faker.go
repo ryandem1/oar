@@ -212,8 +212,7 @@ func (fake *Faker) testController() *TestController {
 }
 
 // testRequest will return a fake Test http.Request that can be sent through a testController
-func (fake *Faker) testRequest(method string) *http.Request {
-	test := fake.test()
+func (fake *Faker) testRequest(method string, test *Test) *http.Request {
 	body := gin.H{
 		"summary":    test.Summary,
 		"outcome":    test.Outcome,
