@@ -3,24 +3,9 @@
 package main
 
 import (
-	"fmt"
 	"github.com/jackc/pgx"
 	"testing"
 )
-
-// getPoolFromConfig will return a new pgx.ConnPool after getting a NewConfig from the environment
-func getPoolFromConfig() (*pgx.ConnPool, error) {
-	config, err := NewConfig() // Gets config from environment
-	if err != nil {
-		return nil, fmt.Errorf("error obtaining config. error: %s", err)
-	}
-
-	pgPool, err := NewPGPool(config.PG)
-	if err != nil {
-		return nil, fmt.Errorf("error obtaining pg connection. error: %s", err)
-	}
-	return pgPool, err
-}
 
 // TestNewPGPoolPositive ensures NewPGPool works with a valid config
 func TestNewPGPoolPositive(t *testing.T) {
@@ -84,14 +69,11 @@ func TestNewPGPoolNegative(t *testing.T) {
 func TestSelectCreateTests(t *testing.T) {
 	amountOfTests := 5 // number of tests to create/read
 
-	pgPool, err := getPoolFromConfig()
-	if err != nil {
-		t.Error("error obtaining pg connection", err)
-	}
+	pgPool := Fake.pgPool()
 	validTests := multiple(amountOfTests, Fake.test)
 
 	for _, validTest := range validTests {
-		err = InsertTest(pgPool, validTest)
+		err := InsertTest(pgPool, validTest)
 		if err != nil {
 			t.Error("error during data setup", err)
 		}
@@ -120,15 +102,11 @@ func TestSelectCreateTests(t *testing.T) {
 func TestDeleteTests(t *testing.T) {
 	amountOfTests := 5 // number of tests to create/read
 
-	pgPool, err := getPoolFromConfig()
-	if err != nil {
-		t.Error("error obtaining pg connection", err)
-	}
-
+	pgPool := Fake.pgPool()
 	validTests := multiple(amountOfTests, Fake.test)
 
 	for _, validTest := range validTests {
-		err = InsertTest(pgPool, validTest)
+		err := InsertTest(pgPool, validTest)
 		if err != nil {
 			t.Error("error during data setup", err)
 		}
@@ -169,11 +147,8 @@ func TestDeleteTests(t *testing.T) {
 func TestUpdateTest(t *testing.T) {
 	validTest := Fake.test()
 
-	pgPool, err := getPoolFromConfig()
-	if err != nil {
-		t.Error("setup error", err)
-	}
-	err = InsertTest(pgPool, validTest)
+	pgPool := Fake.pgPool()
+	err := InsertTest(pgPool, validTest)
 	if err != nil {
 		t.Error("setup error", err)
 	}

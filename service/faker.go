@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx"
 	"math/rand"
+	"net/http/httptest"
 	"time"
 )
 
@@ -10,14 +13,19 @@ var Fake = newFaker() // Tests can access this instance directly
 
 // Faker is a structure that can generate randomized fake data
 type Faker struct {
-	seed int64
+	seed      int64
+	envConfig *Config
 }
 
 // newFaker will generate a new Faker object and seed the rand package.
 func newFaker() *Faker {
 	seed := time.Now().UnixNano()
 	rand.Seed(seed)
-	return &Faker{seed: seed}
+	config, err := NewConfig() // Gets config from environment
+	if err != nil {
+		panic(err)
+	}
+	return &Faker{seed: seed, envConfig: config}
 }
 
 // integer will return an integer from the rand min - max. Max is not inclusive
@@ -171,6 +179,27 @@ func (fake *Faker) test() *Test {
 		Doc:        fake.testDoc(),
 	}
 	return test
+}
+
+// ginContext will return a pointer to a fake gin.Context object for testing
+func (fake *Faker) ginContext() *gin.Context {
+	gin.SetMode(gin.TestMode)
+
+	w := httptest.NewRecorder()
+	c, err := gin.CreateTestContext(w)
+	if err != nil {
+		panic(err)
+	}
+	return c
+}
+
+// pgPool will return a real pgx.ConnPool because I do not think it is valuable to mock it out
+func (fake *Faker) pgPool() *pgx.ConnPool {
+	pgPool, err := NewPGPool(fake.envConfig.PG)
+	if err != nil {
+		panic(err)
+	}
+	return pgPool
 }
 
 // multiple will call a specific fakeMethod function n times and return the results as a slice
