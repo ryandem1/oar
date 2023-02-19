@@ -8,13 +8,19 @@ import (
 	"time"
 )
 
-func main() {
+var EnvConfig = GetConfig()
+
+// GetConfig will return the Config from the environment or panic if something goes wrong
+func GetConfig() *Config {
 	config, err := NewConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
+	return config
+}
 
-	pgPool, err := NewPGPool(config.PG)
+func GetRouter() *gin.Engine {
+	pgPool, err := NewPGPool(EnvConfig.PG)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -40,9 +46,13 @@ func main() {
 	r.DELETE("/tests", testController.DeleteTests)
 	r.POST("/test", testController.CreateTest)
 	r.PATCH("/test", testController.PatchTest)
+	return r
+}
 
-	err = r.Run()
+func main() {
+	r := GetRouter()
+	err := r.Run()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }
