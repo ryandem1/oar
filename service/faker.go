@@ -185,15 +185,12 @@ func (fake *Faker) test() *Test {
 }
 
 // ginContext will return a pointer to a fake gin.Context object for testing
-func (fake *Faker) ginContext() *gin.Context {
+func (fake *Faker) ginContext() (*gin.Context, *httptest.ResponseRecorder) {
 	gin.SetMode(gin.TestMode)
 
 	w := httptest.NewRecorder()
-	c, err := gin.CreateTestContext(w)
-	if err != nil {
-		panic(err)
-	}
-	return c
+	c, _ := gin.CreateTestContext(w)
+	return c, w
 }
 
 // pgPool will return a real pgx.ConnPool because I do not think it is valuable to mock it out

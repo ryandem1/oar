@@ -18,8 +18,7 @@ func TestTestController_CreateTest(t *testing.T) {
 	controller := Fake.testController()
 
 	t.Run("valid test returns valid response", func(t *testing.T) {
-		w := httptest.NewRecorder()
-		c, _ := gin.CreateTestContext(w)
+		c, w := Fake.ginContext()
 
 		c.Request = Fake.testRequest(http.MethodPost, Fake.test(), false)
 		controller.CreateTest(c)
@@ -87,8 +86,7 @@ func TestTestController_CreateTest(t *testing.T) {
 	}
 	for scenario, invalidTest := range invalidTests {
 		t.Run(scenario, func(t *testing.T) {
-			w := httptest.NewRecorder()
-			c, _ := gin.CreateTestContext(w)
+			c, w := Fake.ginContext()
 
 			c.Request = Fake.testRequest(http.MethodPost, invalidTest, false)
 			controller.CreateTest(c)
@@ -135,13 +133,11 @@ func TestTestController_DeleteTests(t *testing.T) {
 			t.Error("setup error", err)
 		}
 
-		w := httptest.NewRecorder()
-		c, _ := gin.CreateTestContext(w)
+		c, w := Fake.ginContext()
 
 		c.Request = req
 		controller.DeleteTests(c)
 
-		t.Log(w.Code)
 		assert.Equal(t, w.Code, 200)
 	})
 }
@@ -161,8 +157,7 @@ func TestTestController_PatchTest(t *testing.T) {
 	test := tests[0]
 
 	t.Run("valid test returns valid response", func(t *testing.T) {
-		w := httptest.NewRecorder()
-		c, _ := gin.CreateTestContext(w)
+		c, w := Fake.ginContext()
 
 		c.Request = Fake.testRequest(http.MethodPatch, test, true)
 		controller.PatchTest(c)
@@ -240,8 +235,7 @@ func TestTestController_PatchTest(t *testing.T) {
 	}
 	for scenario, invalidTest := range invalidTests {
 		t.Run(scenario, func(t *testing.T) {
-			w := httptest.NewRecorder()
-			c, _ := gin.CreateTestContext(w)
+			c, w := Fake.ginContext()
 
 			c.Request = Fake.testRequest(http.MethodPatch, invalidTest, true)
 			controller.PatchTest(c)
@@ -270,8 +264,7 @@ func TestTestController_PatchTest(t *testing.T) {
 			t.Error("setup error", err)
 		}
 		controller = &TestController{DBPool: badPool}
-		w := httptest.NewRecorder()
-		c, _ := gin.CreateTestContext(w)
+		c, w := Fake.ginContext()
 
 		c.Request = Fake.testRequest(http.MethodPatch, test, true)
 		controller.PatchTest(c)
