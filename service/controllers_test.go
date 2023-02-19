@@ -1,8 +1,11 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/magiconair/properties/assert"
+	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
@@ -80,4 +83,52 @@ func TestTestController_CreateTest(t *testing.T) {
 			assert.Equal(t, 400, w.Code)
 		})
 	}
+}
+
+// TestTestController_DeleteTests will ensure that you can delete tests and that deleting non-existing tests does not
+// throw an error
+func TestTestController_DeleteTests(t *testing.T) {
+	controller := Fake.testController()
+
+	testID, err := InsertTest(Fake.pgPool(), Fake.test())
+	testID2, err := InsertTest(Fake.pgPool(), Fake.test())
+	body := []gin.H{
+		{"ID": testID},
+		{"ID": testID2},
+	}
+	jsonValue, err := json.Marshal(body)
+	if err != nil {
+		t.Error("setup error", err)
+	}
+
+	t.Run("delete tests that exist", func(t *testing.T) {
+		req, err := http.NewRequest(http.MethodDelete, "/tests", bytes.NewBuffer(jsonValue))
+		if err != nil {
+			t.Error("setup error", err)
+		}
+
+		w := httptest.NewRecorder()
+		c, _ := gin.CreateTestContext(w)
+
+		c.Request = req
+		controller.DeleteTests(c)
+
+		assert.Equal(t, w.Code, 200)
+	})
+
+	t.Run("delete tests that don't exist", func(t *testing.T) {
+		req, err := http.NewRequest(http.MethodDelete, "/tests", bytes.NewBuffer(jsonValue))
+		if err != nil {
+			t.Error("setup error", err)
+		}
+
+		w := httptest.NewRecorder()
+		c, _ := gin.CreateTestContext(w)
+
+		c.Request = req
+		controller.DeleteTests(c)
+
+		t.Log(w.Code)
+		assert.Equal(t, w.Code, 200)
+	})
 }
