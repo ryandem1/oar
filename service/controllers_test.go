@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx"
 	"github.com/magiconair/properties/assert"
 	"net/http"
 	"net/http/httptest"
@@ -202,6 +203,28 @@ func TestTestController_PatchTest(t *testing.T) {
 			Modified:   time.Now(),
 			Doc:        nil,
 		},
+		"invalid ID": {
+			ID:         0,
+			Summary:    "    ",
+			Outcome:    outcome,
+			Analysis:   analysis,
+			Resolution: "Some resolution",
+			Created:    time.Now(),
+			Modified:   time.Now(),
+			Doc:        nil,
+		},
+		"doc field added": { // Tests cannot define the "doc" field due to how the double bind works
+			ID:         0,
+			Summary:    "    ",
+			Outcome:    outcome,
+			Analysis:   analysis,
+			Resolution: "Some resolution",
+			Created:    time.Now(),
+			Modified:   time.Now(),
+			Doc: map[string]any{
+				"doc": "something",
+			},
+		},
 	}
 	for scenario, invalidTest := range invalidTests {
 		t.Run(scenario, func(t *testing.T) {
@@ -214,4 +237,33 @@ func TestTestController_PatchTest(t *testing.T) {
 			assert.Equal(t, w.Code, 400)
 		})
 	}
+
+	t.Run("invalid pool test", func(t *testing.T) {
+		pgConnConfig := pgx.ConnConfig{
+			Host:     EnvConfig.PG.Host,
+			Port:     EnvConfig.PG.Port,
+			Database: "postgres",
+			User:     EnvConfig.PG.User,
+			Password: EnvConfig.PG.Pass,
+			LogLevel: EnvConfig.PG.LogLevel,
+		}
+		pgConnPoolConfig := pgx.ConnPoolConfig{
+			ConnConfig:     pgConnConfig,
+			MaxConnections: EnvConfig.PG.PoolSize,
+			AfterConnect:   nil,
+			AcquireTimeout: EnvConfig.PG.PollTimeout,
+		}
+		badPool, err := pgx.NewConnPool(pgConnPoolConfig)
+		if err != nil {
+			t.Error("setup error", err)
+		}
+		controller = &TestController{DBPool: badPool}
+		w := httptest.NewRecorder()
+		c, _ := gin.CreateTestContext(w)
+
+		c.Request = Fake.testRequest(http.MethodPatch, test, true)
+		controller.PatchTest(c)
+
+		assert.Equal(t, w.Code, 400)
+	})
 }
