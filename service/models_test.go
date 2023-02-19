@@ -6,8 +6,6 @@ import (
 	"time"
 )
 
-var Fake = newFaker()
-
 // TestValidTestsPassValidate will ensure that the Test.Validate() function correctly accepts valid Test objects.
 func TestValidTestsPassValidate(t *testing.T) {
 	validTests := multiple(150, Fake.test)

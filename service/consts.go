@@ -22,7 +22,7 @@ type Resolution string
 const (
 	Unresolved    Resolution = "Unresolved"
 	NotNeeded     Resolution = "NotNeeded"
-	TicketCreated Resolution = "BugCreated"
+	TicketCreated Resolution = "TicketCreated"
 	QuickFix      Resolution = "QuickFix"
 	KnownIssue    Resolution = "KnownIssue"
 	TestFixed     Resolution = "TestFixed"

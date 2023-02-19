@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+var Fake = newFaker() // Tests can access this instance directly
+
 // Faker is a structure that can generate randomized fake data
 type Faker struct {
 	seed int64
