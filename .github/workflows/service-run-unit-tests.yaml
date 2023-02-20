@@ -1,9 +1,6 @@
 name: Service - Run Unit Tests
 
 on:
-  push:
-    paths:
-      - service/**
   pull_request:
     types: [opened, edited]
     paths:
