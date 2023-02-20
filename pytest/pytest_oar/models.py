@@ -32,4 +32,4 @@ class OARTest(BaseModel):
     outcome: Outcome
     analysis: Analysis
     resolution: Resolution
-    doc: dict[str, Any]
+    doc: dict[str, Any] | None
