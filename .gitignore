@@ -2,4 +2,5 @@
 dbData
 config.*
 !config.go
+!config.py
 .env
