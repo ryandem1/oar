@@ -2,7 +2,7 @@ from requests import Session, Response
 from oar.models import Test
 from logging import getLogger
 
-logger = getLogger(__name__)
+logger = getLogger("oar messenger")
 
 
 class Client:

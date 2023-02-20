@@ -1,7 +1,11 @@
+import logging
+
 from pytest import fixture, FixtureRequest, hookimpl, Item, CallInfo, StashKey, CollectReport
 from oar.client import Client
 from oar.models import EnvConfig, Test, Outcome, Analysis, Resolution
 
+
+logger = logging.getLogger("oar messenger")
 
 phase_report_key = StashKey[dict[str, CollectReport]]()  # Stores result data to be available at the fixture level
 
@@ -80,7 +84,8 @@ def oar_test(request: FixtureRequest, oar_client) -> Test:
         if test.analysis == Analysis.NotAnalyzed:
             test.analysis = Analysis.TrueNegative
 
-    oar_client.add_test(test)
+    test_id = oar_client.add_test(test)
+    logger.info(f"OAR Test Result ID: {test_id}")
 
 
 @fixture(scope="session")
