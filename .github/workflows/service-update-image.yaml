@@ -45,4 +45,5 @@ jobs:
         uses: mikeal/publish-to-github-action@master
         env:
           BRANCH_NAME: main
+          GITHUB_ACTOR: ryandem1
           GITHUB_TOKEN: ${{ secrets.OAR_GITHUB_TOKEN }}
