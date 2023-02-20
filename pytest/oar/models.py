@@ -92,7 +92,7 @@ class Test(BaseModel):
     outcome: Outcome
     analysis: Analysis
     resolution: Resolution
-    doc: dict[str, Any] | None
+    doc: dict[str, Any] = {}
 
     def as_request_body(self) -> dict[str, Any]:
         """

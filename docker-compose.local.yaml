@@ -2,6 +2,8 @@ services:
   oar-service:
     ports:
       - 8080:8080
+    environment:
+      PG_HOST: "oar-postgres"
     depends_on:
       oar-postgres:
         condition: service_healthy

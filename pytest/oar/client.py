@@ -1,5 +1,5 @@
 from requests import Session, Response
-from models import Test
+from oar.models import Test
 from logging import getLogger
 
 logger = getLogger(__name__)
