@@ -85,7 +85,7 @@ class Resolution(str, Enum):
 
 class Test(BaseModel):
     """
-    Primary structure for OAR test results. This structure is meant to have attributes dynamically added to it.
+    Primary structure for OAR test results. This structure is meant to have attributes dynamically added to it
     """
     id_: int = Field(0, alias="id")  # Sometimes ID will be ignored
     summary: str | None = None
