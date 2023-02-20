@@ -4,4 +4,5 @@ packaging==23.0
 pluggy==1.0.0
 pydantic==1.10.5
 pytest==7.2.1
+tomli==2.0.1
 typing_extensions==4.5.0
