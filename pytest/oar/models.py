@@ -88,10 +88,10 @@ class Test(BaseModel):
     Primary structure for OAR test results. This structure is meant to have attributes dynamically added to it.
     """
     id_: int = Field(0, alias="id")  # Sometimes ID will be ignored
-    summary: str
-    outcome: Outcome
-    analysis: Analysis
-    resolution: Resolution
+    summary: str | None = None
+    outcome: Outcome | None = None
+    analysis: Analysis | None = None
+    resolution: Resolution | None = None
 
     class Config:
         extra = Extra.allow
