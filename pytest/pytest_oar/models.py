@@ -33,4 +33,3 @@ class OARTest(BaseModel):
     analysis: Analysis
     resolution: Resolution
     doc: dict[str, Any]
-
