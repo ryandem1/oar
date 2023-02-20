@@ -30,7 +30,7 @@ jobs:
 
       - name: Build binary
         shell: bash
-        run: cd service; CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /go/main .
+        run: cd service; CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo .
 
       - name: Test
         run: make test-service
