@@ -3,8 +3,8 @@ name: Service - Update Image
 on:
   push:
     paths:
-      - service/**
-      - !service/VERSION
+      - "service/**"
+      - "!service/VERSION"
     branches:
       - main
 
