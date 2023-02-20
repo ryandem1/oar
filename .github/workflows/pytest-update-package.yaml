@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          persist-credentials: false
 
       - name: Setup Python
         uses: actions/setup-python@v2
@@ -28,6 +30,20 @@ jobs:
         run: |
           pip install twine
           pip install build
+
+      - name: Get current version and increment
+        run: |
+          cd pytest
+          current_version=$(cat pyproject.toml | grep 'version' | grep -o '"[^"]*"' | tr -d '"')
+          new_version=${current_version%.*}.$((${current_version##*.}+1))
+          sed -i "s/version = \"$current_version\"/version = \"$new_version\"/g" pyproject.toml
+          echo "new_version=$new_version" >> $GITHUB_ENV
+
+      - name: Publish pyproject.toml file with new version back to main
+        uses: mikeal/publish-to-github-action@master
+        env:
+          BRANCH_NAME: main
+          GITHUB_TOKEN: ${{ secrets.OAR_GITHUB_TOKEN }}
 
       - name: Build Wheels
         run: cd pytest; python -m build
