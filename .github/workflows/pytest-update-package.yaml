@@ -1,0 +1,36 @@
+name: PyTest - Update Package
+
+on:
+  push:
+    paths:
+      - "pytest/**"
+      - "!pytest/README.md"
+    branches:
+      - main
+
+env:
+  TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+  TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+
+jobs:
+  oar-pytest-package-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.11"
+
+      - name: Install Twine and Build
+        run: |
+          pip install twine
+          pip install build
+
+      - name: Build Wheels
+        run: cd pytest; python -m build
+
+      - name: Publish to PyPi
+        run: twine upload pytest/dist/*
