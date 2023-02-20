@@ -1,6 +1,83 @@
-from pytest import fixture
+from pytest import fixture, FixtureRequest, hookimpl, Item, CallInfo, StashKey, CollectReport
 from oar.client import Client
-from oar.models import EnvConfig
+from oar.models import EnvConfig, Test, Outcome, Analysis, Resolution
+
+
+phase_report_key = StashKey[dict[str, CollectReport]]()  # Stores result data to be available at the fixture level
+
+
+@hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item: Item, call: CallInfo) -> None:
+    """
+    This hook is implemented so that test outcome information is available at the teardown fixture level.
+
+    Parameters
+    ----------
+    item : Item
+        Current PyTest item
+
+    call : CallInfo
+        Metadata related to test call
+
+    Returns
+    -------
+    None
+    """
+    _ = call
+    # execute all other hooks to obtain the report object
+    outcome = yield
+    rep = outcome.get_result()
+
+    # store test results for each phase of a call, which can be "setup", "call", "teardown"
+    item.stash.setdefault(phase_report_key, {})[rep.when] = rep
+
+
+@fixture
+def oar_test(request: FixtureRequest, oar_client) -> Test:
+    """
+    Here is the primary fixture to interact with OAR in PyTest. If this fixture is in the fixture list, the result of
+    the test will be uploaded to OAR after the test is complete. The OAR client is designed to not fail if something
+    goes wrong with the test, so an upload failure would not cause false positives.
+
+    More info on properties:
+
+    1. Tests begin NotAnalyzed and Unresolved
+    2. If a test fails in the setup phase, the test's analysis will be marked as a FalsePositive by default
+    3. If a test fails in the call phase, the test will remain NotAnalyzed
+    4. If a test fails in the teardown phase, the test's analysis will be marked as a FalsePositive by default
+    5. If a test passes, it is by default a TrueNegative
+    6. If outcome or analysis were set during the test runtime, they will not be set by the above logic
+
+    Yields
+    -------
+    test : Test
+        Current OAR test to add attributes onto
+    """
+    test = Test(analysis=Analysis.NotAnalyzed, resolution=Resolution.Unresolved)
+    yield test
+    # request.node is an "item" because we use the default "function" scope
+    report = request.node.stash[phase_report_key]
+
+    if report["setup"].failed:
+        if test.outcome is None:
+            test.outcome = Outcome.Failed
+        if test.analysis == Analysis.NotAnalyzed:
+            test.analysis = Analysis.FalsePositive
+    elif ("call" not in report) or report["call"].failed:
+        if test.outcome is None:
+            test.outcome = Outcome.Failed
+    elif ("teardown" not in report) or report["teardown"].failed:
+        if test.outcome is None:
+            test.outcome = Outcome.Failed
+        if test.analysis == Analysis.NotAnalyzed:
+            test.analysis = Analysis.FalsePositive
+    else:
+        if test.outcome is None:
+            test.outcome = Outcome.Passed
+        if test.analysis == Analysis.NotAnalyzed:
+            test.analysis = Analysis.TrueNegative
+
+    oar_client.add_test(test)
 
 
 @fixture(scope="session")
