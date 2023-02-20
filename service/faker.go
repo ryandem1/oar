@@ -91,7 +91,7 @@ func (fake *Faker) testAnalysis(outcome *Outcome) Analysis {
 	return analysis
 }
 
-// testResolution will return a random test resolution
+// testResolution will return a random test resolution.
 func (fake *Faker) testResolution() Resolution {
 	analyses := []Resolution{
 		Unresolved,
