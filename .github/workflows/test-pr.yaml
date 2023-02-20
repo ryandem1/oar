@@ -1,6 +1,7 @@
 name: Build Binary and Test
 
 on:
+  workflow-dispatch:
   push:
     paths:
       - service/**
@@ -10,7 +11,6 @@ on:
       - service/**
     branches:
       - main
-  workflow-dispatch:
 
 jobs:
   build-and-test:
