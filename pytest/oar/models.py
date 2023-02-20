@@ -2,7 +2,7 @@ import os
 import json
 import tomli
 
-from pydantic import BaseModel, BaseSettings
+from pydantic import BaseModel, BaseSettings, Field
 from enum import Enum
 from typing import Any
 from pathlib import Path
@@ -84,9 +84,23 @@ class Resolution(str, Enum):
 
 
 class Test(BaseModel):
-    id_: int
+    """
+    Primary structure for OAR test results
+    """
+    id_: int = Field(0, alias="id")  # Sometimes ID will be ignored
     summary: str
     outcome: Outcome
     analysis: Analysis
     resolution: Resolution
     doc: dict[str, Any] | None
+
+    def as_request_body(self) -> dict[str, Any]:
+        """
+        Formats the Test in a format appropriate for the OAR client.
+
+        Returns
+        -------
+        request_body: dict[str, Any]
+            Test as a request body (unmerges the doc attribute)
+        """
+        return self.dict(by_alias=True, exclude={"doc"}) | self.doc
