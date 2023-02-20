@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - service/**
+    branches:
+      - main
 
 jobs:
   update-service-image:
