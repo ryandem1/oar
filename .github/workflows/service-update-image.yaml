@@ -1,0 +1,41 @@
+name: Service - Update Image
+
+on:
+  push:
+    paths:
+      - service/**
+
+jobs:
+  update-service-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Docker login
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run:
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+
+      - name: Increment version
+        run: |
+          current_version=$(cat ./service/VERSION)
+          echo "${current_version%.*}.$((${current_version##*.}+1))" > ./service/VERSION
+          echo "new_version=$(cat ./service/VERSION)" >> $GITHUB_ENV
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./service/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USER }}/oar-service:${{ env.new_version }}
+            ${{ secrets.DOCKER_USER }}/oar-service:latest
+
+      - name: Publish VERSION file back to main
+        uses: mikeal/publish-to-github-action@master
+        env:
+          BRANCH_NAME: main
+          GITHUB_TOKEN: ${{ secrets.OAR_GITHUB_TOKEN }}
