@@ -10,7 +10,7 @@ import (
 func TestGetConfig(t *testing.T) {
 	config := GetConfig()
 	if config.PG == nil {
-		t.Error("PG config was null")
+		t.Error("pg config was null")
 	}
 }
 

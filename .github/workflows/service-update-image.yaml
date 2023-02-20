@@ -47,4 +47,5 @@ jobs:
       - name: Publish VERSION file back to main
         uses: mikeal/publish-to-github-action@master
         env:
+          BRANCH_NAME: main
           GITHUB_TOKEN: ${{ secrets.OAR_GITHUB_TOKEN }}
