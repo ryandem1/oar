@@ -2,6 +2,15 @@ services:
   oar-service:
     ports:
       - 8080:8080
+    depends_on:
+      oar-postgres:
+        condition: service_healthy
+
+  wait-for-db:  # If you run this, it is de
+    image: hello-world
+    depends_on:
+      oar-postgres:
+        condition: service_healthy
 
   oar-postgres:
     image: postgres:15.1-alpine
@@ -15,3 +24,8 @@ services:
       - 5432:5432
     volumes:
       - $PWD/dbData:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5

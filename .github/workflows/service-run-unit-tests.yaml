@@ -19,16 +19,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Start local DB
-        run: make db
-
-      - name: Install pSQL
+      - name: Install pSQL (Needed for DB setup)
         run: |
           sudo apt-get update
           sudo apt-get install --yes --no-install-recommends postgresql-client
 
-      - name: Run init DB script
-        run: PGPASSWORD=postgres psql -h localhost -U postgres -d oar -f scripts/sql/init_postgres.sql
+      - name: Start local DB
+        run: make db
 
       - name: Set up Go
         uses: actions/setup-go@v3

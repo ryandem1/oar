@@ -31,7 +31,7 @@ create table if not exists oar_tests
 );
 
 -- Will add the trigger that updates the modified column automatically on every update.
-create trigger update_modified
+create or replace trigger update_modified
 before update on oar_tests
 for each row execute procedure update_modified_column();
 
