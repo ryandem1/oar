@@ -37,7 +37,7 @@ func NewConfig() (*Config, error) {
 
 // SetDefaultConfigValues will set all the default configuration variables with viper
 func SetDefaultConfigValues() {
-	viper.SetDefault("PG.HOST", "oar-postgres")
+	viper.SetDefault("PG.HOST", "localhost")
 	viper.SetDefault("PG.PORT", 5432)
 	viper.SetDefault("PG.DB", "oar")
 	viper.SetDefault("PG.USER", "postgres")
