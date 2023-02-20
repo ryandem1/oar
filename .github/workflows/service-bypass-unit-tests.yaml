@@ -1,6 +1,6 @@
 # This workflow is to bypass branch protection rules on PR if the ./service directory was not changed. Without this,
 # PRs that did not affect the service would never be able to be merged because Service - Run Unit Tests is a required
-# check. If you think this is really weird, I do to, but this is how you do it:
+# check. If you think this is really weird, I do too, but this is how you do it:
 # https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/troubleshooting-required-status-checks#handling-skipped-but-required-checks
 
 name: Service - Bypass Unit Tests
