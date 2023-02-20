@@ -1,4 +1,4 @@
-name: Build Binary and Test
+name: Service - Run Unit Tests
 
 on:
   push:
