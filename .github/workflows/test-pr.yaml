@@ -24,8 +24,8 @@ jobs:
 
       - name: Install pSQL
         run: |
-          apt-get update
-          apt-get install --yes --no-install-recommends postgresql-client
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends postgresql-client
 
       - name: Run init DB script
         run: PGPASSWORD=postgres psql -h localhost:5432 -U postgres -d oar -f scripts/sql/init_postgres.sql
