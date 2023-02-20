@@ -2,8 +2,12 @@ name: Build Binary and Test
 
 on:
   push:
+    paths:
+      - service/**
   pull_request:
     types: [opened, edited]
+    paths:
+      - service/**
     branches:
       - main
 
