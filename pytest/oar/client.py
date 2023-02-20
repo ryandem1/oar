@@ -83,14 +83,14 @@ class Client:
         response = self.session.patch(self.test_route, json=test.as_request_body())
         self.__log_error_if_not_ok(response)
 
-    def delete_tests(self, test_ids: list[int]) -> int:
+    def delete_tests(self, *test_ids: int) -> int:
         """
         Will send a DELETE to the ``/tests`` endpoint to delete tests by IDs. Will return the status code of the request
 
         Parameters
         ----------
-        test_ids : list[int]
-            List of the IDs of the tests to be deleted.
+        test_ids : int
+            IDs of the tests to be deleted.
 
         Returns
         -------
