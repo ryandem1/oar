@@ -16,8 +16,7 @@ class EnvConfig(BaseSettings):
     host = "oar-service:8080"
 
     class Config:
-        env_prefix = "OAR"
-        env_nested_delimiter = "_"
+        env_prefix = "OAR_"
 
     @classmethod
     def from_file(cls, config_file_path: Path) -> 'EnvConfig':
@@ -34,6 +33,9 @@ class EnvConfig(BaseSettings):
         config : EnvConfig
             Representation of environment configuration
         """
+        if not config_file_path.exists():
+            return cls()  # If config file is not found, do not error, fallback on default
+
         with config_file_path.open("rb") as config_file:
             match config_file_path.suffix:
                 case ".toml":
@@ -54,7 +56,7 @@ class EnvConfig(BaseSettings):
         config : EnvConfig
             Default ``EnvConfig`` object
         """
-        config_file_path = Path(__file__).parent / os.environ.get("OAR_CONFIG_PATH", "oar-config.toml")
+        config_file_path = Path(os.getcwd()) / os.environ.get("OAR_CONFIG_PATH", "oar-config.toml")
         return cls.from_file(config_file_path)
 
 
@@ -81,7 +83,7 @@ class Resolution(str, Enum):
     TestDisabled = "TestDisabled"
 
 
-class OARTest(BaseModel):
+class Test(BaseModel):
     id_: int
     summary: str
     outcome: Outcome
