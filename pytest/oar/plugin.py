@@ -58,6 +58,9 @@ def oar_test(request: FixtureRequest, oar_client) -> Test:
     # request.node is an "item" because we use the default "function" scope
     report = request.node.stash[phase_report_key]
 
+    if not test.summary:
+        test.summary = request.node.name
+
     if report["setup"].failed:
         if test.outcome is None:
             test.outcome = Outcome.Failed
@@ -66,7 +69,7 @@ def oar_test(request: FixtureRequest, oar_client) -> Test:
     elif ("call" not in report) or report["call"].failed:
         if test.outcome is None:
             test.outcome = Outcome.Failed
-    elif ("teardown" not in report) or report["teardown"].failed:
+    elif "teardown" in report and report["teardown"].failed:
         if test.outcome is None:
             test.outcome = Outcome.Failed
         if test.analysis == Analysis.NotAnalyzed:
