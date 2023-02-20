@@ -21,7 +21,7 @@ class EnvConfig(BaseSettings):
     @classmethod
     def from_file(cls, config_file_path: Path) -> 'EnvConfig':
         """
-        Will return a new ``EnvConfig`` file by reading from an environment configuration file by path.
+        Will return a new ``EnvConfig`` file by reading from an environment configuration file by path
 
         Parameters
         ----------
