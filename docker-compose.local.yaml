@@ -8,7 +8,7 @@ services:
       oar-postgres:
         condition: service_healthy
 
-  wait-for-db:  # If you run this, it is de
+  wait-for-db:  # If you run this, it is designed to just build an arbitrary container to wait for pg startup
     image: hello-world
     depends_on:
       oar-postgres:
