@@ -3,7 +3,7 @@ import typing
 
 from pytest import fixture, FixtureRequest, hookimpl, Item, CallInfo, StashKey, CollectReport
 from oar.client import Client
-from oar.models import EnvConfig, Test, Outcome, Analysis, Resolution
+from oar.models import EnvConfig, Test, Outcome, Analysis, Resolution, Results
 
 
 logger = logging.getLogger("oar messenger")
@@ -38,7 +38,7 @@ def pytest_runtest_makereport(item: Item, call: CallInfo) -> None:
 
 
 @fixture
-def oar_test(request: FixtureRequest, oar_client) -> Test:
+def oar_test(request: FixtureRequest, oar_results, oar_client) -> Test:
     """
     Here is the primary fixture to interact with OAR in PyTest. If this fixture is in the fixture list, the result of
     the test will be uploaded to OAR after the test is complete. The OAR client is designed to not fail if something
@@ -112,8 +112,37 @@ def oar_test(request: FixtureRequest, oar_client) -> Test:
         if test.resolution is None:
             test.resolution = Resolution.NotNeeded
 
-    test_id = oar_client.add_test(test)
-    logger.info(f"OAR Test Result ID: {test_id}")
+    test.id_ = oar_client.add_test(test)
+    logger.info(f"OAR Test Result ID: {test.id_}")
+
+    # Add Test to result
+    oar_results.tests.append(test)
+    if test.outcome == Outcome.Passed:
+        oar_results.passed_ids.append(test.id_)
+    else:
+        oar_results.failed_ids.append(test.id_)
+
+
+@fixture(scope="session")
+def oar_results() -> Results:
+    """
+    Stores the results of all OAR tests through the session. Will be enriched through other fixtures
+
+    Yields
+    -------
+    results : Results
+        OAR results to be enriched or analyzed
+    """
+    results = Results()
+    yield results
+    tests_needing_analysis = [test.id_ for test in results.tests if test.analysis == Analysis.NotAnalyzed]
+    tests_needing_resolution = [test.id_ for test in results.tests if test.resolution == Resolution.Unresolved]
+
+    logger.info("\n============OAR SUMMARY===============")
+    logger.info(f"Passed IDs: {results.passed_ids}")
+    logger.info(f"Failed IDs: {results.failed_ids}")
+    logger.info(f"Tests that need analysis: {tests_needing_analysis}")
+    logger.info(f"Tests that need resolution: {tests_needing_resolution}" + "\n======================================")
 
 
 @fixture(scope="session")

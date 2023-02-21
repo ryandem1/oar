@@ -4,7 +4,7 @@ import tomli
 
 from pydantic import BaseModel, BaseSettings, Field, Extra
 from enum import Enum
-from typing import Any
+from typing import Any, TypeVar
 from pathlib import Path
 
 
@@ -106,3 +106,16 @@ class Test(BaseModel):
             Test as a request body (unmerges the doc attribute)
         """
         return self.dict(by_alias=True)
+
+
+AnyTest = TypeVar("AnyTest", bound=Test)
+
+
+class Results(BaseModel):
+    """
+    Aggregate OAR result information for a run.
+    """
+    tests: list[AnyTest] = []
+    failed_ids: list[int] = []
+    passed_ids: list[int] = []
+    all_ids: list[int] = []
