@@ -11,7 +11,7 @@ from pytest import fixture, FixtureRequest, hookimpl, Item, CallInfo, StashKey, 
 from oar.client import Client
 from oar.models import EnvConfig, Test, Outcome, Analysis, Resolution, Results
 
-logger = logging.getLogger("oar messenger")
+logger = logging.getLogger("oar")
 
 phase_report_key = StashKey[dict[str, CollectReport]]()  # Stores result data to be available at the fixture level
 

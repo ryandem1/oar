@@ -9,7 +9,7 @@ from typing import Any, TypeVar
 import tomli
 from pydantic import BaseModel, BaseSettings, Field, Extra
 
-logger = logging.getLogger("oar messenger")
+logger = logging.getLogger("oar")
 
 
 class EnvConfig(BaseSettings):
