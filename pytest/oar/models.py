@@ -127,11 +127,6 @@ class Results(BaseModel):
     start_time: str = str(datetime.utcnow())
     completed_time: str | None = None
     tests: list[AnyTest] = []
-    failed_ids: list[int] = []
-    passed_ids: list[int] = []
-    need_analysis_ids: list[int] = []
-    need_resolution_ids: list[int] = []
-    all_ids: list[int] = []
 
     def __iadd__(self, other: AnyTest) -> None:
         """
@@ -148,20 +143,25 @@ class Results(BaseModel):
         """
         self.tests.append(other)
 
-    def calculate(self) -> None:
-        """
-        Will calculate summary statistic attributes from ``Results.tests`` list
+    @property
+    def passed_ids(self) -> list[int]:
+        return [test.id_ for test in self.tests if test.outcome == Outcome.Passed]
 
-        Returns
-        -------
-        None
-        """
-        self.completed_time = str(datetime.utcnow())
-        self.passed_ids = [test.id_ for test in self.tests if test.outcome == Outcome.Passed]
-        self.failed_ids = [test.id_ for test in self.tests if test.outcome == Outcome.Failed]
-        self.all_ids = self.failed_ids + self.passed_ids
-        self.need_analysis_ids = [test.id_ for test in self.tests if test.analysis == Analysis.NotAnalyzed]
-        self.need_resolution_ids = [test.id_ for test in self.tests if test.resolution == Resolution.Unresolved]
+    @property
+    def failed_ids(self) -> list[int]:
+        return [test.id_ for test in self.tests if test.outcome == Outcome.Failed]
+
+    @property
+    def all_ids(self) -> list[int]:
+        return [test.id_ for test in self.tests]
+
+    @property
+    def need_analysis_ids(self) -> list[int]:
+        return [test.id_ for test in self.tests if test.analysis == Analysis.NotAnalyzed]
+
+    @property
+    def need_resolution_ids(self) -> list[int]:
+        return [test.id_ for test in self.tests if test.resolution == Resolution.Unresolved]
 
     def log_summary_statistics(self) -> None:
         """

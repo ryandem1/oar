@@ -151,7 +151,7 @@ def oar_results(oar_config) -> Results:
     if not oar_config.store_results:
         return
 
-    results.calculate()
+    results.completed_time = str(datetime.utcnow())
     if oar_config.log_summary:
         results.log_summary_statistics()
 
