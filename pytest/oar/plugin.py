@@ -78,7 +78,8 @@ def oar_test(request: FixtureRequest, oar_config, oar_results, oar_client) -> Te
     # Initializes the specific test_type
     try:
         test = test_type(**test.dict())
-    except ValidationError:
+    except ValidationError as e:
+        logger.warning(e)
         return  # Will not report on validation errors
 
     # Appends a test type onto a test if it is a specific type
