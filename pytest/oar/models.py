@@ -1,11 +1,11 @@
-import os
 import json
-import tomli
-
-from pydantic import BaseModel, BaseSettings, Field, Extra
+import os
 from enum import Enum
-from typing import Any, TypeVar
 from pathlib import Path
+from typing import Any, TypeVar
+
+import tomli
+from pydantic import BaseModel, BaseSettings, Field, Extra
 
 
 class EnvConfig(BaseSettings):
@@ -16,6 +16,8 @@ class EnvConfig(BaseSettings):
     host: str = "oar-service:8080"  # Base URL of the OAR instance to send results to
     send_results: bool = False  # This is what will control sending the results to the OAR instance
     store_results: bool = True  # This will enable the `oar_results` fixture, will not prevent sending results to OAR
+    output_file: bool = False  # This will output a JSON results file with name `oar-results-<utc-timestamp>.json`
+    output_dir: str = "oar-results"  # Controls where JSON results files will be stored. Relative to CWD
 
     class Config:
         env_prefix = "OAR_"
@@ -117,7 +119,11 @@ class Results(BaseModel):
     """
     Aggregate OAR result information for a run.
     """
+    start_time: str | None = None
+    completed_time: str | None = None
     tests: list[AnyTest] = []
     failed_ids: list[int] = []
     passed_ids: list[int] = []
+    need_analysis_ids: list[int] = []
+    need_resolution_ids: list[int] = []
     all_ids: list[int] = []

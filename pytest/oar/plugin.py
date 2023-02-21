@@ -1,10 +1,14 @@
+import json
 import logging
+import os
 import typing
+from datetime import datetime
+from pathlib import Path
 
 from pytest import fixture, FixtureRequest, hookimpl, Item, CallInfo, StashKey, CollectReport
+
 from oar.client import Client
 from oar.models import EnvConfig, Test, Outcome, Analysis, Resolution, Results
-
 
 logger = logging.getLogger("oar messenger")
 
@@ -141,21 +145,36 @@ def oar_results(oar_config) -> Results:
     results : Results
         OAR results to be enriched or analyzed
     """
-    results = Results()
+    results = Results(start_time=str(datetime.utcnow()))
 
     yield results
 
     if not oar_config.store_results:
         return
 
-    tests_needing_analysis = [test.id_ for test in results.tests if test.analysis == Analysis.NotAnalyzed]
-    tests_needing_resolution = [test.id_ for test in results.tests if test.resolution == Resolution.Unresolved]
+    results.completed_time = str(datetime.utcnow())
+    results.all_ids = results.failed_ids + results.passed_ids
+    results.need_analysis_ids = [test.id_ for test in results.tests if test.analysis == Analysis.NotAnalyzed]
+    results.need_resolution_ids = [test.id_ for test in results.tests if test.resolution == Resolution.Unresolved]
 
     logger.info("\n============OAR SUMMARY===============")
     logger.info(f"Passed IDs: {results.passed_ids}")
     logger.info(f"Failed IDs: {results.failed_ids}")
-    logger.info(f"Tests that need analysis: {tests_needing_analysis}")
-    logger.info(f"Tests that need resolution: {tests_needing_resolution}" + "\n======================================")
+    logger.info(f"Tests that need analysis: {results.need_analysis_ids}")
+    logger.info(
+        f"Tests that need resolution: {results.need_resolution_ids}" +
+        "\n======================================"
+    )
+
+    # Output JSON file
+    if not oar_config.output_file:
+        return
+
+    output_dir = Path(os.getcwd()) / oar_config.output_dir
+    output_dir.mkdir(exist_ok=True)
+    output_file_name = f"oar-results-{int(datetime.utcnow().timestamp())}.json"
+    with (output_dir / output_file_name).open("w") as output_file:
+        json.dump(results.dict(by_alias=True), output_file, indent=4)
 
 
 @fixture(scope="session")

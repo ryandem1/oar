@@ -1,6 +1,8 @@
-from requests import Session, Response
-from oar.models import Test
 from logging import getLogger
+
+from requests import Session, Response
+
+from oar.models import Test
 
 logger = getLogger("oar messenger")
 
