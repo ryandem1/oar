@@ -5,6 +5,7 @@ import typing
 from datetime import datetime
 from pathlib import Path
 
+from pydantic import ValidationError
 from pytest import fixture, FixtureRequest, hookimpl, Item, CallInfo, StashKey, CollectReport
 
 from oar.client import Client
@@ -75,7 +76,10 @@ def oar_test(request: FixtureRequest, oar_config, oar_results, oar_client) -> Te
     yield test
 
     # Initializes the specific test_type
-    test = test_type(**test.dict())
+    try:
+        test = test_type(**test.dict())
+    except ValidationError:
+        return  # Will not report on validation errors
 
     # Appends a test type onto a test if it is a specific type
     if type(test) != Test and "type" not in test.__dict__:

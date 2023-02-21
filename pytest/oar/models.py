@@ -21,7 +21,7 @@ class EnvConfig(BaseSettings):
     send_results: bool = False  # This is what will control sending the results to the OAR instance
     store_results: bool = True  # This will enable the `oar_results` fixture, will not prevent sending results to OAR
     log_summary: bool = True  # This will control the logging of summary statistics in a run
-    output_file: bool = False  # This will output a JSON results file with name `oar-results-<utc-timestamp>.json`
+    output_file: bool = True  # This will output a JSON results file with name `oar-results-<utc-timestamp>.json`
     output_dir: str = "oar-results"  # Controls where JSON results files will be stored. Relative to CWD
 
     class Config:
