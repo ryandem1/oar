@@ -38,7 +38,7 @@ def pytest_runtest_makereport(item: Item, call: CallInfo) -> None:
 
 
 @fixture
-def oar_test(request: FixtureRequest, oar_results, oar_client) -> Test:
+def oar_test(request: FixtureRequest, oar_config, oar_results, oar_client) -> Test:
     """
     Here is the primary fixture to interact with OAR in PyTest. If this fixture is in the fixture list, the result of
     the test will be uploaded to OAR after the test is complete. The OAR client is designed to not fail if something
@@ -115,7 +115,10 @@ def oar_test(request: FixtureRequest, oar_results, oar_client) -> Test:
     test.id_ = oar_client.add_test(test)
     logger.info(f"OAR Test Result ID: {test.id_}")
 
-    # Add Test to result
+    # Add Test to results if store_results is being used
+    if not oar_config.store_results:
+        return
+
     oar_results.tests.append(test)
     if test.outcome == Outcome.Passed:
         oar_results.passed_ids.append(test.id_)
@@ -124,9 +127,13 @@ def oar_test(request: FixtureRequest, oar_results, oar_client) -> Test:
 
 
 @fixture(scope="session")
-def oar_results() -> Results:
+def oar_results(oar_config) -> Results:
     """
-    Stores the results of all OAR tests through the session. Will be enriched through other fixtures
+    Stores the results of all OAR tests through the session. Will be enriched through other fixtures.
+
+    If the "store_results is False", this will yield a results object, but not do anything with it afterwards.
+
+    Will print a summary of tests at the end.
 
     Yields
     -------
@@ -134,7 +141,12 @@ def oar_results() -> Results:
         OAR results to be enriched or analyzed
     """
     results = Results()
+
     yield results
+
+    if not oar_config.store_results:
+        return
+
     tests_needing_analysis = [test.id_ for test in results.tests if test.analysis == Analysis.NotAnalyzed]
     tests_needing_resolution = [test.id_ for test in results.tests if test.resolution == Resolution.Unresolved]
 
