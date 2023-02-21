@@ -112,8 +112,9 @@ def oar_test(request: FixtureRequest, oar_config, oar_results, oar_client) -> Te
         if test.resolution is None:
             test.resolution = Resolution.NotNeeded
 
-    test.id_ = oar_client.add_test(test)
-    logger.info(f"OAR Test Result ID: {test.id_}")
+    if oar_config.send_results:
+        test.id_ = oar_client.add_test(test)
+        logger.info(f"OAR Test Result ID: {test.id_}")
 
     # Add Test to results if store_results is being used
     if not oar_config.store_results:

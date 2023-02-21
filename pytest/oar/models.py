@@ -13,8 +13,9 @@ class EnvConfig(BaseSettings):
     Primary environment configuration for the OAR PyTest plugin. Both is the structure for the environment and provides
     methods to easily access the environment.
     """
-    host: str = "oar-service:8080"
-    store_results: bool = True
+    host: str = "oar-service:8080"  # Base URL of the OAR instance to send results to
+    send_results: bool = False  # This is what will control sending the results to the OAR instance
+    store_results: bool = True  # This will enable the `oar_results` fixture, will not prevent sending results to OAR
 
     class Config:
         env_prefix = "OAR_"
