@@ -121,14 +121,8 @@ def oar_test(request: FixtureRequest, oar_config, oar_results, oar_client) -> Te
         logger.info(f"OAR Test Result ID: {test.id_}")
 
     # Add Test to results if store_results is being used
-    if not oar_config.store_results:
-        return
-
-    oar_results.tests.append(test)
-    if test.outcome == Outcome.Passed:
-        oar_results.passed_ids.append(test.id_)
-    else:
-        oar_results.failed_ids.append(test.id_)
+    if oar_config.store_results:
+        oar_results += test
 
 
 @fixture(scope="session")
@@ -145,26 +139,16 @@ def oar_results(oar_config) -> Results:
     results : Results
         OAR results to be enriched or analyzed
     """
-    results = Results(start_time=str(datetime.utcnow()))
+    results = Results()
 
     yield results
 
     if not oar_config.store_results:
         return
 
-    results.completed_time = str(datetime.utcnow())
-    results.all_ids = results.failed_ids + results.passed_ids
-    results.need_analysis_ids = [test.id_ for test in results.tests if test.analysis == Analysis.NotAnalyzed]
-    results.need_resolution_ids = [test.id_ for test in results.tests if test.resolution == Resolution.Unresolved]
-
-    logger.info("\n============OAR SUMMARY===============")
-    logger.info(f"Passed IDs: {results.passed_ids}")
-    logger.info(f"Failed IDs: {results.failed_ids}")
-    logger.info(f"Tests that need analysis: {results.need_analysis_ids}")
-    logger.info(
-        f"Tests that need resolution: {results.need_resolution_ids}" +
-        "\n======================================"
-    )
+    results.calculate()
+    if oar_config.log_summary:
+        results.log_summary_statistics()
 
     # Output JSON file
     if not oar_config.output_file:
