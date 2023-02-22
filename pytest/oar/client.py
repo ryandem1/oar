@@ -14,7 +14,7 @@ class Client:
 
     def __init__(self, base_url: str, session: Session = Session()):
         """
-        Initializes the client with a ``base_url`` for OAR, as well as a Session.
+        Initializes the client with a ``base_url`` for OAR, as well as a Session
 
         Parameters
         ----------
