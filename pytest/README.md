@@ -87,15 +87,6 @@ Each time OAR runs, by default, it will store an offline JSON result. Ours is:
             "analysis": "TrueNegative",
             "resolution": "NotNeeded"
         }
-    ],
-    "failed_ids": [],
-    "passed_ids": [
-        0
-    ],
-    "need_analysis_ids": [],
-    "need_resolution_ids": [],
-    "all_ids": [
-        0
     ]
 }
 ```
@@ -259,15 +250,6 @@ Let's take a look at our generated JSON test report now:
             },
             "owner": "Ryan"
         }
-    ],
-    "failed_ids": [],
-    "passed_ids": [
-        62
-    ],
-    "need_analysis_ids": [],
-    "need_resolution_ids": [],
-    "all_ids": [
-        62
     ]
 }
 ```
@@ -354,15 +336,6 @@ Let's see the result of this test:
             },
             "type": "APITest"
         }
-    ],
-    "failed_ids": [],
-    "passed_ids": [
-        65
-    ],
-    "need_analysis_ids": [],
-    "need_resolution_ids": [],
-    "all_ids": [
-        65
     ]
 }
 ```
