@@ -8,7 +8,7 @@ Scroll down for background behind the project.
 
 ## Links
 
-### [OAR Service Docker Image](https://hub.docker.com/repository/docker/ryandem1/oar-service/general)
+### [OAR Service Docker Image](https://hub.docker.com/r/ryandem1/oar-service)
 ### [OAR PyTest Plugin](https://pypi.org/project/pytest-oar/)
 
 ## Design
