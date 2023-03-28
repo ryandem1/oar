@@ -4,6 +4,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
+	"net/http"
 	"time"
 )
 
@@ -41,6 +42,10 @@ func GetRouter() *gin.Engine {
 	r.DELETE("/tests", testController.DeleteTests)
 	r.POST("/test", testController.CreateTest)
 	r.PATCH("/test", testController.PatchTest)
+	r.GET("/health", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"health": "healthy"})
+		return
+	})
 	return r
 }
 
