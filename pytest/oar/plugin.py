@@ -1,3 +1,4 @@
+import inspect
 import json
 import logging
 import os
@@ -68,8 +69,8 @@ def oar_test(request: FixtureRequest, oar_config, oar_results, oar_client) -> Te
     test_type = typing.get_type_hints(request.function).get(oar_test.__name__, Test)
 
     # Ensures that a test type is actually being used
-    if test_type != Test and Test not in test_type.__bases__:
-        raise TypeError("`oar_test` fixture type must inherit from `oar.Test`")
+    if test_type != Test and Test not in inspect.getmro(test_type):
+        raise TypeError(f"`oar_test` fixture type must inherit from `oar.Test` Bases: {inspect.getmro(test_type)}")
 
     # Initialize a base test container to yield back into the test to use, the specific type will be used later
     test = Test()
