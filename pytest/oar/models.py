@@ -104,6 +104,7 @@ class Test(BaseModel):
 
     class Config:
         extra = Extra.allow
+        use_enum_values = True
 
     def as_request_body(self) -> dict[str, Any]:
         """
