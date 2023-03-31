@@ -63,7 +63,7 @@ def oar_test(request: FixtureRequest, oar_config, oar_results, oar_client) -> Te
     Yields
     -------
     test : Test
-        Current OAR test to add attributes onto
+        Current OAR test to add attributes onto.
     """
     # This will get the type hint of the `oar_test` fixture, defaulting to `oar.Test` if one was not provided
     test_type = typing.get_type_hints(request.function).get(oar_test.__name__, Test)
