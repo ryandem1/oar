@@ -9,8 +9,8 @@ from pathlib import Path
 from pydantic import ValidationError
 from pytest import fixture, FixtureRequest, hookimpl, Item, CallInfo, StashKey, CollectReport
 
+from oar import EnvConfig, Test, Outcome, Analysis, Resolution, Results
 from oar.client import Client
-from oar.models import EnvConfig, Test, Outcome, Analysis, Resolution, Results
 
 logger = logging.getLogger("oar")
 
@@ -84,8 +84,8 @@ def oar_test(request: FixtureRequest, oar_config, oar_results, oar_client) -> Te
         return  # Will not report on validation errors
 
     # Appends a test type onto a test if it is a specific type
-    if type(test) != Test and "type" not in test.__dict__:
-        test.type = type(test).__name__
+    if type(test) != Test and "type" not in test.__dict__:  # noqa
+        test.type = type(test).__name__  # noqa
 
     # request.node is an "item" because we use the default "function" scope
     report = request.node.stash[phase_report_key]
