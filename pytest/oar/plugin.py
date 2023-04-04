@@ -9,8 +9,11 @@ from pathlib import Path
 from pydantic import ValidationError
 from pytest import fixture, FixtureRequest, hookimpl, Item, CallInfo, StashKey, CollectReport
 
-from oar import EnvConfig, Test, Outcome, Analysis, Resolution, Results
 from oar.client import Client
+from oar.config import EnvConfig
+from oar.consts import Outcome, Analysis, Resolution
+from oar.report import Report
+from oar.result import Test
 
 logger = logging.getLogger("oar")
 
@@ -120,7 +123,7 @@ def oar_test(request: FixtureRequest, oar_config, oar_results, oar_client) -> Te
 
 
 @fixture(scope="session")
-def oar_results(oar_config) -> Results:
+def oar_results(oar_config) -> Report:
     """
     Stores the results of all OAR tests through the session. Will be enriched through other fixtures.
 
@@ -133,7 +136,7 @@ def oar_results(oar_config) -> Results:
     results : Results
         OAR results to be enriched or analyzed
     """
-    results = Results()
+    results = Report()
 
     yield results
 

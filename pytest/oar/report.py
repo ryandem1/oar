@@ -3,12 +3,12 @@ from typing import TypeVar
 
 from pydantic import BaseModel
 
-from oar.test import Test
+from oar.result import Test
 
 AnyTest = TypeVar("AnyTest", bound=Test)
 
 
-class Results(BaseModel):
+class Report(BaseModel):
     """
     Aggregate OAR result information for a run.
     """

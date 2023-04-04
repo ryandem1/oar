@@ -2,7 +2,7 @@ from logging import getLogger
 
 from requests import Session, Response
 
-from oar.test import Test
+from oar.result import Test
 
 logger = getLogger("oar")
 
