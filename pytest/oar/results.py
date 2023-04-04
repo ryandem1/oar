@@ -1,14 +1,9 @@
-import logging
 from datetime import datetime
 from typing import TypeVar
 
 from pydantic import BaseModel
 
-from oar.consts import Outcome, Analysis, Resolution
 from oar.test import Test
-
-logger = logging.getLogger("oar")
-
 
 AnyTest = TypeVar("AnyTest", bound=Test)
 
@@ -35,40 +30,3 @@ class Results(BaseModel):
         None
         """
         self.tests.append(other)
-
-    @property
-    def passed_ids(self) -> list[int]:
-        return [test.id_ for test in self.tests if test.outcome == Outcome.Passed]
-
-    @property
-    def failed_ids(self) -> list[int]:
-        return [test.id_ for test in self.tests if test.outcome == Outcome.Failed]
-
-    @property
-    def all_ids(self) -> list[int]:
-        return [test.id_ for test in self.tests]
-
-    @property
-    def need_analysis_ids(self) -> list[int]:
-        return [test.id_ for test in self.tests if test.analysis == Analysis.NotAnalyzed]
-
-    @property
-    def need_resolution_ids(self) -> list[int]:
-        return [test.id_ for test in self.tests if test.resolution == Resolution.Unresolved]
-
-    def log_summary_statistics(self) -> None:
-        """
-        Will log out the summary statistic attributes through the ``oar messanger`` logger
-
-        Returns
-        -------
-        None
-        """
-        logger.info("\n============OAR SUMMARY===============")
-        logger.info(f"Passed IDs: {self.passed_ids}")
-        logger.info(f"Failed IDs: {self.failed_ids}")
-        logger.info(f"Tests that need analysis: {self.need_analysis_ids}")
-        logger.info(
-            f"Tests that need resolution: {self.need_resolution_ids}" +
-            "\n======================================"
-        )

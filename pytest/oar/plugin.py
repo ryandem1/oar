@@ -94,33 +94,21 @@ def oar_test(request: FixtureRequest, oar_config, oar_results, oar_client) -> Te
         test.summary = request.node.name
 
     if report["setup"].failed:
-        if test.outcome is None:
-            test.outcome = Outcome.Failed
-        if test.analysis is None:
-            test.analysis = Analysis.FalsePositive
-        if test.resolution is None:
-            test.resolution = Resolution.Unresolved
+        test.outcome = test.outcome or Outcome.Failed
+        test.analysis = test.analysis or Analysis.FalsePositive
+        test.resolution = test.resolution or Resolution.Unresolved
     elif ("call" not in report) or report["call"].failed:
-        if test.outcome is None:
-            test.outcome = Outcome.Failed
-        if test.analysis is None:
-            test.analysis = Analysis.NotAnalyzed
-        if test.resolution is None:
-            test.resolution = Resolution.Unresolved
+        test.outcome = test.outcome or Outcome.Failed
+        test.analysis = test.analysis or Analysis.NotAnalyzed
+        test.resolution = test.resolution or Resolution.Unresolved
     elif "teardown" in report and report["teardown"].failed:
-        if test.outcome is None:
-            test.outcome = Outcome.Failed
-        if test.analysis is None:
-            test.analysis = Analysis.FalsePositive
-        if test.resolution is None:
-            test.resolution = Resolution.Unresolved
+        test.outcome = test.outcome or Outcome.Failed
+        test.analysis = test.analysis or Analysis.FalsePositive
+        test.resolution = test.resolution or Resolution.Unresolved
     else:
-        if test.outcome is None:
-            test.outcome = Outcome.Passed
-        if test.analysis is None:
-            test.analysis = Analysis.TrueNegative
-        if test.resolution is None:
-            test.resolution = Resolution.NotNeeded
+        test.outcome = test.outcome or Outcome.Passed
+        test.analysis = test.analysis or Analysis.TrueNegative
+        test.resolution = test.resolution or Resolution.NotNeeded
 
     if oar_config.send_results:
         test.id_ = oar_client.add_test(test)
@@ -136,7 +124,7 @@ def oar_results(oar_config) -> Results:
     """
     Stores the results of all OAR tests through the session. Will be enriched through other fixtures.
 
-    If the "store_results is False", this will yield a results object, but not do anything with it afterwards.
+    If the "store_results is False", this will yield a results object, but not do anything with it afterward.
 
     Will print a summary of tests at the end.
 
@@ -153,8 +141,6 @@ def oar_results(oar_config) -> Results:
         return
 
     results.completed_time = str(datetime.utcnow())
-    if oar_config.log_summary:
-        results.log_summary_statistics()
 
     # Output JSON file
     if not oar_config.output_file:
