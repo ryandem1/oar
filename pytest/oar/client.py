@@ -1,6 +1,7 @@
 from logging import getLogger
 
 from requests import Session, Response
+from requests.adapters import Retry, HTTPAdapter
 
 from oar.result import Test
 
@@ -29,6 +30,9 @@ class Client:
         self.test_route = self.base_url + "/test"
         self.tests_route = self.base_url + "/tests"
 
+        retries = Retry(total=3, backoff_factor=0.2, status_forcelist=[500, 502, 503, 504])
+        session.mount('http://', HTTPAdapter(max_retries=retries))
+
     @staticmethod
     def __log_error_if_not_ok(response: Response) -> None:
         """
@@ -47,10 +51,10 @@ class Client:
         if not response.ok:
             error_message = "Error adding OAR test! Continuing, but you should probably look at this!"
             if response.text:
-                error_message += f"\nMessage: {response.json()}"
+                error_message += f"Status Code: {response.status_code}\nMessage: {response.json()}"
             logger.error(error_message)
 
-    def add_test(self, test: Test) -> int:
+    def add_test(self, test: Test) -> int | None:
         """
         Sends a POST to the ``/test`` endpoint to add a new test result.
 
@@ -61,12 +65,12 @@ class Client:
 
         Returns
         -------
-        test_id : int
-            ID of the created test
+        test_id : int | None
+            ID of the created test. Will return None on error
         """
         response = self.session.post(self.test_route, json=test.as_request_body())
         self.__log_error_if_not_ok(response)
-        test_id = response.json()
+        test_id = response.json() if response.ok else None
         return test_id
 
     def enrich_test(self, test: Test) -> None:
@@ -103,4 +107,4 @@ class Client:
         body = [{"ID": id_} for id_ in test_ids]
         response = self.session.delete(self.tests_route, json=body)
         self.__log_error_if_not_ok(response)
-        return 200 if response.status_code == 200 else 304
+        return response.status_code
