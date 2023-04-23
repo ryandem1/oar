@@ -123,9 +123,27 @@ func (tc *TestController) GetTests(c *gin.Context) {
 
 	// Build query
 	var wheres []string // Will contain all the "WHERE" clauses
+	var params []any    // These are the parameters to pass for the SQL prepared statement
+
 	SQL := "SELECT * FROM OAR_TESTS"
 	if len(query.IDs) > 0 {
 		wheres = append(wheres, "ID = ANY($)")
+		params = append(params, query.IDs)
+	}
+
+	if len(query.Outcomes) > 0 {
+		wheres = append(wheres, "OUTCOME = ANY($)")
+		params = append(params, query.Outcomes)
+	}
+
+	if len(query.Analyses) > 0 {
+		wheres = append(wheres, "ANALYSIS = ANY($)")
+		params = append(params, query.Analyses)
+	}
+
+	if len(query.Resolutions) > 0 {
+		wheres = append(wheres, "RESOLUTION = ANY($)")
+		params = append(params, query.Resolutions)
 	}
 
 	for i, where := range wheres {
@@ -137,7 +155,7 @@ func (tc *TestController) GetTests(c *gin.Context) {
 		}
 	}
 
-	tests, err := SelectTests(tc.DBPool, SQL, query.IDs)
+	tests, err := SelectTests(tc.DBPool, SQL, params...)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
 		return

@@ -122,12 +122,16 @@ func (t *Test) Equal(comparedTest *Test) bool {
 //
 // Additionally, Doc can be queried, it will partially match with the Postgres "contains (@>)" operator.
 // For more information, see: https://www.postgresql.org/docs/current/functions-json.html
+//
+// For the OAR attributes, there is no need to store them as enums here, there is not going to be any checking for
+// valid values when querying, if something is invalid, it will simply not match. It is up to the caller to properly
+// craft a TestQuery
 type TestQuery struct {
 	IDs            []uint64       `json:"ids,omitempty"`
 	Summaries      []string       `json:"summaries,omitempty"`
-	Outcomes       []Outcome      `json:"outcomes,omitempty"`
-	Analyses       []Analysis     `json:"analyses,omitempty"`
-	Resolutions    []Resolution   `json:"resolutions,omitempty"`
+	Outcomes       []string       `json:"outcomes,omitempty"`
+	Analyses       []string       `json:"analyses,omitempty"`
+	Resolutions    []string       `json:"resolutions,omitempty"`
 	CreatedBefore  *time.Time     `json:"createdBefore,omitempty"`
 	CreatedAfter   *time.Time     `json:"createdAfter,omitempty"`
 	ModifiedBefore *time.Time     `json:"modifiedBefore,omitempty"`
