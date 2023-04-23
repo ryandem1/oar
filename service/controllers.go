@@ -112,8 +112,12 @@ func (tc *TestController) DeleteTests(c *gin.Context) {
 	}
 }
 
-// GetTests will return tests of specified statuses/timeframes. There is no current way to query for
-// unstructured fields
+// GetTests is the primary way to query for tests. It looks for a TestQuery request body and limit and offset URL
+// params. Passing multiple values within an array will be treated as a logical 'OR' for querying that field. Multiple
+// attributes passed in the query will be treated as logical 'AND'.
+//
+// Additionally, the unstructured Doc can be queried, it will partially match with the Postgres "contains (@>)"
+// operator. For more information, see: https://www.postgresql.org/docs/current/functions-json.html
 func (tc *TestController) GetTests(c *gin.Context) {
 	var query TestQuery
 
