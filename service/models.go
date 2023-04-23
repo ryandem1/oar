@@ -127,14 +127,14 @@ func (t *Test) Equal(comparedTest *Test) bool {
 // valid values when querying, if something is invalid, it will simply not match. It is up to the caller to properly
 // craft a TestQuery
 type TestQuery struct {
-	IDs            []uint64       `json:"ids,omitempty"`
-	Summaries      []string       `json:"summaries,omitempty"`
-	Outcomes       []string       `json:"outcomes,omitempty"`
-	Analyses       []string       `json:"analyses,omitempty"`
-	Resolutions    []string       `json:"resolutions,omitempty"`
-	CreatedBefore  *time.Time     `json:"createdBefore,omitempty"`
-	CreatedAfter   *time.Time     `json:"createdAfter,omitempty"`
-	ModifiedBefore *time.Time     `json:"modifiedBefore,omitempty"`
-	ModifiedAfter  *time.Time     `json:"modifiedAfter,omitempty"`
-	Doc            map[string]any `json:"doc,omitempty"`
+	IDs            []uint64         `json:"ids,omitempty"`
+	Summaries      []string         `json:"summaries,omitempty"`
+	Outcomes       []string         `json:"outcomes,omitempty"`
+	Analyses       []string         `json:"analyses,omitempty"`
+	Resolutions    []string         `json:"resolutions,omitempty"`
+	CreatedBefore  *time.Time       `json:"createdBefore,omitempty"`
+	CreatedAfter   *time.Time       `json:"createdAfter,omitempty"`
+	ModifiedBefore *time.Time       `json:"modifiedBefore,omitempty"`
+	ModifiedAfter  *time.Time       `json:"modifiedAfter,omitempty"`
+	Docs           []map[string]any `json:"docs,omitempty"`
 }

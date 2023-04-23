@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx"
 	"net/http"
@@ -166,6 +168,25 @@ func (tc *TestController) GetTests(c *gin.Context) {
 		params = append(params, query.ModifiedAfter)
 	}
 
+	if len(query.Docs) > 0 {
+		docQuery := "("
+		for i, doc := range query.Docs {
+			if i == 0 {
+				docQuery += "doc @> '$'"
+			} else {
+				docQuery += " " + "OR" + " " + "doc @> '$'"
+			}
+			strDoc, err := json.Marshal(doc)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
+				return
+			}
+			docQuery = strings.Replace(docQuery, "$", string(strDoc), 1)
+		}
+		docQuery += ")"
+		wheres = append(wheres, docQuery)
+	}
+
 	for i, where := range wheres {
 		where = strings.Replace(where, "$", "$"+strconv.Itoa(i+1), 1) // formats string replacement params
 		if i == 0 {
@@ -174,6 +195,7 @@ func (tc *TestController) GetTests(c *gin.Context) {
 			SQL += " " + "AND" + " " + where
 		}
 	}
+	fmt.Println(SQL)
 
 	tests, err := SelectTests(tc.DBPool, SQL, params...)
 	if err != nil {
