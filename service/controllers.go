@@ -120,6 +120,21 @@ func (tc *TestController) DeleteTests(c *gin.Context) {
 // operator. For more information, see: https://www.postgresql.org/docs/current/functions-json.html
 func (tc *TestController) GetTests(c *gin.Context) {
 	var query TestQuery
+	limit, err := strconv.Atoi(c.DefaultQuery("limit", "250"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
+		return
+	}
+	offset, err := strconv.Atoi(c.DefaultQuery("offset", "0"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
+		return
+	}
+
+	if limit > 1000 { // Maximum limit
+		c.JSON(http.StatusBadRequest, ConvertErrToGinH(errors.New("maximum allowed limit is 1000")))
+		return
+	}
 
 	if err := c.BindJSON(&query); err != nil {
 		c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
@@ -198,6 +213,12 @@ func (tc *TestController) GetTests(c *gin.Context) {
 			SQL += " " + "AND" + " " + where
 		}
 	}
+
+	// Orders by the most recently modified tests being first
+	SQL += " " + "ORDER BY MODIFIED DESC"
+
+	// Add offset and limit
+	SQL += " " + "OFFSET " + strconv.Itoa(offset) + " " + "LIMIT" + " " + strconv.Itoa(limit)
 
 	tests, err := SelectTests(tc.DBPool, SQL, params...)
 	if err != nil {
