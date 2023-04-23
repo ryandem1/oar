@@ -7,6 +7,7 @@ import (
 	"github.com/jackc/pgx"
 	"github.com/magiconair/properties/assert"
 	"net/http"
+	"strconv"
 	"testing"
 	"time"
 )
@@ -289,5 +290,108 @@ func TestTestController_PatchTest(t *testing.T) {
 		controller.PatchTest(c)
 
 		assert.Equal(t, w.Code, 400)
+	})
+}
+
+// TestTestController_GetTests will ensure that the GetTests controller is querying correctly
+func TestTestController_GetTests(t *testing.T) {
+	controller := Fake.testController()
+	numTests := 5 // Amount of tests to make for the GetTests test
+
+	testIDs := make([]uint64, 0, numTests)
+
+	for i := 0; i < numTests; i++ {
+		testID, err := InsertTest(Fake.pgPool(), Fake.test())
+		if err != nil {
+			t.Error("setup error", err)
+		}
+		testIDs = append(testIDs, testID)
+	}
+
+	t.Run("valid query returns valid response", func(t *testing.T) {
+		c, w := Fake.ginContext()
+
+		query := TestQuery{
+			IDs:            testIDs,
+			Summaries:      nil,
+			Outcomes:       nil,
+			Analyses:       nil,
+			Resolutions:    nil,
+			CreatedBefore:  nil,
+			CreatedAfter:   nil,
+			ModifiedBefore: nil,
+			ModifiedAfter:  nil,
+			Docs:           nil,
+		}
+
+		requestBody, err := json.Marshal(query)
+		if err != nil {
+			t.Error("setup error", err)
+		}
+		req, err := http.NewRequest(http.MethodGet, "/tests", bytes.NewBuffer(requestBody))
+		if err != nil {
+			t.Error("setup error", err)
+		}
+
+		c.Request = req
+		controller.GetTests(c)
+		assert.Equal(t, w.Code, 200)
+
+		var queryResponse TestQueryResponse
+
+		err = json.Unmarshal(w.Body.Bytes(), &queryResponse)
+		if err != nil {
+			t.Error("response error", err)
+		}
+
+		returnedTestIDs := make([]uint64, numTests, numTests)
+		for i, test := range queryResponse.Tests {
+			returnedTestIDs[len(queryResponse.Tests)-1-i] = test.ID
+		}
+
+		assert.Equal(t, returnedTestIDs, testIDs)
+	})
+
+	t.Run("limit and offset work", func(t *testing.T) {
+		c, w := Fake.ginContext()
+
+		query := TestQuery{
+			IDs:            testIDs,
+			Summaries:      nil,
+			Outcomes:       nil,
+			Analyses:       nil,
+			Resolutions:    nil,
+			CreatedBefore:  nil,
+			CreatedAfter:   nil,
+			ModifiedBefore: nil,
+			ModifiedAfter:  nil,
+			Docs:           nil,
+		}
+
+		requestBody, err := json.Marshal(query)
+		if err != nil {
+			t.Error("setup error", err)
+		}
+		req, err := http.NewRequest(
+			http.MethodGet,
+			"/tests?limit="+strconv.Itoa(numTests-2)+"&offset=3",
+			bytes.NewBuffer(requestBody),
+		)
+		if err != nil {
+			t.Error("setup error", err)
+		}
+
+		c.Request = req
+		controller.GetTests(c)
+		assert.Equal(t, w.Code, 200)
+
+		var queryResponse TestQueryResponse
+
+		err = json.Unmarshal(w.Body.Bytes(), &queryResponse)
+		if err != nil {
+			t.Error("response error", err)
+		}
+
+		assert.Equal(t, len(queryResponse.Tests), numTests-3)
 	})
 }

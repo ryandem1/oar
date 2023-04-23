@@ -138,3 +138,10 @@ type TestQuery struct {
 	ModifiedAfter  *time.Time       `json:"modifiedAfter,omitempty"`
 	Docs           []map[string]any `json:"docs,omitempty"`
 }
+
+// TestQueryResponse is what a query request will return. Includes the return results, as well as metadata about the
+// response.
+type TestQueryResponse struct {
+	Count uint64  `json:"count"`
+	Tests []*Test `json:"tests"`
+}

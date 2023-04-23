@@ -229,6 +229,7 @@ func (tc *TestController) GetTests(c *gin.Context) {
 	if tests == nil {
 		tests = []*Test{}
 	}
-	responseBody := map[string]any{"count": len(tests), "tests": tests}
-	c.JSON(200, responseBody)
+
+	response := TestQueryResponse{Count: uint64(len(tests)), Tests: tests}
+	c.JSON(200, response)
 }
