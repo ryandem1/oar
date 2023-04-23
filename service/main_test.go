@@ -20,6 +20,18 @@ func TestGetRouter(t *testing.T) {
 
 	expectedRoutes := []gin.RouteInfo{
 		{
+			Method:      http.MethodGet,
+			Path:        "/tests",
+			Handler:     "github.com/ryandem1/oar.(*TestController).GetTests-fm",
+			HandlerFunc: nil,
+		},
+		{
+			Method:      http.MethodGet,
+			Path:        "/health",
+			Handler:     "github.com/ryandem1/oar.GetRouter.func2",
+			HandlerFunc: nil,
+		},
+		{
 			Method:      http.MethodDelete,
 			Path:        "/tests",
 			Handler:     "github.com/ryandem1/oar.(*TestController).DeleteTests-fm",
