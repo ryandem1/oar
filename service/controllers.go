@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx"
 	"net/http"
@@ -195,7 +194,6 @@ func (tc *TestController) GetTests(c *gin.Context) {
 			SQL += " " + "AND" + " " + where
 		}
 	}
-	fmt.Println(SQL)
 
 	tests, err := SelectTests(tc.DBPool, SQL, params...)
 	if err != nil {
@@ -203,5 +201,9 @@ func (tc *TestController) GetTests(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, tests)
+	if tests == nil {
+		tests = []*Test{}
+	}
+	responseBody := map[string]any{"count": len(tests), "tests": tests}
+	c.JSON(200, responseBody)
 }
