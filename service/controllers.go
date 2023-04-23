@@ -146,6 +146,26 @@ func (tc *TestController) GetTests(c *gin.Context) {
 		params = append(params, query.Resolutions)
 	}
 
+	if query.CreatedBefore != nil {
+		wheres = append(wheres, "CREATED < $")
+		params = append(params, query.CreatedBefore)
+	}
+
+	if query.CreatedAfter != nil {
+		wheres = append(wheres, "CREATED > $")
+		params = append(params, query.CreatedAfter)
+	}
+
+	if query.ModifiedBefore != nil {
+		wheres = append(wheres, "MODIFIED < $")
+		params = append(params, query.ModifiedBefore)
+	}
+
+	if query.ModifiedAfter != nil {
+		wheres = append(wheres, "MODIFIED > $")
+		params = append(params, query.ModifiedAfter)
+	}
+
 	for i, where := range wheres {
 		where = strings.Replace(where, "$", "$"+strconv.Itoa(i+1), 1) // formats string replacement params
 		if i == 0 {
