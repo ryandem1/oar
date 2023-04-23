@@ -298,10 +298,11 @@ func TestTestController_GetTests(t *testing.T) {
 	controller := Fake.testController()
 	numTests := 5 // Amount of tests to make for the GetTests test
 
+	generatedTests := multiple(numTests, Fake.test)
 	testIDs := make([]uint64, 0, numTests)
 
 	for i := 0; i < numTests; i++ {
-		testID, err := InsertTest(Fake.pgPool(), Fake.test())
+		testID, err := InsertTest(Fake.pgPool(), generatedTests[i])
 		if err != nil {
 			t.Error("setup error", err)
 		}
@@ -393,5 +394,52 @@ func TestTestController_GetTests(t *testing.T) {
 		}
 
 		assert.Equal(t, len(queryResponse.Tests), numTests-3)
+	})
+
+	t.Run("oar filtering works", func(t *testing.T) {
+		c, w := Fake.ginContext()
+
+		outcomeFilter := generatedTests[0].Outcome
+		analysisFilter := generatedTests[0].Analysis
+		resolutionFilter := generatedTests[0].Resolution
+
+		query := TestQuery{
+			IDs:            testIDs,
+			Summaries:      nil,
+			Outcomes:       []string{string(outcomeFilter)},
+			Analyses:       []string{string(analysisFilter)},
+			Resolutions:    []string{string(resolutionFilter)},
+			CreatedBefore:  nil,
+			CreatedAfter:   nil,
+			ModifiedBefore: nil,
+			ModifiedAfter:  nil,
+			Docs:           nil,
+		}
+
+		requestBody, err := json.Marshal(query)
+		if err != nil {
+			t.Error("setup error", err)
+		}
+		req, err := http.NewRequest(http.MethodGet, "/tests", bytes.NewBuffer(requestBody))
+		if err != nil {
+			t.Error("setup error", err)
+		}
+
+		c.Request = req
+		controller.GetTests(c)
+		assert.Equal(t, w.Code, 200)
+
+		var queryResponse TestQueryResponse
+
+		err = json.Unmarshal(w.Body.Bytes(), &queryResponse)
+		if err != nil {
+			t.Error("response error", err)
+		}
+
+		for _, test := range queryResponse.Tests {
+			assert.Equal(t, test.Outcome, outcomeFilter)
+			assert.Equal(t, test.Analysis, analysisFilter)
+			assert.Equal(t, test.Resolution, resolutionFilter)
+		}
 	})
 }
