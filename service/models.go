@@ -123,14 +123,14 @@ func (t *Test) Equal(comparedTest *Test) bool {
 // Additionally, Doc can be queried, it will partially match with the Postgres "contains (@>)" operator.
 // For more information, see: https://www.postgresql.org/docs/current/functions-json.html
 type TestQuery struct {
-	IDs            []uint64       `json:"id,omitempty"`
+	IDs            []uint64       `json:"ids,omitempty"`
 	Summaries      []string       `json:"summaries,omitempty"`
 	Outcomes       []Outcome      `json:"outcomes,omitempty"`
 	Analyses       []Analysis     `json:"analyses,omitempty"`
 	Resolutions    []Resolution   `json:"resolutions,omitempty"`
-	CreatedBefore  time.Time      `json:"createdBefore,omitempty"`
-	CreatedAfter   time.Time      `json:"createdAfter,omitempty"`
-	ModifiedBefore time.Time      `json:"modifiedBefore,omitempty"`
-	ModifiedAfter  time.Time      `json:"modifiedAfter,omitempty"`
+	CreatedBefore  *time.Time     `json:"createdBefore,omitempty"`
+	CreatedAfter   *time.Time     `json:"createdAfter,omitempty"`
+	ModifiedBefore *time.Time     `json:"modifiedBefore,omitempty"`
+	ModifiedAfter  *time.Time     `json:"modifiedAfter,omitempty"`
 	Doc            map[string]any `json:"doc,omitempty"`
 }

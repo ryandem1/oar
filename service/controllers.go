@@ -5,6 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx"
 	"net/http"
+	"strconv"
+	"strings"
 )
 
 // TestController will maintain a database pool for all test controllers
@@ -107,4 +109,39 @@ func (tc *TestController) DeleteTests(c *gin.Context) {
 	} else {
 		c.Status(http.StatusOK)
 	}
+}
+
+// GetTests will return tests of specified statuses/timeframes. There is no current way to query for
+// unstructured fields
+func (tc *TestController) GetTests(c *gin.Context) {
+	var query TestQuery
+
+	if err := c.BindJSON(&query); err != nil {
+		c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
+		return
+	}
+
+	// Build query
+	var wheres []string // Will contain all the "WHERE" clauses
+	SQL := "SELECT * FROM OAR_TESTS"
+	if len(query.IDs) > 0 {
+		wheres = append(wheres, "ID = ANY($)")
+	}
+
+	for i, where := range wheres {
+		where = strings.Replace(where, "$", "$"+strconv.Itoa(i+1), 1) // formats string replacement params
+		if i == 0 {
+			SQL += " " + "WHERE" + " " + where
+		} else {
+			SQL += " " + "AND" + " " + where
+		}
+	}
+
+	tests, err := SelectTests(tc.DBPool, SQL, query.IDs)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
+		return
+	}
+
+	c.JSON(200, tests)
 }
