@@ -119,7 +119,7 @@ portion of the process. This also allows the test to become further enriched wit
 phase. This can include information like ticket number/comments/trace links.
 
 
-#### Service
+### Service
 
 The backend is quite simple, it is there to provide an interface for the CUD test operations. It also has endpoints to 
 facilitate test enrichment in the analysis/resolution phases. It connects to a Postgres database and stores tests as 
@@ -143,3 +143,131 @@ partially structured, partially unstructured data.
 
 > **DELETE /tests**  
 > Can batch delete tests by IDs.
+
+### Querying for tests
+To query for tests, send GET requests to the ``/tests``endpoint. The endpoint is quite flexible, so it felt like it 
+needed its own guide.
+
+The following is the Go model for the query format:
+
+``` go
+type TestQuery struct {
+	IDs            []uint64         `json:"ids,omitempty"`
+	Summaries      []string         `json:"summaries,omitempty"`
+	Outcomes       []string         `json:"outcomes,omitempty"`
+	Analyses       []string         `json:"analyses,omitempty"`
+	Resolutions    []string         `json:"resolutions,omitempty"`
+	CreatedBefore  *time.Time       `json:"createdBefore,omitempty"`
+	CreatedAfter   *time.Time       `json:"createdAfter,omitempty"`
+	ModifiedBefore *time.Time       `json:"modifiedBefore,omitempty"`
+	ModifiedAfter  *time.Time       `json:"modifiedAfter,omitempty"`
+	Docs           []map[string]any `json:"docs,omitempty"`
+}
+```
+
+To simply return all tests (there is a default limit of 250):
+
+``` json
+GET /tests
+Content-Type: application/json
+
+{}
+```
+
+Responses look like:
+
+``` json
+{
+  "count": 55,
+  "tests": [...]
+}
+```
+
+Tests will be returned will be returned with the most recent tests firsts.
+
+Test queries are paginated and URL parameters "offset" and "limit" can be used to interact.
+
+``` json
+GET /tests?limit=50&offset=5
+Content-Type: application/json
+
+{
+    "count": 50,
+    "tests": [...]
+}
+```
+
+Each filter option (with the exceptions of the time filters) take arrays as inputs.
+
+Querying with multiple values in an array will be treated as a logical "OR". For example, if I wanted to query for all 
+tests that resulted in a quick fix or a ticket creation, I can send the following request:
+
+``` json
+GET /tests
+Content-Type: application/json
+
+{
+    resolutions: ["QuickFix", "TicketCreated"]
+}
+```
+
+Further, if I wanted to only return true positives from that, I can send:
+
+``` json
+GET /tests
+Content-Type: application/json
+
+{
+    analyses: ["TruePositive"]
+    resolutions: ["QuickFix", "TicketCreated"]
+}
+```
+
+Combining multiple filter attributes treats the arrays as logical "AND"s.
+
+Querying for dates must be done in UTC format:
+
+``` json
+GET /tests
+Content-Type: application/json
+
+{
+    "createdBefore": "2023-04-24T03:11:25.906888Z"
+}
+```
+
+Summaries are also a logical OR array, but they accept partial text matches and will use regex to find all tests with 
+summaries that contain the values passed. 
+
+For example, if I was looking for failed tests that mentioned "email" or "text message" in the summary, I can send the 
+following query:
+
+``` json
+GET /tests
+Content-Type: application/json
+
+{
+    "summaries": ["email", "text message"],
+    "outcomes": ["Passed"]
+}
+```
+
+Unstructured data can also be queried for. To handle this, partial structural matching is used.
+It uses the Postgres "contains (@>)" operator. For more information, see: https://www.postgresql.org/docs/current/functions-json.html
+
+If I was passing a dynamic attribute "type" to my test results and wanted the query to return only "UI" or
+"integration" tests, I can format my query like so:
+
+``` json
+GET /tests
+Content-Type: application/json
+
+{
+    "docs": [
+        {"type": "UI"},
+        {"type": "integration"}
+    ]
+}
+```
+
+The dynamic filtering is powerful and can partially match arrays and deeply nested structures.
