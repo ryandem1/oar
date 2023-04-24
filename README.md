@@ -11,10 +11,6 @@ Scroll down for background behind the project.
 ### [OAR Service Docker Image](https://hub.docker.com/r/ryandem1/oar-service)
 ### [OAR PyTest Plugin](https://pypi.org/project/pytest-oar/)
 
-## Design
-
-![OAR Design Doc](static/oarDesign.png "OAR Design Doc")
-
 ## Background
 
 There seems to be a fundamental flaw with most common test case management systems that are currently widely
