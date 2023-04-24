@@ -442,4 +442,47 @@ func TestTestController_GetTests(t *testing.T) {
 			assert.Equal(t, test.Resolution, resolutionFilter)
 		}
 	})
+
+	t.Run("oar summary filtering works", func(t *testing.T) {
+		c, w := Fake.ginContext()
+
+		summaryFilter := generatedTests[0].Summary
+
+		query := TestQuery{
+			IDs:            testIDs,
+			Summaries:      []string{generatedTests[0].Summary},
+			Outcomes:       nil,
+			Analyses:       nil,
+			Resolutions:    nil,
+			CreatedBefore:  nil,
+			CreatedAfter:   nil,
+			ModifiedBefore: nil,
+			ModifiedAfter:  nil,
+			Docs:           nil,
+		}
+
+		requestBody, err := json.Marshal(query)
+		if err != nil {
+			t.Error("setup error", err)
+		}
+		req, err := http.NewRequest(http.MethodGet, "/tests", bytes.NewBuffer(requestBody))
+		if err != nil {
+			t.Error("setup error", err)
+		}
+
+		c.Request = req
+		controller.GetTests(c)
+		assert.Equal(t, w.Code, 200)
+
+		var queryResponse TestQueryResponse
+
+		err = json.Unmarshal(w.Body.Bytes(), &queryResponse)
+		if err != nil {
+			t.Error("response error", err)
+		}
+
+		for _, test := range queryResponse.Tests {
+			assert.Equal(t, test.Summary, summaryFilter)
+		}
+	})
 }
