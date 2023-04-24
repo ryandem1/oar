@@ -84,11 +84,10 @@ software quality.
 While the OAR framework does not have to necessarily be tied to any one specific implementation, I set out to make an 
 implementation myself. This implementation includes:
 
-- A minimal backend written in Go that handles CUD test/action operations
+- A minimal backend written in Go that handles CRUD test/action operations
 - A Postgres DB that will be used for minimal relational data, more for the impressive BJSON performance. Most test
 results will be schema-less documents.
 
-The 
 The hope is that test results have streamlined actionability and triaging software quality issues becomes engaging to all. 
 
 ### Concepts
@@ -139,15 +138,8 @@ partially structured, partially unstructured data.
 > Because tests get enriched through the OAR process, partial updates are more convenient for applying
 > the updates.
 
+> **GET /tests**  
+> Sending a get request to the ``/tests`` endpoint is the primary way to query for existing test results.
+
 > **DELETE /tests**  
 > Can batch delete tests by IDs.
-
-
-### Insights
-Once the tests have been staged in the Postgres table, the idea is to query/analyze your results to gather insights.
-
-Some helpful common measurements to track will be:
-
-- Accuracy = ``(TruePositives + TrueNegatives) / (TruePositives + TrueNegatives + FalsePositives + FalseNegatives) ``
-- Precision = ``TruePositives / (TruePositives + FalsePositives)``
-- Recall = ``TruePositives / (TruePositives + FalseNegatives)``
