@@ -167,10 +167,11 @@ type TestQuery struct {
 
 To simply return all tests (there is a default limit of 250):
 
-``` json
+```
 GET /tests
 Content-Type: application/json
-
+```
+``` json
 {}
 ```
 
@@ -187,10 +188,11 @@ Tests will be returned will be returned with the most recent tests firsts.
 
 Test queries are paginated and URL parameters "offset" and "limit" can be used to interact.
 
-``` json
+```
 GET /tests?limit=50&offset=5
 Content-Type: application/json
-
+```
+``` json
 {
     "count": 50,
     "tests": [...]
@@ -202,10 +204,11 @@ Each filter option (with the exceptions of the time filters) take arrays as inpu
 Querying with multiple values in an array will be treated as a logical "OR". For example, if I wanted to query for all 
 tests that resulted in a quick fix or a ticket creation, I can send the following request:
 
-``` json
+```
 GET /tests
 Content-Type: application/json
-
+```
+``` json
 {
     resolutions: ["QuickFix", "TicketCreated"]
 }
@@ -213,10 +216,11 @@ Content-Type: application/json
 
 Further, if I wanted to only return true positives from that, I can send:
 
-``` json
+```
 GET /tests
 Content-Type: application/json
-
+```
+``` json
 {
     analyses: ["TruePositive"]
     resolutions: ["QuickFix", "TicketCreated"]
@@ -227,10 +231,11 @@ Combining multiple filter attributes treats the arrays as logical "AND"s.
 
 Querying for dates must be done in UTC format:
 
-``` json
+```
 GET /tests
 Content-Type: application/json
-
+```
+``` json
 {
     "createdBefore": "2023-04-24T03:11:25.906888Z"
 }
@@ -242,10 +247,11 @@ summaries that contain the values passed.
 For example, if I was looking for failed tests that mentioned "email" or "text message" in the summary, I can send the 
 following query:
 
-``` json
+```
 GET /tests
 Content-Type: application/json
-
+```
+``` json
 {
     "summaries": ["email", "text message"],
     "outcomes": ["Passed"]
@@ -258,10 +264,11 @@ It uses the Postgres "contains (@>)" operator. For more information, see: https:
 If I was passing a dynamic attribute "type" to my test results and wanted the query to return only "UI" or
 "integration" tests, I can format my query like so:
 
-``` json
+```
 GET /tests
 Content-Type: application/json
-
+```
+``` json
 {
     "docs": [
         {"type": "UI"},
