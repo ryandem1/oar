@@ -394,6 +394,7 @@ func TestTestController_GetTests(t *testing.T) {
 		}
 
 		assert.Equal(t, len(queryResponse.Tests), numTests-3)
+		assert.Equal(t, queryResponse.Count, uint64(numTests-3))
 	})
 
 	t.Run("oar filtering works", func(t *testing.T) {
@@ -484,5 +485,35 @@ func TestTestController_GetTests(t *testing.T) {
 		for _, test := range queryResponse.Tests {
 			assert.Equal(t, test.Summary, summaryFilter)
 		}
+	})
+
+	t.Run("filter limit works", func(t *testing.T) {
+		c, w := Fake.ginContext()
+
+		query := TestQuery{
+			IDs:            testIDs,
+			Summaries:      nil,
+			Outcomes:       nil,
+			Analyses:       nil,
+			Resolutions:    nil,
+			CreatedBefore:  nil,
+			CreatedAfter:   nil,
+			ModifiedBefore: nil,
+			ModifiedAfter:  nil,
+			Docs:           nil,
+		}
+
+		requestBody, err := json.Marshal(query)
+		if err != nil {
+			t.Error("setup error", err)
+		}
+		req, err := http.NewRequest(http.MethodGet, "/tests?limit=1001", bytes.NewBuffer(requestBody))
+		if err != nil {
+			t.Error("setup error", err)
+		}
+
+		c.Request = req
+		controller.GetTests(c)
+		assert.Equal(t, w.Code, 400)
 	})
 }
