@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx"
 	"github.com/magiconair/properties/assert"
@@ -688,5 +689,49 @@ func TestTestController_GetTests(t *testing.T) {
 
 		assert.Equal(t, len(queryResponse.Tests), numTests)
 		assert.Equal(t, queryResponse.Count, uint64(numTests))
+	})
+
+	t.Run("docs filter work", func(t *testing.T) {
+		c, w := Fake.ginContext()
+
+		genTest := generatedTests[0]
+
+		query := TestQuery{
+			IDs:            testIDs,
+			Summaries:      nil,
+			Outcomes:       nil,
+			Analyses:       nil,
+			Resolutions:    nil,
+			CreatedBefore:  nil,
+			CreatedAfter:   nil,
+			ModifiedBefore: nil,
+			ModifiedAfter:  nil,
+			Docs:           []map[string]any{genTest.Doc},
+		}
+
+		requestBody, err := json.Marshal(query)
+		if err != nil {
+			t.Error("setup error", err)
+		}
+
+		req, err := http.NewRequest(http.MethodGet, "/tests", bytes.NewBuffer(requestBody))
+		if err != nil {
+			t.Error("setup error", err)
+		}
+
+		c.Request = req
+		controller.GetTests(c)
+		assert.Equal(t, w.Code, 200)
+
+		var queryResponse TestQueryResponse
+
+		err = json.Unmarshal(w.Body.Bytes(), &queryResponse)
+		if err != nil {
+			t.Error("response error", err)
+		}
+
+		for _, test := range queryResponse.Tests {
+			assert.Equal(t, fmt.Sprint(test.Doc), fmt.Sprint(genTest.Doc))
+		}
 	})
 }
