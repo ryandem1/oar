@@ -114,3 +114,34 @@ func (t *Test) Equal(comparedTest *Test) bool {
 
 	return cmp.Equal(t.Doc, comparedTest.Doc)
 }
+
+// TestQuery is a structure that can define a query request for existing tests. It is the same as the Test
+// structure, except it takes array inputs for each field. Passing multiple values within an array will be treated
+// as a logical 'OR' for querying that field. Multiple attributes passed in the query will be treated as logical
+// 'AND'
+//
+// Additionally, Doc can be queried, it will partially match with the Postgres "contains (@>)" operator.
+// For more information, see: https://www.postgresql.org/docs/current/functions-json.html
+//
+// For the OAR attributes, there is no need to store them as enums here, there is not going to be any checking for
+// valid values when querying, if something is invalid, it will simply not match. It is up to the caller to properly
+// craft a TestQuery
+type TestQuery struct {
+	IDs            []uint64         `json:"ids,omitempty"`
+	Summaries      []string         `json:"summaries,omitempty"`
+	Outcomes       []string         `json:"outcomes,omitempty"`
+	Analyses       []string         `json:"analyses,omitempty"`
+	Resolutions    []string         `json:"resolutions,omitempty"`
+	CreatedBefore  *time.Time       `json:"createdBefore,omitempty"`
+	CreatedAfter   *time.Time       `json:"createdAfter,omitempty"`
+	ModifiedBefore *time.Time       `json:"modifiedBefore,omitempty"`
+	ModifiedAfter  *time.Time       `json:"modifiedAfter,omitempty"`
+	Docs           []map[string]any `json:"docs,omitempty"`
+}
+
+// TestQueryResponse is what a query request will return. Includes the return results, as well as metadata about the
+// response.
+type TestQueryResponse struct {
+	Count uint64  `json:"count"`
+	Tests []*Test `json:"tests"`
+}

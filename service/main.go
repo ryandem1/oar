@@ -39,6 +39,7 @@ func GetRouter() *gin.Engine {
 		MaxAge: 12 * time.Hour,
 	}))
 
+	r.GET("/tests", testController.GetTests)
 	r.DELETE("/tests", testController.DeleteTests)
 	r.POST("/test", testController.CreateTest)
 	r.PATCH("/test", testController.PatchTest)
