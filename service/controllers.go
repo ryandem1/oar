@@ -117,7 +117,7 @@ func (tc *TestController) DeleteTests(c *gin.Context) {
 // attributes passed in the query will be treated as logical 'AND'.
 //
 // Additionally, the unstructured Doc can be queried, it will partially match with the Postgres "contains (@>)"
-// operator. For more information, see: https://www.postgresql.org/docs/current/functions-json.html.
+// operator. For more information, see: https://www.postgresql.org/docs/current/functions-json.html
 func (tc *TestController) GetTests(c *gin.Context) {
 	var query TestQuery
 	limit, err := strconv.Atoi(c.DefaultQuery("limit", "250"))
