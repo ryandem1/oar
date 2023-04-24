@@ -151,6 +151,10 @@ func (tc *TestController) GetTests(c *gin.Context) {
 		params = append(params, query.IDs)
 	}
 
+	if len(query.Summaries) > 0 {
+		wheres = append(wheres, "SUMMARY ~* "+"'"+strings.Join(query.Summaries, "|")+"'")
+	}
+
 	if len(query.Outcomes) > 0 {
 		wheres = append(wheres, "OUTCOME = ANY($)")
 		params = append(params, query.Outcomes)
