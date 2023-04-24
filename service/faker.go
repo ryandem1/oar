@@ -24,10 +24,7 @@ type Faker struct {
 func newFaker() *Faker {
 	seed := time.Now().UnixNano()
 	rand.Seed(seed)
-	config, err := NewConfig() // Gets config from environment
-	if err != nil {
-		panic(err)
-	}
+	config, _ := NewConfig() // Gets config from environment
 	return &Faker{seed: seed, envConfig: config}
 }
 
