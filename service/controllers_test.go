@@ -695,6 +695,7 @@ func TestTestController_GetTests(t *testing.T) {
 		c, w := Fake.ginContext()
 
 		genTest := generatedTests[0]
+		genTest2 := generatedTests[1]
 
 		query := TestQuery{
 			IDs:            testIDs,
@@ -706,7 +707,7 @@ func TestTestController_GetTests(t *testing.T) {
 			CreatedAfter:   nil,
 			ModifiedBefore: nil,
 			ModifiedAfter:  nil,
-			Docs:           []map[string]any{genTest.Doc},
+			Docs:           []map[string]any{genTest.Doc, genTest2.Doc},
 		}
 
 		requestBody, err := json.Marshal(query)
@@ -731,7 +732,50 @@ func TestTestController_GetTests(t *testing.T) {
 		}
 
 		for _, test := range queryResponse.Tests {
-			assert.Equal(t, fmt.Sprint(test.Doc), fmt.Sprint(genTest.Doc))
+			passed := fmt.Sprint(test.Doc) == fmt.Sprint(genTest.Doc) || fmt.Sprint(test.Doc) == fmt.Sprint(genTest2.Doc)
+			assert.Equal(t, passed, true)
 		}
+	})
+
+	t.Run("empty query doesn't fail", func(t *testing.T) {
+		c, w := Fake.ginContext()
+
+		tomorrow := time.Now().AddDate(0, 0, 1)
+
+		query := TestQuery{
+			IDs:            testIDs,
+			Summaries:      nil,
+			Outcomes:       nil,
+			Analyses:       nil,
+			Resolutions:    nil,
+			CreatedBefore:  nil,
+			CreatedAfter:   &tomorrow,
+			ModifiedBefore: nil,
+			ModifiedAfter:  nil,
+			Docs:           nil,
+		}
+
+		requestBody, err := json.Marshal(query)
+		if err != nil {
+			t.Error("setup error", err)
+		}
+
+		req, err := http.NewRequest(http.MethodGet, "/tests", bytes.NewBuffer(requestBody))
+		if err != nil {
+			t.Error("setup error", err)
+		}
+
+		c.Request = req
+		controller.GetTests(c)
+		assert.Equal(t, w.Code, 200)
+
+		var queryResponse TestQueryResponse
+
+		err = json.Unmarshal(w.Body.Bytes(), &queryResponse)
+		if err != nil {
+			t.Error("response error", err)
+		}
+
+		assert.Equal(t, queryResponse.Count, uint64(0))
 	})
 }
