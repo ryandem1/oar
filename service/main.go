@@ -10,7 +10,7 @@ import (
 
 var EnvConfig = GetConfig()
 
-// GetConfig will return the Config from the environment or panic if something goes wrong
+// GetConfig will return the Config from the environment or panic if something goes wrong.
 func GetConfig() *Config {
 	config, err := NewConfig()
 	if err != nil {
