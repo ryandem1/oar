@@ -237,3 +237,25 @@ func (tc *TestController) GetTests(c *gin.Context) {
 	response := TestQueryResponse{Count: uint64(len(tests)), Tests: tests}
 	c.JSON(200, response)
 }
+
+// EncodeSearchQuery will take a TestQuery as a body and encode it in base64 to send to the GET endpoint.
+// This is an intermediate step for 2 reasons:
+//
+// 1.) By encoding the request, it allows for a complex search query language without complex GET URL params.
+// I had originally made the GET endpoint take a request body, but that is not by HTTP 1.1 spec.
+//
+// 2.) This will also allow search queries to be sent via url which will be helpful.
+func EncodeSearchQuery(c *gin.Context) {
+	var query TestQuery
+	if err := c.BindJSON(&query); err != nil {
+		c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
+		return
+	}
+
+	encodedString, err := encodeToBase64(query)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
+		return
+	}
+	c.JSON(200, encodedString)
+}
