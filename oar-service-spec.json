@@ -1,0 +1,94 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "oar-service",
+    "description": "OAR Test Reporting Ingestion Service",
+    "version": "1.2.0",
+    "contact": {
+      "name": "Ryan",
+      "email": "testableproject@gmail.com",
+      "url": "https://github.com/ryandem1/oar/"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://github.com/ryandem1/oar/blob/main/LICENSE.md"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://{oarInstance}:{port}",
+      "description": "Self-Hosted OAR Instance",
+      "variables": {
+        "oarInstance": {
+          "default": "localhost",
+          "description": "The self-hosted instance of the oar-service"
+        },
+        "port": {
+          "enum": [
+            "8080",
+            "8000",
+            "5000",
+            "80",
+            "443"
+          ],
+          "default": "8080"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/test": {
+      "post": {
+        "summary": "Add new test result",
+        "tags": [],
+        "description": "Method to add a new test result. Requires a summary/OAR attributes and accepts any arbitrary additional JSON to add to dynamic section of test.",
+        "responses": {
+          "200": {
+            "description": "Successfully Created, will return ID of the new test result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "example": 235
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error occurred",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientError"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post-test"
+      },
+      "put": {
+        "summary": "Enrich a test result",
+        "tags": [],
+        "description": "Enriches a test result with new fields, performs a right merge on dynamic attributes.",
+        "responses": {
+          "200": {
+
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ClientError": {
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message"
+          }
+        }
+      }
+    }
+  }
+}
