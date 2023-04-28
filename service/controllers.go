@@ -59,6 +59,11 @@ func (tc *TestController) PatchTest(c *gin.Context) {
 		return
 	}
 
+	if len(tests) < 1 {
+		c.JSON(http.StatusBadRequest, ConvertErrToGinH(errors.New("no test found with that id")))
+		return
+	}
+
 	test := tests[0]
 	test.Merge(testPatch)
 
