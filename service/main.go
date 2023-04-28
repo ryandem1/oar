@@ -47,6 +47,8 @@ func GetRouter() *gin.Engine {
 		c.JSON(http.StatusOK, gin.H{"health": "healthy"})
 		return
 	})
+
+	r.POST("/query", EncodeSearchQuery)
 	return r
 }
 

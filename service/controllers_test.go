@@ -1,10 +1,8 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx"
 	"github.com/magiconair/properties/assert"
 	"net/http"
@@ -104,17 +102,26 @@ func TestTestController_DeleteTests(t *testing.T) {
 
 	testID, err := InsertTest(Fake.pgPool(), Fake.test())
 	testID2, err := InsertTest(Fake.pgPool(), Fake.test())
-	body := []gin.H{
-		{"ID": testID},
-		{"ID": testID2},
+
+	query := TestQuery{
+		IDs:            []uint64{testID, testID2},
+		Summaries:      nil,
+		Outcomes:       nil,
+		Analyses:       nil,
+		Resolutions:    nil,
+		CreatedBefore:  nil,
+		CreatedAfter:   nil,
+		ModifiedBefore: nil,
+		ModifiedAfter:  nil,
+		Docs:           nil,
 	}
-	jsonValue, err := json.Marshal(body)
+	encodedQuery, err := encodeToBase64(query)
 	if err != nil {
-		t.Error("setup error", err)
+		t.Error(err)
 	}
 
 	t.Run("delete tests that exist", func(t *testing.T) {
-		req, err := http.NewRequest(http.MethodDelete, "/tests", bytes.NewBuffer(jsonValue))
+		req, err := http.NewRequest(http.MethodDelete, "/tests?query="+encodedQuery, nil)
 		if err != nil {
 			t.Error("setup error", err)
 		}
@@ -123,12 +130,11 @@ func TestTestController_DeleteTests(t *testing.T) {
 
 		c.Request = req
 		controller.DeleteTests(c)
-
 		assert.Equal(t, w.Code, 200)
 	})
 
 	t.Run("delete tests that don't exist", func(t *testing.T) {
-		req, err := http.NewRequest(http.MethodDelete, "/tests", bytes.NewBuffer(jsonValue))
+		req, err := http.NewRequest(http.MethodDelete, "/tests?query="+encodedQuery, nil)
 		if err != nil {
 			t.Error("setup error", err)
 		}
@@ -136,20 +142,14 @@ func TestTestController_DeleteTests(t *testing.T) {
 		c, w := Fake.ginContext()
 
 		c.Request = req
+
 		controller.DeleteTests(c)
 
-		assert.Equal(t, w.Code, 200)
+		assert.Equal(t, w.Code, http.StatusOK)
 	})
 
-	t.Run("delete with just ids", func(t *testing.T) {
-		body := []uint64{testID, testID2}
-
-		jsonValue, err = json.Marshal(body)
-		if err != nil {
-			t.Error("setup error", err)
-		}
-
-		req, err := http.NewRequest(http.MethodDelete, "/tests", bytes.NewBuffer(jsonValue))
+	t.Run("delete with no query", func(t *testing.T) {
+		req, err := http.NewRequest(http.MethodDelete, "/tests", nil)
 		if err != nil {
 			t.Error("setup error", err)
 		}
@@ -326,17 +326,18 @@ func TestTestController_GetTests(t *testing.T) {
 			ModifiedAfter:  nil,
 			Docs:           nil,
 		}
-
-		requestBody, err := json.Marshal(query)
+		encodedQuery, err := encodeToBase64(query)
 		if err != nil {
-			t.Error("setup error", err)
+			t.Error("setup error")
 		}
-		req, err := http.NewRequest(http.MethodGet, "/tests", bytes.NewBuffer(requestBody))
+
+		req, err := http.NewRequest(http.MethodGet, "/tests?query="+encodedQuery, nil)
 		if err != nil {
 			t.Error("setup error", err)
 		}
 
 		c.Request = req
+
 		controller.GetTests(c)
 		assert.Equal(t, w.Code, 200)
 
@@ -370,21 +371,22 @@ func TestTestController_GetTests(t *testing.T) {
 			ModifiedAfter:  nil,
 			Docs:           nil,
 		}
-
-		requestBody, err := json.Marshal(query)
+		encodedQuery, err := encodeToBase64(query)
 		if err != nil {
-			t.Error("setup error", err)
+			t.Error("setup error")
 		}
+
 		req, err := http.NewRequest(
 			http.MethodGet,
-			"/tests?limit="+strconv.Itoa(numTests-2)+"&offset=3",
-			bytes.NewBuffer(requestBody),
+			"/tests?query="+encodedQuery+"&limit="+strconv.Itoa(numTests-2)+"&offset=3",
+			nil,
 		)
 		if err != nil {
 			t.Error("setup error", err)
 		}
 
 		c.Request = req
+
 		controller.GetTests(c)
 		assert.Equal(t, w.Code, 200)
 
@@ -418,17 +420,18 @@ func TestTestController_GetTests(t *testing.T) {
 			ModifiedAfter:  nil,
 			Docs:           nil,
 		}
-
-		requestBody, err := json.Marshal(query)
+		encodedQuery, err := encodeToBase64(query)
 		if err != nil {
-			t.Error("setup error", err)
+			t.Error("setup error")
 		}
-		req, err := http.NewRequest(http.MethodGet, "/tests", bytes.NewBuffer(requestBody))
+
+		req, err := http.NewRequest(http.MethodGet, "/tests?query="+encodedQuery, nil)
 		if err != nil {
 			t.Error("setup error", err)
 		}
 
 		c.Request = req
+
 		controller.GetTests(c)
 		assert.Equal(t, w.Code, 200)
 
@@ -463,17 +466,18 @@ func TestTestController_GetTests(t *testing.T) {
 			ModifiedAfter:  nil,
 			Docs:           nil,
 		}
-
-		requestBody, err := json.Marshal(query)
+		encodedQuery, err := encodeToBase64(query)
 		if err != nil {
-			t.Error("setup error", err)
+			t.Error("setup error")
 		}
-		req, err := http.NewRequest(http.MethodGet, "/tests", bytes.NewBuffer(requestBody))
+
+		req, err := http.NewRequest(http.MethodGet, "/tests?query="+encodedQuery, nil)
 		if err != nil {
 			t.Error("setup error", err)
 		}
 
 		c.Request = req
+
 		controller.GetTests(c)
 		assert.Equal(t, w.Code, 200)
 
@@ -504,17 +508,18 @@ func TestTestController_GetTests(t *testing.T) {
 			ModifiedAfter:  nil,
 			Docs:           nil,
 		}
-
-		requestBody, err := json.Marshal(query)
+		encodedQuery, err := encodeToBase64(query)
 		if err != nil {
-			t.Error("setup error", err)
+			t.Error("setup error")
 		}
-		req, err := http.NewRequest(http.MethodGet, "/tests?limit=1001", bytes.NewBuffer(requestBody))
+
+		req, err := http.NewRequest(http.MethodGet, "/tests?limit=1001&query="+encodedQuery, nil)
 		if err != nil {
 			t.Error("setup error", err)
 		}
 
 		c.Request = req
+
 		controller.GetTests(c)
 		assert.Equal(t, w.Code, 400)
 	})
@@ -536,18 +541,18 @@ func TestTestController_GetTests(t *testing.T) {
 			ModifiedAfter:  nil,
 			Docs:           nil,
 		}
-
-		requestBody, err := json.Marshal(query)
+		encodedQuery, err := encodeToBase64(query)
 		if err != nil {
-			t.Error("setup error", err)
+			t.Error("setup error")
 		}
 
-		req, err := http.NewRequest(http.MethodGet, "/tests", bytes.NewBuffer(requestBody))
+		req, err := http.NewRequest(http.MethodGet, "/tests?query="+encodedQuery, nil)
 		if err != nil {
 			t.Error("setup error", err)
 		}
 
 		c.Request = req
+
 		controller.GetTests(c)
 		assert.Equal(t, w.Code, 200)
 
@@ -579,18 +584,18 @@ func TestTestController_GetTests(t *testing.T) {
 			ModifiedAfter:  nil,
 			Docs:           nil,
 		}
-
-		requestBody, err := json.Marshal(query)
+		encodedQuery, err := encodeToBase64(query)
 		if err != nil {
-			t.Error("setup error", err)
+			t.Error("setup error")
 		}
 
-		req, err := http.NewRequest(http.MethodGet, "/tests", bytes.NewBuffer(requestBody))
+		req, err := http.NewRequest(http.MethodGet, "/tests?query="+encodedQuery, nil)
 		if err != nil {
 			t.Error("setup error", err)
 		}
 
 		c.Request = req
+
 		controller.GetTests(c)
 		assert.Equal(t, w.Code, 200)
 
@@ -622,18 +627,18 @@ func TestTestController_GetTests(t *testing.T) {
 			ModifiedAfter:  nil,
 			Docs:           nil,
 		}
-
-		requestBody, err := json.Marshal(query)
+		encodedQuery, err := encodeToBase64(query)
 		if err != nil {
-			t.Error("setup error", err)
+			t.Error("setup error")
 		}
 
-		req, err := http.NewRequest(http.MethodGet, "/tests", bytes.NewBuffer(requestBody))
+		req, err := http.NewRequest(http.MethodGet, "/tests?query="+encodedQuery, nil)
 		if err != nil {
 			t.Error("setup error", err)
 		}
 
 		c.Request = req
+
 		controller.GetTests(c)
 		assert.Equal(t, w.Code, 200)
 
@@ -665,18 +670,18 @@ func TestTestController_GetTests(t *testing.T) {
 			ModifiedAfter:  &yesterday,
 			Docs:           nil,
 		}
-
-		requestBody, err := json.Marshal(query)
+		encodedQuery, err := encodeToBase64(query)
 		if err != nil {
-			t.Error("setup error", err)
+			t.Error("setup error")
 		}
 
-		req, err := http.NewRequest(http.MethodGet, "/tests", bytes.NewBuffer(requestBody))
+		req, err := http.NewRequest(http.MethodGet, "/tests?query="+encodedQuery, nil)
 		if err != nil {
 			t.Error("setup error", err)
 		}
 
 		c.Request = req
+
 		controller.GetTests(c)
 		assert.Equal(t, w.Code, 200)
 
@@ -709,18 +714,18 @@ func TestTestController_GetTests(t *testing.T) {
 			ModifiedAfter:  nil,
 			Docs:           []map[string]any{genTest.Doc, genTest2.Doc},
 		}
-
-		requestBody, err := json.Marshal(query)
+		encodedQuery, err := encodeToBase64(query)
 		if err != nil {
-			t.Error("setup error", err)
+			t.Error("setup error")
 		}
 
-		req, err := http.NewRequest(http.MethodGet, "/tests", bytes.NewBuffer(requestBody))
+		req, err := http.NewRequest(http.MethodGet, "/tests?query="+encodedQuery, nil)
 		if err != nil {
 			t.Error("setup error", err)
 		}
 
 		c.Request = req
+
 		controller.GetTests(c)
 		assert.Equal(t, w.Code, 200)
 
@@ -754,18 +759,18 @@ func TestTestController_GetTests(t *testing.T) {
 			ModifiedAfter:  nil,
 			Docs:           nil,
 		}
-
-		requestBody, err := json.Marshal(query)
+		encodedQuery, err := encodeToBase64(query)
 		if err != nil {
-			t.Error("setup error", err)
+			t.Error("setup error")
 		}
 
-		req, err := http.NewRequest(http.MethodGet, "/tests", bytes.NewBuffer(requestBody))
+		req, err := http.NewRequest(http.MethodGet, "/tests?query="+encodedQuery, nil)
 		if err != nil {
 			t.Error("setup error", err)
 		}
 
 		c.Request = req
+
 		controller.GetTests(c)
 		assert.Equal(t, w.Code, 200)
 
