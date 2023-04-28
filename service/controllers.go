@@ -136,7 +136,13 @@ func (tc *TestController) GetTests(c *gin.Context) {
 		return
 	}
 
-	if err := c.BindJSON(&query); err != nil {
+	encodedQuery := c.DefaultQuery("search", "null")
+	if encodedQuery == "null" {
+		c.JSON(http.StatusBadRequest, ConvertErrToGinH(errors.New("must pass a query parameter")))
+		return
+	}
+	err = decodeFromBase64(&query, encodedQuery)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
 		return
 	}
