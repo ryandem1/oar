@@ -171,9 +171,6 @@ To simply return all tests (there is a default limit of 250):
 GET /tests
 Content-Type: application/json
 ```
-``` json
-{}
-```
 
 Responses look like:
 
@@ -199,7 +196,47 @@ Content-Type: application/json
 }
 ```
 
+#### Querying for tests
+Querying for tests can be done with the GET /tests endpoint. To send any query, what you first must do is encode your 
+query payload in base64 and send it as a query string. This is for compliance with OpenAPI V3 and HTTP 1.1. 
+There is an endpoint to encode a TestQuery payload for you:
+
+```
+POST /query
+Content-Type: application/json
+```
+```json
+{
+  "resolutions": ["QuickFix", "TicketCreated"]
+}
+```
+
+This will return a query string like the following:
+```
+"eyJyZXNvbHV0aW9ucyI6WyJRdWlja0ZpeCIsIlRpY2tldENyZWF0ZWQiXX0K"
+```
+
+You can now take this query and use it with the GET endpoint:
+
+```
+GET http://localhost:8080/tests?query=eyJyZXNvbHV0aW9ucyI6WyJRdWlja0ZpeCIsIlRpY2tldENyZWF0ZWQiXX0K
+```
+Response:
+```json
+{
+  "count": 4,
+  "tests": []
+}
+```
+
+An FYI, you can use the same query to delete tests also:
+```
+DELETE http://localhost:8080/tests?query=eyJyZXNvbHV0aW9ucyI6WyJRdWlja0ZpeCIsIlRpY2tldENyZWF0ZWQiXX0K
+```
+
 Each filter option (with the exceptions of the time filters) take arrays as inputs.
+
+**NOTE**: For simplicity, I will leave out the intermediate step of encoding a query for the rest of this guide.
 
 Querying with multiple values in an array will be treated as a logical "OR". For example, if I wanted to query for all 
 tests that resulted in a quick fix or a ticket creation, I can send the following request:
@@ -210,7 +247,7 @@ Content-Type: application/json
 ```
 ``` json
 {
-    resolutions: ["QuickFix", "TicketCreated"]
+    "resolutions": ["QuickFix", "TicketCreated"]
 }
 ```
 
@@ -222,8 +259,8 @@ Content-Type: application/json
 ```
 ``` json
 {
-    analyses: ["TruePositive"]
-    resolutions: ["QuickFix", "TicketCreated"]
+    "analyses": ["TruePositive"]
+    "resolutions": ["QuickFix", "TicketCreated"]
 }
 ```
 
