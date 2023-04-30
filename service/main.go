@@ -40,9 +40,9 @@ func GetRouter() *gin.Engine {
 	})
 
 	r.GET("/tests", testController.GetTests)
+	r.PATCH("/tests", testController.PatchTests)
 	r.DELETE("/tests", testController.DeleteTests)
 	r.POST("/test", testController.CreateTest)
-	r.PATCH("/test", testController.PatchTest)
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"health": "healthy"})
 		return

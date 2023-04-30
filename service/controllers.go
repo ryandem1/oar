@@ -36,55 +36,65 @@ func (tc *TestController) CreateTest(c *gin.Context) {
 	c.JSON(http.StatusCreated, testID)
 }
 
-// PatchTest will perform a patch (partial update) operation on an existing test if it exists. Because of the nature of
-// the Test enrichment process, I imagine this will be used more than a PUT would be.
-func (tc *TestController) PatchTest(c *gin.Context) {
+// PatchTests will perform a patch (partial update) operation on a batch of tests identified by a base64 test query
+// string obtained from the /query endpoint.
+// PatchTests will respond with a http.StatusNotModified (304) status code if it does not modify a single test.
+// PatchTests will respond with a http.StatusOK (200) status code if it modifies at least 1 test.
+//
+// Note that if an error occurs in the middle of updating a batch of tests, it will result in some tests in the batch
+// being updated, while others are not.
+func (tc *TestController) PatchTests(c *gin.Context) {
+	var query TestQuery
+
+	encodedQuery := c.DefaultQuery("query", "null")
+	if encodedQuery == "null" {
+		c.JSON(http.StatusBadRequest, ConvertErrToGinH(errors.New("must pass a query parameter")))
+		return
+	}
+
+	err := decodeFromBase64(&query, encodedQuery)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
+		return
+	}
+
+	queryResult, err := QueryTest(tc.DBPool, &query, 250, 0)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
+		return
+	}
+
 	testPatch, err := DoubleBindTest(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
 		return
 	}
 
-	if testPatch.ID == 0 {
-		c.JSON(http.StatusBadRequest, ConvertErrToGinH(
-			errors.New("must define an id of an existing testPatch to update")),
-		)
+	if queryResult.Count == 0 {
+		c.AbortWithStatus(http.StatusNotModified)
 		return
 	}
 
-	// Perform partial update on copy of existing testPatch and doc merge
-	tests, err := SelectTests(tc.DBPool, "SELECT * FROM OAR_TESTS WHERE id=$1", testPatch.ID)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
-		return
+	for _, test := range queryResult.Tests {
+		test.Merge(testPatch)
+
+		// Validate after update to ensure testPatch is still okay
+		if err = test.Validate(); err != nil {
+			c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
+			return
+		}
+
+		// Update in DB
+		err = UpdateTest(tc.DBPool, test)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
+			return
+		}
 	}
-
-	if len(tests) < 1 {
-		c.JSON(http.StatusBadRequest, ConvertErrToGinH(errors.New("no test found with that id")))
-		return
-	}
-
-	test := tests[0]
-	test.Merge(testPatch)
-
-	// Validate after update to ensure testPatch is still okay
-	if err = test.Validate(); err != nil {
-		c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
-		return
-	}
-
-	// Update in DB
-	err = UpdateTest(tc.DBPool, test)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, ConvertErrToGinH(err))
-		return
-	}
-
 	c.Status(http.StatusOK)
 }
 
 // DeleteTests takes in a TestQuery and will delete all the query results
-// DeleteTests will silently ignore if the caller passes in test IDs that already don't exist.
 // DeleteTests will respond with a http.StatusNotModified (304) status code if it does not delete a single test.
 // DeleteTests will respond with a http.StatusOK (200) status code if it deletes at least 1 test.
 func (tc *TestController) DeleteTests(c *gin.Context) {
