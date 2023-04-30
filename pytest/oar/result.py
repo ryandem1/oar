@@ -90,7 +90,7 @@ class TestQuery(BaseModel):
         query_string : str
             Encoded Query string that is compatible for the various ``/tests`` endpoint
         """
-        query_string = base64.b64encode(s=self.json(by_alias=True).encode("ascii")).decode("ascii")
+        query_string = base64.b64encode(s=self.json(by_alias=True, exclude_none=True).encode("ascii")).decode("ascii")
         return query_string
 
 

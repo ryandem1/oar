@@ -1,7 +1,9 @@
+import json
 from logging import getLogger
 
 from requests import Session, Response
 from requests.adapters import Retry, HTTPAdapter
+from requests.exceptions import RetryError
 
 from oar.result import Test, TestQuery, TestQueryResult
 
@@ -31,9 +33,9 @@ class Client:
         self.tests_route = self.base_url + "/tests"
         self.query_route = self.base_url + "/query"
 
-        retries = Retry(total=4, backoff_factor=0.2, status_forcelist=[500, 502, 503, 504])
-        session.mount('http://', HTTPAdapter(max_retries=retries))
-        session.mount('https://', HTTPAdapter(max_retries=retries))
+        retries = Retry(total=4, allowed_methods=False, backoff_factor=0.5, status_forcelist=[400, 500, 502, 503, 504])
+        self.session.mount('http://', HTTPAdapter(max_retries=retries))
+        self.session.mount('https://', HTTPAdapter(max_retries=retries))
 
     @staticmethod
     def __log_error_if_not_ok(response: Response) -> None:
@@ -53,7 +55,13 @@ class Client:
         if not response.ok:
             error_message = "Error adding OAR test! Continuing, but you should probably look at this!"
             if response.text:
-                error_message += f"\nStatus Code: {response.status_code}\nMessage: {response.json()}"
+                message = None
+                try:
+                    message = response.json()
+                except json.JSONDecodeError:
+                    error_message += f"\nStatus Code: {response.status_code}\nText: {response.text}"
+
+                error_message += f"\nStatus Code: {response.status_code}\nMessage: {message}"
             logger.error(error_message)
 
     def add_test(self, test: Test) -> int | None:
@@ -70,7 +78,12 @@ class Client:
         test_id : int | None
             ID of the created test. Will return None on error
         """
-        response = self.session.post(self.test_route, json=test.as_request_body())
+        try:
+            response = self.session.post(self.test_route, json=test.as_request_body())
+        except RetryError:
+            logger.error("Max retries reached for adding test result, continuing but you should probably look at this!")
+            return  # Will silently fail
+
         self.__log_error_if_not_ok(response)
         test_id = response.json() if response.ok else None
         return test_id
@@ -151,7 +164,7 @@ class Client:
             return a 200 if tests were modified.
         """
         response = self.session.patch(
-            url=self.test_route,
+            url=self.tests_route,
             json=test.as_request_body(),
             params={"query": query.as_query_string()}
         )
