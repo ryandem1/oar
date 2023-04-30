@@ -133,8 +133,8 @@ partially structured, partially unstructured data.
 > You are able to also send any arbitrary JSON data in the request body, and it will be stored as the unstructured data.
 > This can include any relevant test metadata and helpful diagnostic information for the analysis/resolution.
 
-> **PATCH /test**  
-> Sending a patch request to the ``/test`` endpoint will apply a partial update to a test result.
+> **PATCH /tests**  
+> Sending a patch request to the ``/tests`` endpoint will apply a partial update to a query of test results.
 > Because tests get enriched through the OAR process, partial updates are more convenient for applying
 > the updates.
 

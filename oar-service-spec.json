@@ -3,7 +3,7 @@
   "info": {
     "title": "oar-service",
     "description": "OAR Test Reporting Ingestion Service",
-    "version": "1.2.x",
+    "version": "v2",
     "contact": {
       "name": "Ryan",
       "email": "testableproject@gmail.com",
