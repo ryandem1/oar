@@ -355,16 +355,14 @@
             "description": "Pass in an array of test IDs to limit query results to",
             "items": {
               "type": "integer"
-            },
-            "required": false
+            }
           },
           "summaries": {
             "type": "array",
             "description": "Array of partial test summaries to query tests by",
             "items": {
               "type": "string"
-            },
-            "required": false
+            }
           },
           "outcomes": {
             "type": "array",
@@ -372,8 +370,7 @@
             "items": {
               "type": "string",
               "enum": ["Passed", "Failed"]
-            },
-            "required": false
+            }
           },
           "analyses": {
             "type": "array",
@@ -387,8 +384,7 @@
                 "TrueNegative",
                 "FalseNegative"
               ]
-            },
-            "required": false
+            }
           },
           "resolutions": {
             "type": "array",
@@ -409,34 +405,29 @@
           "createdBefore": {
             "type": "string",
             "format": "date-time",
-            "description": "Limit query results to only tests before the date passed",
-            "required": false
+            "description": "Limit query results to only tests before the date passed"
           },
           "createdAfter": {
             "type": "string",
             "format": "date-time",
-            "description": "Limit query results to only tests after the date passed",
-            "required": false
+            "description": "Limit query results to only tests after the date passed"
           },
           "modifiedBefore": {
             "type": "string",
             "format": "date-time",
-            "description": "Limit query results to only tests modified before the date passed",
-            "required": false
+            "description": "Limit query results to only tests modified before the date passed"
           },
           "modifiedAfter": {
             "type": "string",
             "format": "date-time",
-            "description": "Limit query results to only tests modified after the date passed",
-            "required": false
+            "description": "Limit query results to only tests modified after the date passed"
           },
           "docs": {
             "type": "array",
             "description": "This is the field to query for dynamic attributes of tests. Pass in partial JSON objects and they will structurally match with query results.",
             "items": {
               "type": "object"
-            },
-            "required": false
+            }
           }
         }
       },
