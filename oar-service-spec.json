@@ -40,7 +40,7 @@
     "/test": {
       "post": {
         "summary": "Add new test result",
-        "tags": ["Test"],
+        "tags": ["Add Results"],
         "description": "Method to add a new test result. Requires a summary/OAR attributes and accepts any arbitrary additional JSON to add to dynamic section of test.",
         "requestBody": {
           "description": "Test details to enrich existing test with",
@@ -79,7 +79,7 @@
       },
       "put": {
         "summary": "Enrich a test result",
-        "tags": ["Test"],
+        "tags": ["Enrich Test"],
         "description": "Enriches a test result with new fields, performs a right merge on dynamic attributes.",
         "requestBody": {
           "description": "Test details to enrich existing test with",
@@ -126,6 +126,45 @@
           }
         }
       }
+    },
+    "/query": {
+      "post": {
+        "summary": "Generate test query",
+        "description": "Create a base64 encoded test query to represent a batch of tests",
+        "tags": ["Query Test Results"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestQuery"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Valid query, returns base64 encoded query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "description": "base64 encoded query string representing a batch of tests."
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error generating query string",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -148,6 +187,7 @@
         }
       },
       "Test": {
+        "description": "Represents a single test result. Listed is all of the static attributes, but test results can take additional arbitrary JSON that would be stored as unstructured data.",
         "properties": {
           "id": {
             "type": "integer",
@@ -195,6 +235,90 @@
             "type": "string",
             "format": "date-time",
             "description": "UTC datetime when the test was last modified"
+          }
+        }
+      },
+      "TestQuery": {
+        "description": "Query object for test results. Values in arrays are treated as logical 'OR's, while multiple arrays are treated as logical 'AND'.",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "description": "Pass in an array of test IDs to limit query results to",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "summaries": {
+            "type": "array",
+            "description": "Array of partial test summaries to query tests by",
+            "items": {
+              "type": "string"
+            }
+          },
+          "outcomes": {
+            "type": "array",
+            "description": "Array of outcomes to search for",
+            "items": {
+              "type": "string",
+              "enum": ["Passed", "Failed"]
+            }
+          },
+          "analyses": {
+            "type": "array",
+            "description": "Array of analysis values to query for",
+            "items": {
+              "type": "string",
+              "enum": [
+                "NotAnalyzed",
+                "TruePositive",
+                "FalsePositive",
+                "TrueNegative",
+                "FalseNegative"
+              ]
+            }
+          },
+          "resolutions": {
+            "type": "array",
+            "description": "Array of resolution values to query for",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Unresolved",
+                "NotNeeded",
+                "TicketCreated",
+                "QuickFix",
+                "KnownIssue",
+                "TestFixed",
+                "TestDisabled"
+              ]
+            }
+          },
+          "createdBefore": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Limit query results to only tests before the date passed"
+          },
+          "createdAfter": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Limit query results to only tests after the date passed"
+          },
+          "modifiedBefore": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Limit query results to only tests modified before the date passed"
+          },
+          "modifiedAfter": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Limit query results to only tests modified after the date passed"
+          },
+          "docs": {
+            "type": "array",
+            "description": "This is the field to query for dynamic attributes of tests. Pass in partial JSON objects and they will structurally match with query results.",
+            "items": {
+              "type": "object"
+            }
           }
         }
       }
