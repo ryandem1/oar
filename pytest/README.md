@@ -50,13 +50,6 @@ Result:
 collected 1 item                                                                                                                                               
 
 test_example.py .
-============OAR SUMMARY===============
-Passed IDs: [0]
-Failed IDs: []
-Tests that need analysis: []
-Tests that need resolution: []
-======================================
-
 
 ====================================================================== 1 passed in 0.00s =======================================================================
 ```
