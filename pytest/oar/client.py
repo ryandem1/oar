@@ -30,8 +30,9 @@ class Client:
         self.test_route = self.base_url + "/test"
         self.tests_route = self.base_url + "/tests"
 
-        retries = Retry(total=3, backoff_factor=0.2, status_forcelist=[500, 502, 503, 504])
+        retries = Retry(total=4, backoff_factor=0.2, status_forcelist=[500, 502, 503, 504])
         session.mount('http://', HTTPAdapter(max_retries=retries))
+        session.mount('https://', HTTPAdapter(max_retries=retries))
 
     @staticmethod
     def __log_error_if_not_ok(response: Response) -> None:
