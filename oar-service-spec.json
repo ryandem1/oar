@@ -174,7 +174,7 @@
         "tags": ["Query Test Results"],
         "parameters": [
           {
-            "in": "path",
+            "in": "query",
             "name": "query",
             "schema": {
               "type": "string",
@@ -184,7 +184,7 @@
             "description": "base64 encoded query string obtained from /query"
           },
           {
-            "in": "path",
+            "in": "query",
             "name": "offset",
             "schema": {
               "type": "integer",
@@ -194,7 +194,7 @@
             "description": "offset of query"
           },
           {
-            "in": "path",
+            "in": "query",
             "name": "limit",
             "schema": {
               "type": "integer",
@@ -233,7 +233,7 @@
         "tags": ["Delete Tests"],
         "parameters": [
           {
-            "in": "path",
+            "in": "query",
             "name": "query",
             "schema": {
               "type": "string",
