@@ -107,6 +107,25 @@
           }
         }
       }
+    },
+    "/health": {
+      "get": {
+        "description": "Get health status of app, like a ICMP echo",
+        "summary": "Health status",
+        "tags": ["Metadata"],
+        "responses": {
+          "200": {
+            "description": "Healthy response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthStatus"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -116,6 +135,15 @@
           "error": {
             "type": "string",
             "description": "Error message"
+          }
+        }
+      },
+      "HealthStatus": {
+        "properties": {
+          "health": {
+            "type": "string",
+            "description": "Health status of app",
+            "enum": ["healthy"]
           }
         }
       },
