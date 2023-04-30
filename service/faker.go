@@ -198,15 +198,12 @@ func (fake *Faker) testController() *TestController {
 }
 
 // testRequest will return a fake Test http.Request that can be sent through a testController
-func (fake *Faker) testRequest(method string, test *Test, withID bool) *http.Request {
+func (fake *Faker) testRequest(method string, test *Test, endpoint string) *http.Request {
 	body := gin.H{
 		"summary":    test.Summary,
 		"outcome":    test.Outcome,
 		"analysis":   test.Analysis,
 		"resolution": test.Resolution,
-	}
-	if withID {
-		body["ID"] = test.ID
 	}
 
 	// Right-merges doc
@@ -220,7 +217,7 @@ func (fake *Faker) testRequest(method string, test *Test, withID bool) *http.Req
 	if err != nil {
 		panic(err)
 	}
-	req, err := http.NewRequest(method, "/test", bytes.NewBuffer(jsonValue))
+	req, err := http.NewRequest(method, endpoint, bytes.NewBuffer(jsonValue))
 	if err != nil {
 		panic(err)
 	}

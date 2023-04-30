@@ -3,7 +3,7 @@
   "info": {
     "title": "oar-service",
     "description": "OAR Test Reporting Ingestion Service",
-    "version": "1.2.x",
+    "version": "v2",
     "contact": {
       "name": "Ryan",
       "email": "testableproject@gmail.com",
@@ -40,7 +40,7 @@
     "/test": {
       "post": {
         "summary": "Add new test result",
-        "tags": ["Add Results"],
+        "tags": ["Add Result"],
         "description": "Method to add a new test result. Requires a summary/OAR attributes and accepts any arbitrary additional JSON to add to dynamic section of test.",
         "requestBody": {
           "description": "Test details to enrich existing test with",
@@ -76,62 +76,13 @@
           }
         },
         "operationId": "post-test"
-      },
-      "patch": {
-        "summary": "Enrich a test result",
-        "tags": ["Enrich Test"],
-        "description": "Enriches a test result with new fields, performs a right merge on dynamic attributes.",
-        "requestBody": {
-          "description": "Test details to enrich existing test with",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Test"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Test successfully enriched"
-          },
-          "400": {
-            "description": "Error enriching test",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ClientError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/health": {
-      "get": {
-        "description": "Get health status of app, like a ICMP echo",
-        "summary": "Health status",
-        "tags": ["Metadata"],
-        "responses": {
-          "200": {
-            "description": "Healthy response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HealthStatus"
-                }
-              }
-            }
-          }
-        }
       }
     },
     "/query": {
       "post": {
         "summary": "Generate test query",
         "description": "Create a base64 encoded test query to represent a batch of tests",
-        "tags": ["Query Test Results"],
+        "tags": ["Generate Query"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -171,7 +122,7 @@
       "get": {
         "summary": "Retrieve test results from query",
         "description": "GET test results from a query string",
-        "tags": ["Query Test Results"],
+        "tags": ["Query Operations"],
         "parameters": [
           {
             "in": "query",
@@ -227,10 +178,52 @@
           }
         }
       },
+      "patch": {
+        "summary": "Enrich all test results from query",
+        "tags": ["Query Operations"],
+        "description": "Enriches test results with new fields, performs a right merge on dynamic attributes.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "query",
+            "schema": {
+              "type": "string",
+              "description": "base64 encoded query string obtained from /query"
+            },
+            "required": false,
+            "description": "base64 encoded query string obtained from /query"
+          }
+        ],
+        "requestBody": {
+          "description": "Test details to enrich existing test with",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Test"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Test successfully enriched"
+          },
+          "400": {
+            "description": "Error enriching test",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientError"
+                }
+              }
+            }
+          }
+        }
+      },
       "delete": {
-        "summary": "Delete test results by query",
+        "summary": "Delete all test results from query",
         "description": "Delete all tests that match the encoded query result obtained from /query",
-        "tags": ["Delete Tests"],
+        "tags": ["Query Operations"],
         "parameters": [
           {
             "in": "query",
@@ -256,6 +249,25 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ClientError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "description": "Get health status of app, like a ICMP echo",
+        "summary": "Health status",
+        "tags": ["Metadata"],
+        "responses": {
+          "200": {
+            "description": "Healthy response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthStatus"
                 }
               }
             }
@@ -343,16 +355,14 @@
             "description": "Pass in an array of test IDs to limit query results to",
             "items": {
               "type": "integer"
-            },
-            "required": false
+            }
           },
           "summaries": {
             "type": "array",
             "description": "Array of partial test summaries to query tests by",
             "items": {
               "type": "string"
-            },
-            "required": false
+            }
           },
           "outcomes": {
             "type": "array",
@@ -360,8 +370,7 @@
             "items": {
               "type": "string",
               "enum": ["Passed", "Failed"]
-            },
-            "required": false
+            }
           },
           "analyses": {
             "type": "array",
@@ -375,8 +384,7 @@
                 "TrueNegative",
                 "FalseNegative"
               ]
-            },
-            "required": false
+            }
           },
           "resolutions": {
             "type": "array",
@@ -397,34 +405,29 @@
           "createdBefore": {
             "type": "string",
             "format": "date-time",
-            "description": "Limit query results to only tests before the date passed",
-            "required": false
+            "description": "Limit query results to only tests before the date passed"
           },
           "createdAfter": {
             "type": "string",
             "format": "date-time",
-            "description": "Limit query results to only tests after the date passed",
-            "required": false
+            "description": "Limit query results to only tests after the date passed"
           },
           "modifiedBefore": {
             "type": "string",
             "format": "date-time",
-            "description": "Limit query results to only tests modified before the date passed",
-            "required": false
+            "description": "Limit query results to only tests modified before the date passed"
           },
           "modifiedAfter": {
             "type": "string",
             "format": "date-time",
-            "description": "Limit query results to only tests modified after the date passed",
-            "required": false
+            "description": "Limit query results to only tests modified after the date passed"
           },
           "docs": {
             "type": "array",
             "description": "This is the field to query for dynamic attributes of tests. Pass in partial JSON objects and they will structurally match with query results.",
             "items": {
               "type": "object"
-            },
-            "required": false
+            }
           }
         }
       },

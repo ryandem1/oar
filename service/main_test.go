@@ -32,6 +32,12 @@ func TestGetRouter(t *testing.T) {
 			HandlerFunc: nil,
 		},
 		{
+			Method:      http.MethodPatch,
+			Path:        "/tests",
+			Handler:     "github.com/ryandem1/oar.(*TestController).PatchTests-fm",
+			HandlerFunc: nil,
+		},
+		{
 			Method:      http.MethodDelete,
 			Path:        "/tests",
 			Handler:     "github.com/ryandem1/oar.(*TestController).DeleteTests-fm",
@@ -47,12 +53,6 @@ func TestGetRouter(t *testing.T) {
 			Method:      http.MethodPost,
 			Path:        "/query",
 			Handler:     "github.com/ryandem1/oar.EncodeSearchQuery",
-			HandlerFunc: nil,
-		},
-		{
-			Method:      http.MethodPatch,
-			Path:        "/test",
-			Handler:     "github.com/ryandem1/oar.(*TestController).PatchTest-fm",
 			HandlerFunc: nil,
 		},
 	}

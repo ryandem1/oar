@@ -19,7 +19,7 @@ func TestTestController_CreateTest(t *testing.T) {
 	t.Run("valid test returns valid response", func(t *testing.T) {
 		c, w := Fake.ginContext()
 
-		c.Request = Fake.testRequest(http.MethodPost, Fake.test(), false)
+		c.Request = Fake.testRequest(http.MethodPost, Fake.test(), "/test")
 		controller.CreateTest(c)
 
 		assert.Equal(t, 201, w.Code)
@@ -87,7 +87,7 @@ func TestTestController_CreateTest(t *testing.T) {
 		t.Run(scenario, func(t *testing.T) {
 			c, w := Fake.ginContext()
 
-			c.Request = Fake.testRequest(http.MethodPost, invalidTest, false)
+			c.Request = Fake.testRequest(http.MethodPost, invalidTest, "/test")
 			controller.CreateTest(c)
 
 			assert.Equal(t, 400, w.Code)
@@ -177,11 +177,28 @@ func TestTestController_PatchTest(t *testing.T) {
 	}
 	test := tests[0]
 
+	query := TestQuery{
+		IDs:            []uint64{testID},
+		Summaries:      nil,
+		Outcomes:       nil,
+		Analyses:       nil,
+		Resolutions:    nil,
+		CreatedBefore:  nil,
+		CreatedAfter:   nil,
+		ModifiedBefore: nil,
+		ModifiedAfter:  nil,
+		Docs:           nil,
+	}
+	encodedQuery, err := encodeToBase64(query)
+	if err != nil {
+		t.Error(err)
+	}
+
 	t.Run("valid test returns valid response", func(t *testing.T) {
 		c, w := Fake.ginContext()
 
-		c.Request = Fake.testRequest(http.MethodPatch, test, true)
-		controller.PatchTest(c)
+		c.Request = Fake.testRequest(http.MethodPatch, test, "/tests?query="+encodedQuery)
+		controller.PatchTests(c)
 
 		assert.Equal(t, w.Code, 200)
 	})
@@ -258,12 +275,41 @@ func TestTestController_PatchTest(t *testing.T) {
 		t.Run(scenario, func(t *testing.T) {
 			c, w := Fake.ginContext()
 
-			c.Request = Fake.testRequest(http.MethodPatch, invalidTest, true)
-			controller.PatchTest(c)
+			c.Request = Fake.testRequest(http.MethodPatch, invalidTest, "/tests?query="+encodedQuery)
+			controller.PatchTests(c)
 
 			assert.Equal(t, w.Code, 400)
 		})
 	}
+
+	t.Run("no update returns 304", func(t *testing.T) {
+		query = TestQuery{
+			IDs:            nil,
+			Summaries:      []string{"I am fairly certain this summary will not exist"},
+			Outcomes:       nil,
+			Analyses:       nil,
+			Resolutions:    nil,
+			CreatedBefore:  nil,
+			CreatedAfter:   nil,
+			ModifiedBefore: nil,
+			ModifiedAfter:  nil,
+			Docs:           nil,
+		}
+		encodedQuery, err = encodeToBase64(query)
+		if err != nil {
+			t.Error(err)
+		}
+
+		c, w := Fake.ginContext()
+
+		testPatch := Test{
+			Summary: "Update",
+		}
+		c.Request = Fake.testRequest(http.MethodPatch, &testPatch, "/tests?query="+encodedQuery)
+		controller.PatchTests(c)
+
+		assert.Equal(t, w.Code, 304)
+	})
 
 	t.Run("invalid pool test", func(t *testing.T) {
 		pgConnConfig := pgx.ConnConfig{
@@ -287,8 +333,8 @@ func TestTestController_PatchTest(t *testing.T) {
 		controller = &TestController{DBPool: badPool}
 		c, w := Fake.ginContext()
 
-		c.Request = Fake.testRequest(http.MethodPatch, test, true)
-		controller.PatchTest(c)
+		c.Request = Fake.testRequest(http.MethodPatch, test, "/tests?query="+encodedQuery)
+		controller.PatchTests(c)
 
 		assert.Equal(t, w.Code, 400)
 	})
