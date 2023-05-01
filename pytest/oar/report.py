@@ -16,7 +16,7 @@ class Report(BaseModel):
     completed_time: str | None = None
     tests: list[AnyTest] = []
 
-    def __iadd__(self, other: AnyTest) -> None:
+    def __iadd__(self, other: AnyTest) -> 'Report':
         """
         You can use code like: ``oar.Results += oar.Test`` to add a new test to the Results.tests
 
@@ -30,3 +30,4 @@ class Report(BaseModel):
         None
         """
         self.tests.append(other)
+        return self
