@@ -12,8 +12,8 @@ from pytest import fixture, FixtureRequest, hookimpl, Item, CallInfo, StashKey, 
 from oar.client import Client
 from oar.config import EnvConfig
 from oar.consts import Outcome, Analysis, Resolution
+from oar.models import Test
 from oar.report import Report
-from oar.result import Test
 
 logger = logging.getLogger("oar")
 

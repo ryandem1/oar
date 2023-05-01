@@ -3,7 +3,7 @@ from typing import TypeVar
 
 from pydantic import BaseModel
 
-from oar.result import Test
+from oar.models import Test
 
 AnyTest = TypeVar("AnyTest", bound=Test)
 

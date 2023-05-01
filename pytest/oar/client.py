@@ -5,7 +5,7 @@ from requests import Session, Response
 from requests.adapters import Retry, HTTPAdapter
 from requests.exceptions import RetryError
 
-from oar.result import Test, TestQuery, TestQueryResult
+from oar.models import Test, TestQuery, TestQueryResult
 
 logger = getLogger("oar")
 
