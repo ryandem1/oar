@@ -31,7 +31,8 @@ dependencies = [
 [project.optional-dependencies]
 test = [
     "ruff",
-    "coverage"
+    "coverage",
+    "requests_mock"
 ]
 
 [tool.ruff]
