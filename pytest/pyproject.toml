@@ -30,7 +30,8 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-    "ruff"
+    "ruff",
+    "coverage"
 ]
 
 [tool.ruff]
