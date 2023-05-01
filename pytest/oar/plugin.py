@@ -129,7 +129,7 @@ def oar_results(oar_config) -> Report:
 
     If the "store_results is False", this will yield a results object, but not do anything with it afterward.
 
-    Will print a summary of tests at the end.
+    Will print a summary of tests at the end
 
     Yields
     -------
