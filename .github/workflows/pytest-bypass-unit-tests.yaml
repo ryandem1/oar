@@ -16,7 +16,7 @@ on:
       - main
 
 jobs:
-  pytest-plugin-lint:
+  pytest-plugin-unit-tests:
     runs-on: ubuntu-latest
     steps:
       - run: echo "No unit tests required"
