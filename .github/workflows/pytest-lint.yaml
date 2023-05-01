@@ -1,0 +1,18 @@
+name: PyTest - Lint
+on:
+  pull_request:
+    paths:
+      - "pytest/**"
+      - "!pytest/README.md"
+      - "!pytest/pyproject.toml"
+    branches:
+      - main
+jobs:
+  pytest-plugin-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛅
+        uses: actions/checkout@v3
+
+      - name: Ruff Lint 🐶
+        uses: chartboost/ruff-action@v1

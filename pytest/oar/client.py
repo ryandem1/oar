@@ -3,9 +3,9 @@ from logging import getLogger
 
 from requests import Session, Response
 from requests.adapters import Retry, HTTPAdapter
-from requests.exceptions import RetryError
+from requests.exceptions import RetryError, ConnectionError
 
-from oar.result import Test, TestQuery, TestQueryResult
+from oar.models import Test, TestQuery, TestQueryResult
 
 logger = getLogger("oar")
 
@@ -80,7 +80,7 @@ class Client:
         """
         try:
             response = self.session.post(self.test_route, json=test.as_request_body())
-        except RetryError:
+        except (RetryError, ConnectionError):
             logger.error("Max retries reached for adding test result, continuing but you should probably look at this!")
             return  # Will silently fail
 

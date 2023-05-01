@@ -1,0 +1,22 @@
+# This workflow is to bypass branch protection rules on PR if the ./pytest directory was not changed. Without this,
+# PRs that did not affect the plugin would never be able to be merged because the status check is a required
+# check. If you think this is really weird, I do too, but this is how you do it:
+# https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/troubleshooting-required-status-checks#handling-skipped-but-required-checks
+
+name: PyTest - Bypass Unit Tests
+
+on:
+  pull_request:
+    types: [opened, edited]
+    paths-ignore:
+      - "pytest/**"
+      - "!pytest/README.md"
+      - "!pytest/pyproject.toml"
+    branches:
+      - main
+
+jobs:
+  pytest-plugin-unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "No unit tests required"
