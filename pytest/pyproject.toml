@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pytest-oar"
-version = "2.0.0"
+version = "2.0.1"
 description = "PyTest plugin for the OAR testing framework"
 license = "MIT"
 authors = [
