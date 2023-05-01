@@ -1,7 +1,10 @@
+import datetime
 import random
 import typing
 
 import pytest
+
+import oar
 
 
 @pytest.fixture
@@ -340,3 +343,37 @@ def valid_test() -> dict[str, typing.Any]:
         }
     ])
     return test
+
+
+@pytest.fixture
+def valid_query() -> dict[str, typing.Any]:
+    """
+    Returns
+    -------
+    query : dict[str, typing.Any]
+        Valid test query
+    """
+    query = {
+        "ids": [random.randint(0, 50) for _ in range(random.randint(0, 25))],
+        "summaries": random.choices(["error message", "load test", "Navbar", "/metadata"], k=random.randint(0, 3)),
+        "outcomes": random.choices(list(oar.Outcome), k=random.randint(1, len(list(oar.Outcome)))),
+        "analyses": random.choices(list(oar.Analysis), k=random.randint(1, len(list(oar.Analysis)))),
+        "resolutions": random.choices(list(oar.Resolution), k=random.randint(1, len(list(oar.Resolution)))),
+        "createdBefore": datetime.datetime.utcnow() + datetime.timedelta(days=random.randint(0, 2)),
+        "createdAfter": datetime.datetime.utcnow() - datetime.timedelta(days=random.randint(0, 2)),
+        "modifiedBefore": datetime.datetime.utcnow() + datetime.timedelta(days=random.randint(0, 2)),
+        "modifiedAfter": datetime.datetime.utcnow() - datetime.timedelta(days=random.randint(0, 2)),
+        "docs": random.choices([
+            {"type": "UI"},
+            {"owner": "Sandy Cheeks"},
+            {"browsers": ["chrome"]},
+            {"app": "users-service"}
+        ], k=random.randint(1, 2))
+    }
+
+    # Makes some fields None because all query fields are optional
+    for k in query:
+        if random.getrandbits(1):
+            query[k] = None
+
+    return query
