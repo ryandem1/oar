@@ -1,0 +1,15 @@
+name: Ruff
+on:
+  pull_request:
+    paths:
+      - "pytest/**"
+      - "!pytest/README.md"
+      - "!pytest/pyproject.toml"
+    branches:
+      - main
+jobs:
+  ruff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3 🛅
+      - uses: chartboost/ruff-action@v1 🐶
