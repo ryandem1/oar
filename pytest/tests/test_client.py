@@ -95,7 +95,7 @@ class TestClient:
 
         with requests_mock.Mocker() as m:
             m.get(
-                url=f"http://localhost:8080/tests",
+                url="http://localhost:8080/tests",
                 json=query_result.dict()
             )
             results = client.get_tests(query)
@@ -119,7 +119,7 @@ class TestClient:
 
         with requests_mock.Mocker() as m:
             m.get(
-                url=f"http://localhost:8080/tests",
+                url="http://localhost:8080/tests",
                 status_code=400
             )
             results = client.get_tests(query)
@@ -141,7 +141,7 @@ class TestClient:
 
         with requests_mock.Mocker() as m:
             m.get(
-                url=f"http://localhost:8080/tests",
+                url="http://localhost:8080/tests",
                 status_code=400,
                 json={"error": "some fake error"} if json_data else None,
                 text="{invalid}" if not json_data else None
@@ -166,7 +166,7 @@ class TestClient:
 
         with requests_mock.Mocker() as m:
             m.patch(
-                url=f"http://localhost:8080/tests",
+                url="http://localhost:8080/tests",
                 status_code=200
             )
             response_code = client.enrich_tests(test, query)
@@ -187,7 +187,7 @@ class TestClient:
 
         with requests_mock.Mocker() as m:
             m.delete(
-                url=f"http://localhost:8080/tests",
+                url="http://localhost:8080/tests",
                 status_code=200
             )
             response_code = client.delete_tests(query)
