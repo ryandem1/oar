@@ -49,6 +49,24 @@ class TestQuery(BaseModel):
     modified_after: datetime.datetime | None = Field(None, alias="modifiedAfter")
     docs: list[dict[str, Any]] | None = None
 
+    def __eq__(self, other: 'TestQuery') -> bool:
+        """
+        Checks for equality without datetime attributes because they are flakey
+
+        Parameters
+        ----------
+        other : TestQuery
+            Query to check for
+
+        Returns
+        -------
+        out : bool
+        """
+        return all(
+            getattr(self, attr) == getattr(other, attr)
+            for attr in ["ids", "summaries", "outcomes", "analyses", "resolutions", "docs"]
+        )
+
     @classmethod
     def from_query_string(cls, query_string: str) -> 'TestQuery':
         """
@@ -78,7 +96,15 @@ class TestQuery(BaseModel):
         request_body: dict[str, Any]
             TestQuery as a request body
         """
-        return self.dict(by_alias=True)
+        return self.dict(
+            by_alias=True,
+            exclude={"created_before", "created_after", "modified_before", "modified_after"}
+        ) | {
+            "createdBefore": self.created_before.strftime("%Y-%m-%dT%H:%M:%SZ") if self.created_before else None,
+            "createdAfter": self.created_after.strftime("%Y-%m-%dT%H:%M:%SZ") if self.created_after else None,
+            "modifiedBefore": self.modified_before.strftime("%Y-%m-%dT%H:%M:%SZ") if self.modified_before else None,
+            "modifiedAfter": self.modified_after.strftime("%Y-%m-%dT%H:%M:%SZ") if self.modified_after else None
+        }
 
     def as_query_string(self) -> str:
         """

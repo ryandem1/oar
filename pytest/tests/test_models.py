@@ -88,4 +88,5 @@ class TestModels:
         query = oar.TestQuery(**valid_query)
         request_body = query.as_request_body()
         request_body_query = oar.TestQuery(**request_body)  # Should go both ways
+
         assert query == request_body_query

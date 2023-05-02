@@ -36,3 +36,21 @@ class TestClient:
         """
         client = oar.Client("http://fake-bad-address:8080")
         assert not client.add_test(oar.Test(**valid_test))
+
+    def test_query(self, valid_query: dict[str, typing.Any]):
+        """
+        Test that the /query handler works
+
+        Parameters
+        ----------
+        valid_query: dict[str, typing.Any]
+            Query
+        """
+        query = oar.TestQuery(**valid_query)
+        client = oar.Client("http://localhost:8080")
+
+        with requests_mock.Mocker() as m:
+            m.post("http://localhost:8080/query", json=query.as_query_string())
+            query_string = client.query(query)
+
+        assert oar.TestQuery.from_query_string(query_string) == query
