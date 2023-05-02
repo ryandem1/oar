@@ -1,12 +1,26 @@
-FROM node:20 AS build
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-COPY package.json ./
-COPY package-lock.json ./
+COPY ./package*.json ./
+
 RUN npm install
-COPY .. ./
+
+COPY . .
+
 RUN npm run build
 
-FROM nginx:1.24-alpine
-COPY --from=build /app/.svelte-kit /usr/share/nginx/html
+
+FROM node:20-alpine
+RUN mkdir /app
+
+COPY --from=builder /app/package.json .
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/build ./build
+
+# See if increase libuv thread pool size makes performance better
+# The default value 4
+# http://docs.libuv.org/en/v1.x/threadpool.html
+ENV UV_THREADPOOL_SIZE=32
+
+CMD ["node", "build"]

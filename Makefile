@@ -2,8 +2,11 @@ clean:
 	docker-compose down --remove-orphans
 	rm -Rf dbData
 
-build:
+build-service:
 	docker-compose build oar-service
+
+build-enrich-ui:
+	docker-compose build oar-enrich-ui
 
 service:
 	docker-compose -f docker-compose.yaml -f docker-compose.local.yaml up -d oar-service

@@ -41,7 +41,7 @@ services:
 
   oar-enrich-ui:
     ports:
-      - 80:80
+      - 80:3000
     depends_on:
       oar-postgres:
         condition: service_healthy
