@@ -88,7 +88,7 @@ class Client:
         test_id = response.json() if response.ok else None
         return test_id
 
-    def query(self, query: TestQuery) -> str:
+    def query(self, query: TestQuery) -> str | None:
         """
         Will call the ``/query`` endpoint with a TestQuery and return a base64 encoded string to use as the "query"
         parameter for the ``/tests`` methods.
@@ -106,12 +106,12 @@ class Client:
 
         Returns
         -------
-        query_string : str
-            base64 encoded string returned from the endpoint
+        query_string : str | None
+            base64 encoded string returned from the endpoint. None if request failed
         """
         response = self.session.post(self.query_route, json=query.as_request_body())
         self.__log_error_if_not_ok(response)
-        return response.json()
+        return response.json() if response.ok else None
 
     def get_tests(self, query: TestQuery, offset: int = 0, limit: int = 250) -> TestQueryResult | None:
         """
