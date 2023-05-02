@@ -8,6 +8,9 @@ build:
 service:
 	docker-compose -f docker-compose.yaml -f docker-compose.local.yaml up -d oar-service
 
+enrich-ui:
+	docker-compose -f docker-compose.yaml -f docker-compose.local.yaml up -d oar-enrich-ui
+
 test-service:
 	cd service; go test -cover
 
@@ -21,4 +24,4 @@ db:
 	PGPASSWORD=postgres psql -h localhost -U postgres -d oar -f scripts/sql/init_postgres.sql;
 
 
-.PHONY: service
+.PHONY: service enrich-ui

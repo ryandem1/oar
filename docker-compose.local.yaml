@@ -1,9 +1,16 @@
 services:
+
   oar-service:
     ports:
       - 8080:8080
     environment:
       PG_HOST: "oar-postgres"
+    healthcheck:
+      test: 'wget --no-verbose --tries=1 --spider http://0.0.0.0:8080/health || exit 1'
+      interval: 3s
+      retries: 5
+      start_period: 3s
+      timeout: 5s
     depends_on:
       oar-postgres:
         condition: service_healthy
@@ -31,3 +38,13 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  oar-enrich-ui:
+    ports:
+      - 80:80
+    depends_on:
+      oar-postgres:
+        condition: service_healthy
+
+      oar-service:
+        condition: service_healthy
