@@ -1,5 +1,5 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
-import { devices } from "@playwright/test";
+import { devices } from '@playwright/test';
 
 const config: PlaywrightTestConfig = {
 	// Look for test files in the "tests" directory, relative to this configuration file.
@@ -18,27 +18,27 @@ const config: PlaywrightTestConfig = {
 	workers: process.env.CI ? 1 : undefined,
 
 	// Reporter to use
-	reporter: process.env.CI ? 'html' : 'line',
+	reporter: [['html', { open: 'never' }]],
 
 	use: {
 		// Base URL to use in actions like `await page.goto('/')`.
 		baseURL: 'http://localhost:4173/',
 
 		// Collect trace when retrying the failed test.
-		trace: 'on-first-retry',
+		trace: 'on-first-retry'
 	},
 	// Configure projects for major browsers.
 	projects: [
 		{
 			name: 'chromium',
-			use: { ...devices['Desktop Chrome'] },
-		},
+			use: { ...devices['Desktop Chrome'] }
+		}
 	],
 	// Run your local dev server before starting the tests.
 	webServer: {
-		command: 'npm run preview',
+		command: 'npm run build && npm run preview',
 		url: 'http://localhost:4173/',
-		reuseExistingServer: !process.env.CI,
+		reuseExistingServer: !process.env.CI
 	}
 };
 

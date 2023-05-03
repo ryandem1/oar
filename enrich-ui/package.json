@@ -11,6 +11,7 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig tsconfig.json --watch",
 		"test:unit": "vitest run --coverage",
 		"lint": "prettier --plugin-search-dir src --check . && eslint .",
+		"lint:ci": "prettier --plugin-search-dir src --list-different . && eslint .",
 		"format": "prettier --plugin-search-dir src --write ."
 	},
 	"devDependencies": {
