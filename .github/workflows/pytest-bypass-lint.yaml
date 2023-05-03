@@ -7,7 +7,6 @@ name: PyTest - Bypass Lint
 
 on:
   pull_request:
-    types: [opened, edited]
     paths-ignore:
       - "pytest/**"
       - "!pytest/README.md"

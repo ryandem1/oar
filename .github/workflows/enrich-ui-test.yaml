@@ -1,0 +1,73 @@
+name: Enrich UI - Test and Lint
+on:
+  pull_request:
+    paths:
+      - "enrich-ui/**"
+      - "!enrich-ui/README.md"
+    branches:
+      - main
+
+jobs:
+
+  enrich-ui-unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛅
+        uses: actions/checkout@v3
+
+      - name: Setup node 🖲️
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies 💽
+        run: cd enrich-ui && npm ci
+
+      - name: Run unit tests 🧪
+        run: cd enrich-ui && npm run test:unit
+
+  enrich-ui-e2e-tests:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛅
+        uses: actions/checkout@v3
+
+      - name: Setup node 🖲️
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies 💽
+        run: cd enrich-ui && npm ci
+
+      - name: Install Playwright browsers 🎭
+        run: cd enrich-ui && npx playwright install --with-deps
+
+      - name: Run Playwright tests 🧪
+        run: cd enrich-ui && npm run test
+
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: enrich-ui/playwright-report/
+          retention-days: 14
+
+  enrich-ui-lint:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout 🛅
+      uses: actions/checkout@v3
+
+    - name: Setup node 🖲️
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
+
+    - name: Install dependencies 💽
+      run: cd enrich-ui && npm ci
+
+    - name: Run Linter 👕
+      run: cd enrich-ui && npm run lint:ci

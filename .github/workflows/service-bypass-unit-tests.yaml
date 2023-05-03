@@ -7,7 +7,6 @@ name: Service - Bypass Unit Tests
 
 on:
   pull_request:
-    types: [opened, edited]
     paths-ignore:
       - service/**
     branches:

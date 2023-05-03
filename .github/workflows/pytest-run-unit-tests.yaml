@@ -2,7 +2,6 @@ name: PyTest - Run Unit Tests
 
 on:
   pull_request:
-    types: [opened, edited]
     paths:
       - "pytest/**"
       - "!pytest/README.md"

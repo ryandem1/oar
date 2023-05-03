@@ -49,13 +49,13 @@ https://editor.swagger.io/.
 To start a local instance of OAR, you could either pull and run the image (would need to configure environment variables),
 or more simply, clone this repository and use a few make commands:
 
-``make clean db build test-service service``
+``make clean db build-service test-service service``
 
 To break it down:
 - ``clean``: Will delete orphan database volumes, teardown existing service, and perform other environment cleanups.
 - ``db``: Starts a new instance of Postgres locally, waits for startup process, and will run the ``init-postgres.sql``
 to create the OAR table.
-- ``build``: Builds the ``oar-service`` image
+- ``build-service``: Builds the ``oar-service`` image
 - ``test-service``: Will run unit tests that do not do database cleanup, so it serves as a helpful way to seed the DB with
 some data for experimenting
 - ``service``: Starts a local ``oar-service`` container and will port-forward the service to your localhost.

@@ -1,6 +1,13 @@
 services:
+
   oar-service:
     build:
       context: ./service
     image: oar-service
     container_name: oar-service
+
+  oar-enrich-ui:
+    build:
+      context: ./enrich-ui
+    image: oar-enrich-ui
+    container_name: oar-enrich-ui
