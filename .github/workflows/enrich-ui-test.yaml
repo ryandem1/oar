@@ -56,6 +56,8 @@ jobs:
           retention-days: 14
 
   enrich-ui-lint:
+    runs-on: ubuntu-latest
+    steps:
     - name: Checkout 🛅
       uses: actions/checkout@v3
 

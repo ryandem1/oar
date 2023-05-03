@@ -20,12 +20,9 @@ jobs:
       - run: echo "Pass"
 
   enrich-ui-e2e-tests:
-    timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
-      runs-on: ubuntu-latest
-      steps:
-        - run: echo "Pass"
+      - run: echo "Pass"
 
   enrich-ui-lint:
     runs-on: ubuntu-latest
