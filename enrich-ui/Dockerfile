@@ -13,10 +13,12 @@ RUN npm run build
 
 FROM node:20-alpine
 RUN mkdir /app
+WORKDIR /app
 
 COPY --from=builder /app/package.json .
-COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/build ./build
+
+RUN npm install --omit dev
 
 # See if increase libuv thread pool size makes performance better
 # The default value 4
