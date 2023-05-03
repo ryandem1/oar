@@ -1,4 +1,4 @@
-name: PyTest - Run Unit Tests
+name: PyTest - Test and Lint
 
 on:
   pull_request:
@@ -11,6 +11,7 @@ on:
   workflow_dispatch:
 
 jobs:
+
   pytest-plugin-unit-tests:
 
     runs-on: ubuntu-latest
@@ -29,3 +30,12 @@ jobs:
 
       - name: Test 🧪
         run: make test-pytest-plugin
+
+  pytest-plugin-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛅
+        uses: actions/checkout@v3
+
+      - name: Ruff Lint 🐶
+        uses: chartboost/ruff-action@v1
