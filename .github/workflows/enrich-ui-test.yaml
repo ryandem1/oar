@@ -1,6 +1,7 @@
 name: Enrich UI - Test and Lint
 on:
   pull_request:
+    types: [opened, edited]
     paths:
       - "enrich-ui/**"
       - "!enrich-ui/README.md"
