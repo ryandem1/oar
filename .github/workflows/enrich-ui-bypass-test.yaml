@@ -7,7 +7,6 @@ name: Enrich UI - Bypass Test and Lint
 
 on:
   pull_request:
-    types: [opened, edited]
     paths-ignore:
       - "enrich-ui/**"
     branches:
