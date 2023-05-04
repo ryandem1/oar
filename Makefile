@@ -21,7 +21,7 @@ enrich-ui:
 
 # Includes hot-reloading and runs on localhost instead of Docker
 enrich-ui-dev:
-	cd enrich-ui; npm dev run
+	cd enrich-ui; npm run build:css; npm run dev
 
 # Runs the unit tests on the oar-service
 test-service:
