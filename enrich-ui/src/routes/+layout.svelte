@@ -16,10 +16,7 @@
 </script>
 
 
-<AppShell
-  regionPage="relative p-8 pr-10"
-  slotPageHeader="sticky top-0 z-10"
->
+<AppShell regionPage="relative p-8 pr-10" slotPageHeader="sticky top-0 z-10">
 
   <svelte:fragment slot="pageHeader">
     <AppBar background="bg-secondary-500" class="rounded-sm">
