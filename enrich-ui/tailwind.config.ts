@@ -9,7 +9,9 @@ export default {
     )
   ],
   theme: {
-    extend: {},
+    fontFamily: {
+      sans: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', '"Liberation Mono"', '"Courier New"', 'monospace']
+    }
   },
   plugins: [
     ...require('@skeletonlabs/skeleton/tailwind/skeleton.cjs')()
