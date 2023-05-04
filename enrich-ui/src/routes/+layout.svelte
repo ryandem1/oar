@@ -17,6 +17,7 @@
 
 
 <AppShell regionPage="relative" slotPageHeader="sticky top-0 z-10" class="p-8 pr-10 bg-secondary-50">
+
   <svelte:fragment slot="pageHeader">
     <AppBar background="bg-secondary-500">
       <svelte:fragment slot="lead">
@@ -27,4 +28,5 @@
   </svelte:fragment>
 
   <slot />
+
 </AppShell>
