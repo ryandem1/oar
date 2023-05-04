@@ -19,7 +19,7 @@
 <AppShell regionPage="relative p-8 pr-10" slotPageHeader="sticky top-0 z-10">
 
   <svelte:fragment slot="pageHeader">
-    <AppBar background="bg-secondary-500" class="rounded-sm">
+    <AppBar background="bg-secondary-500" class="rounded-sm" shadow="shadow-md">
       <svelte:fragment slot="lead">
         <img src="oarLogo.png" alt="OAR Logo" class="h-10 w-10" />
         <div class="pl-2">OAR Enrich v{version}</div>
