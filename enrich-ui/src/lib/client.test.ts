@@ -37,4 +37,36 @@ describe.concurrent('The oar-service client', () => {
 		const testID = await client.addTest(test);
 		expect(testID).toBe(-1);
 	});
+
+	it('can obtain a query string', async() => {
+		const client = new OARServiceClient(OAR_SERVICE_BASE_URL);
+
+		const query = {
+			"ids": [1, 2, 3, 4]
+		}
+		const queryString = await client.query(query);
+		expect(queryString).toBeTruthy()
+	})
+
+	it('can handle response errors when querying', async () => {
+		const client = new OARServiceClient(OAR_SERVICE_BASE_URL);
+		client.queryEndpoint = "/query/bad_response"  // Triggers the mock
+
+		const query = {
+			"ids": [1, 2, 3, 4]
+		}
+		const queryString = await client.query(query);
+		expect(queryString).toBeFalsy()
+	});
+
+	it('can handle exceptions without crashing when querying', async () => {
+		const client = new OARServiceClient(OAR_SERVICE_BASE_URL);
+		client.queryEndpoint = "/query/exception"  // Triggers the mock
+
+		const query = {
+			"ids": [1, 2, 3, 4]
+		}
+		const queryString = await client.query(query);
+		expect(queryString).toBeFalsy()
+	});
 });
