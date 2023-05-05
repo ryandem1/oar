@@ -5,7 +5,8 @@ import { searchForWorkspaceRoot } from 'vite';
 export default defineConfig({
 	plugins: [sveltekit()],
 	test: {
-		include: ['src/**/*.{test,spec}.{js,ts}']
+		include: ['src/**/*.{test,spec}.{js,ts}'],
+		setupFiles: ['src/lib/testSetup.ts']
 	},
 	server: {
 		fs: {

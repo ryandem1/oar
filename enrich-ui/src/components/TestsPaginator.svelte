@@ -1,12 +1,5 @@
 <script lang="ts">
   import { Paginator } from '@skeletonlabs/skeleton';
-  import { onMount } from 'svelte';
-  import { OAR_SERVICE_BASE_URL } from "$env/static/private";
-
-  onMount(async () => {
-    const res = await fetch(OAR_SERVICE_BASE_URL + "/");
-    photos = await res.json();
-  });
 
   let page = {
     offset: 0,
