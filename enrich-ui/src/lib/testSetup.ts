@@ -8,6 +8,14 @@ export const restHandlers = [
 	rest.post(OAR_SERVICE_BASE_URL + '/test', (req, res, ctx) => {
 		const test = selectRandomItem(fakeTests);
 		return res(ctx.status(200), ctx.json(test.id));
+	}),
+
+	rest.post(OAR_SERVICE_BASE_URL + '/test/bad_response', (req, res, ctx) => {
+		return res(ctx.status(400), ctx.json({ error: 'an error occured when creating a test' }));
+	}),
+
+	rest.post(OAR_SERVICE_BASE_URL + "/test/exception", (req, res, ctx) => {
+		throw new Error("Error when creating test")
 	})
 ];
 

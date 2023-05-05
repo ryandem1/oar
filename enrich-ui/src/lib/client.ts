@@ -1,11 +1,14 @@
 export class OARServiceClient {
 	public baseURL: string;
+	public testEndpoint: string;
 
 	constructor(baseURL: string) {
 		this.baseURL = baseURL;
 		if (this.baseURL.endsWith('/')) {
 			this.baseURL = this.baseURL.slice(0, -1);
 		}
+
+		this.testEndpoint = '/test';
 	}
 
 	/*
@@ -19,7 +22,7 @@ export class OARServiceClient {
 			body: JSON.stringify(test)
 		};
 
-		return fetch(this.baseURL + '/test', requestOptions)
+		return fetch(this.baseURL + this.testEndpoint, requestOptions)
 			.then((response) => {
 				if (!response.ok) {
 					console.error('Error occurred when adding test:', response.json());
