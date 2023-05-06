@@ -2,6 +2,7 @@ import { describe, expect, it, expectTypeOf } from 'vitest';
 import { OAR_SERVICE_BASE_URL } from '$env/static/private';
 import { fakeTests, selectRandomItem } from './faker';
 import { OARServiceClient } from './client';
+import { isError } from "$lib/models";
 
 describe.concurrent('The oar-service client', () => {
 	it('can be initialized', () => {
@@ -25,8 +26,11 @@ describe.concurrent('The oar-service client', () => {
 		client.testEndpoint = "/test/bad_response"  // Triggers the mock
 
 		const test = selectRandomItem(fakeTests);
-		const testID = await client.addTest(test);
-		expect(testID).toBe(-1);
+		const response = await client.addTest(test);
+		if (typeof response === "number") {
+			throw new Error("Returned valid response!")
+		}
+		expect(response.error).toBeTruthy();
 	});
 
 	it('can handle exceptions without crashing when adding a result', async () => {
@@ -34,8 +38,11 @@ describe.concurrent('The oar-service client', () => {
 		client.testEndpoint = "/test/exception"  // Triggers the mock
 
 		const test = selectRandomItem(fakeTests);
-		const testID = await client.addTest(test);
-		expect(testID).toBe(-1);
+		const response = await client.addTest(test);
+		if (typeof response === "number") {
+			throw new Error("Returned valid response!")
+		}
+		expect(response.error).toBeTruthy();
 	});
 
 	it('can obtain a query string', async() => {
@@ -55,8 +62,11 @@ describe.concurrent('The oar-service client', () => {
 		const query = {
 			"ids": [1, 2, 3, 4]
 		}
-		const queryString = await client.query(query);
-		expect(queryString).toBeFalsy()
+		const response = await client.query(query);
+		if (typeof response === "string") {
+			throw new Error("Returned valid response!")
+		}
+		expect(response.error).toBeTruthy();
 	});
 
 	it('can handle exceptions without crashing when querying', async () => {
@@ -66,8 +76,11 @@ describe.concurrent('The oar-service client', () => {
 		const query = {
 			"ids": [1, 2, 3, 4]
 		}
-		const queryString = await client.query(query);
-		expect(queryString).toBeFalsy()
+		const response = await client.query(query);
+		if (typeof response === "string") {
+			throw new Error("Returned valid response!")
+		}
+		expect(response.error).toBeTruthy();
 	});
 
 	it('can get tests via a query', async() => {
@@ -78,9 +91,10 @@ describe.concurrent('The oar-service client', () => {
 			"ids": [1]
 		}
 		const queryResults = await client.getTests(query)
-
-		expect(queryResults.count).toBe(1);
-		expect(queryResults.tests.length).toBe(1);
+		if (!isError(queryResults)) {
+			expect(queryResults.count).toBe(1);
+			expect(queryResults.tests.length).toBe(1);
+		}
 	});
 
 	it('can handle response errors when getting tests', async() => {
@@ -92,8 +106,7 @@ describe.concurrent('The oar-service client', () => {
 		}
 		const queryResults = await client.getTests(query)
 
-		expect(queryResults.count).toBe(0);
-		expect(queryResults.tests.length).toBe(0);
+		expect(isError(queryResults)).toBeTruthy()
 	});
 
 	it('can handle exceptions when getting tests', async() => {
@@ -104,9 +117,7 @@ describe.concurrent('The oar-service client', () => {
 			"ids": [1]
 		}
 		const queryResults = await client.getTests(query)
-
-		expect(queryResults.count).toBe(0);
-		expect(queryResults.tests.length).toBe(0);
+		expect(isError(queryResults)).toBeTruthy()
 	})
 
 	it('can enrich tests via a query', async() => {

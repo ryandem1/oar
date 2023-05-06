@@ -57,3 +57,7 @@ EnrichUIError is what is returned when errors occur from the EnrichUI server.
 export type EnrichUIError = {
 	error: string;
 }
+
+export function isError(obj: object): obj is OARServiceError {
+	return (<OARServiceError>obj).error !== undefined;
+}

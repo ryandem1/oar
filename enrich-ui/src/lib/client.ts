@@ -28,7 +28,7 @@ export class OARServiceClient {
 
   @param test - Test result to add
   */
-	async addTest(test: Test): Promise<number> {
+	async addTest(test: Test): Promise<number | OARServiceError | EnrichUIError> {
 		const requestOptions = {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -39,13 +39,13 @@ export class OARServiceClient {
 			.then((response) => {
 				if (!response.ok) {
 					console.error('Error occurred when adding test:', response.json());
-					return -1;
+					return response.json();
 				}
 				return response.json();
 			})
 			.catch((error) => {
 				console.error('Error occurred when adding test:', error);
-				return -1;
+				return {"error": error};
 			});
 	}
 
@@ -55,7 +55,7 @@ export class OARServiceClient {
 
 	@param query - TestQuery to encode into a base64 string
 	*/
-	async query(query: TestQuery): Promise<string> {
+	async query(query: TestQuery): Promise<string | OARServiceError | EnrichUIError> {
 		const requestOptions = {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -66,13 +66,13 @@ export class OARServiceClient {
 			.then((response) => {
 				if (!response.ok) {
 					console.error('Error occurred when querying:', response.json());
-					return "";
+					return response.json();
 				}
 				return response.json();
 			})
 			.catch((error) => {
 				console.error('Error occurred when querying:', error);
-				return "";
+				return {"error": error};
 			});
 	}
 
@@ -84,7 +84,7 @@ export class OARServiceClient {
 	@param offset - Offset for query
 	@param limit - Results returned limit
 	*/
-	async getTests(query: TestQuery, offset: number = 0, limit: number = 250): Promise<TestQueryResult> {
+	async getTests(query: TestQuery, offset: number = 0, limit: number = 250): Promise<TestQueryResult | OARServiceError | EnrichUIError> {
 		const requestOptions = {
 			method: 'GET',
 			params: {
@@ -98,13 +98,13 @@ export class OARServiceClient {
 			.then((response) => {
 				if (!response.ok) {
 					console.error('Error occurred when getting tests:', response.json());
-					return {"count": 0, "tests": []};
+					return response.json();
 				}
 				return response.json();
 			})
 			.catch((error) => {
 				console.error('Error occurred when getting tests:', error);
-				return {"count": 0, "tests": []};
+				return {"error": error};
 			});
 	}
 
