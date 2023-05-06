@@ -48,16 +48,29 @@ export const restHandlers = [
 	}),
 
 	rest.patch(OAR_SERVICE_BASE_URL + '/tests', (req, res, ctx) => {
-		const patchResponse = null;
-		return res(ctx.status(200), ctx.json(patchResponse));
+		const patchResponse = 200;
+		return res(ctx.status(200), ctx.json(200));
 	}),
 
 	rest.patch(OAR_SERVICE_BASE_URL + '/tests/bad_response', (req, res, ctx) => {
-		const patchResponse = { error: 'an error has occurred when retrieving tests' };
+		const patchResponse = { error: 'an error has occurred when updating tests' };
 		return res(ctx.status(400), ctx.json(patchResponse));
 	}),
 
 	rest.patch(OAR_SERVICE_BASE_URL + '/tests/exception', () => {
+		throw new Error('Error occurred');
+	}),
+
+	rest.delete(OAR_SERVICE_BASE_URL + '/tests', (req, res, ctx) => {
+		return res(ctx.status(200), ctx.json(200));
+	}),
+
+	rest.delete(OAR_SERVICE_BASE_URL + '/tests/bad_response', (req, res, ctx) => {
+		const deleteResponse = { error: 'an error has occurred when deleting tests' };
+		return res(ctx.status(400), ctx.json(deleteResponse));
+	}),
+
+	rest.delete(OAR_SERVICE_BASE_URL + '/tests/exception', () => {
 		throw new Error('Error occurred');
 	})
 ];

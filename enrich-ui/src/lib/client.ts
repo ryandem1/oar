@@ -119,8 +119,12 @@ export class OARServiceClient {
 	/query endpoint would.
 	@param offset - Offset for query
 	@param limit - Results returned limit
+	@return - Status code. 304 means no tests were modified, 200 means at least 1 test was modified
 	*/
-	async enrichTests(test: Test, query: TestQuery): Promise<null | OARServiceError | EnrichUIError> {
+	async enrichTests(
+		test: Test,
+		query: TestQuery
+	): Promise<number | OARServiceError | EnrichUIError> {
 		const requestOptions = {
 			method: 'PATCH',
 			headers: { 'Content-Type': 'application/json' },
@@ -135,10 +139,38 @@ export class OARServiceClient {
 				if (!response.ok) {
 					console.error('Error occurred when enriching tests:', response.json());
 				}
-				return response.json();
+				return response.status;
 			})
 			.catch((error) => {
 				console.error('Error occurred when enriching tests:', error);
+				return { error: error };
+			});
+	}
+
+	/*
+	deleteTests will delete all tests that match a TestQuery
+
+	@param query - TestQuery to return results of. Will be converted into a base64 encoded string, similar to how the
+	/query endpoint would.
+	@return - Status code. 304 means no tests were deleted, 200 means at least 1 test was deleted
+	*/
+	async deleteTests(query: TestQuery): Promise<number | OARServiceError | EnrichUIError> {
+		const requestOptions = {
+			method: 'DELETE',
+			params: {
+				query: base64Encode(query)
+			}
+		};
+
+		return fetch(this.baseURL + this.testsEndpoint, requestOptions)
+			.then((response) => {
+				if (!response.ok) {
+					console.error('Error occurred when deleting tests:', response.json());
+				}
+				return response.status;
+			})
+			.catch((error) => {
+				console.error('Error occurred when deleting tests:', error);
 				return { error: error };
 			});
 	}

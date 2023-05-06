@@ -143,6 +143,9 @@ describe.concurrent('The oar-service client', () => {
 		const test = selectRandomItem(fakeTests);
 		const response = await client.enrichTests(test, query);
 
+		if (typeof response === 'number') {
+			throw new Error('Returned valid response!');
+		}
 		expect(response?.error).toBeTruthy();
 	});
 
@@ -156,6 +159,52 @@ describe.concurrent('The oar-service client', () => {
 		const test = selectRandomItem(fakeTests);
 		const response = await client.enrichTests(test, query);
 
+		if (typeof response === 'number') {
+			throw new Error('Returned valid response!');
+		}
+		expect(response?.error).toBeTruthy();
+	});
+
+	it('can delete tests via a query', async () => {
+		const client = new OARServiceClient(OAR_SERVICE_BASE_URL);
+		client.queryEndpoint = '/tests'; // Triggers the mock
+
+		const query = {
+			ids: [1]
+		};
+		const response = await client.deleteTests(query);
+
+		expect(response).toBe(null);
+	});
+
+	it('can handle response errors when deleting tests', async () => {
+		const client = new OARServiceClient(OAR_SERVICE_BASE_URL);
+		client.testsEndpoint = '/tests/bad_response'; // Triggers the mock
+
+		const query = {
+			ids: [1]
+		};
+		const response = await client.deleteTests(query);
+
+		if (typeof response === 'number') {
+			throw new Error('Returned valid response!');
+		}
+		expect(response?.error).toBeTruthy();
+	});
+
+	it('can handle exceptions when deleting tests', async () => {
+		const client = new OARServiceClient(OAR_SERVICE_BASE_URL);
+		client.testsEndpoint = '/tests/exception'; // Triggers the mock
+
+		const query = {
+			ids: [1]
+		};
+
+		const response = await client.deleteTests(query);
+
+		if (typeof response === 'number') {
+			throw new Error('Returned valid response!');
+		}
 		expect(response?.error).toBeTruthy();
 	});
 });
