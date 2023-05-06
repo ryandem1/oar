@@ -1,4 +1,4 @@
-import type { Test, TestQuery, TestQueryResult } from './models'
+import type { OARServiceError, EnrichUIError, Test, TestQuery, TestQueryResult } from "./models";
 import { base64Encode } from "./models";
 
 /*
@@ -105,6 +105,37 @@ export class OARServiceClient {
 			.catch((error) => {
 				console.error('Error occurred when getting tests:', error);
 				return {"count": 0, "tests": []};
+			});
+	}
+
+	/*
+	enrichTests will right-merge test details to all tests that match a TestQuery
+
+	@param query - TestQuery to return results of. Will be converted into a base64 encoded string, similar to how the
+	/query endpoint would.
+	@param offset - Offset for query
+	@param limit - Results returned limit
+	*/
+	async enrichTests(test: Test, query: TestQuery): Promise<null | OARServiceError | EnrichUIError> {
+		const requestOptions = {
+			method: 'PATCH',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(test),
+			params: {
+				"query": base64Encode(query)
+			}
+		};
+
+		return fetch(this.baseURL + this.testsEndpoint, requestOptions)
+			.then((response) => {
+				if (!response.ok) {
+					console.error('Error occurred when enriching tests:', response.json());
+				}
+				return response.json();
+			})
+			.catch((error) => {
+				console.error('Error occurred when enriching tests:', error);
+				return {"error": error};
 			});
 	}
 }

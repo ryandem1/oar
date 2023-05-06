@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, expectTypeOf } from 'vitest';
 import { OAR_SERVICE_BASE_URL } from '$env/static/private';
 import { fakeTests, selectRandomItem } from './faker';
 import { OARServiceClient } from './client';
@@ -107,5 +107,44 @@ describe.concurrent('The oar-service client', () => {
 
 		expect(queryResults.count).toBe(0);
 		expect(queryResults.tests.length).toBe(0);
+	})
+
+	it('can enrich tests via a query', async() => {
+		const client = new OARServiceClient(OAR_SERVICE_BASE_URL);
+		client.queryEndpoint = "/tests"  // Triggers the mock
+
+		const query = {
+			"ids": [1]
+		}
+		const test = selectRandomItem(fakeTests)
+		const response = await client.enrichTests(test, query)
+
+		expect(response).toBe(null);
+	});
+
+	it('can handle response errors when getting tests', async() => {
+		const client = new OARServiceClient(OAR_SERVICE_BASE_URL);
+		client.testsEndpoint = "/tests/bad_response"  // Triggers the mock
+
+		const query = {
+			"ids": [1]
+		}
+		const test = selectRandomItem(fakeTests)
+		const response = await client.enrichTests(test, query)
+
+		expect(response?.error).toBeTruthy()
+	});
+
+	it('can handle exceptions when getting tests', async() => {
+		const client = new OARServiceClient(OAR_SERVICE_BASE_URL);
+		client.testsEndpoint = "/tests/exception"  // Triggers the mock
+
+		const query = {
+			"ids": [1]
+		}
+		const test = selectRandomItem(fakeTests)
+		const response = await client.enrichTests(test, query)
+
+		expect(response?.error).toBeTruthy();
 	})
 });

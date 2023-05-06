@@ -44,6 +44,20 @@ export const restHandlers = [
 	rest.get(OAR_SERVICE_BASE_URL + '/tests/exception', (req, res, ctx) => {
 		throw new Error("Error occurred")
 	}),
+
+	rest.patch(OAR_SERVICE_BASE_URL + '/tests', (req, res, ctx) => {
+		const patchResponse = null;
+		return res(ctx.status(200), ctx.json(patchResponse));
+	}),
+
+	rest.patch(OAR_SERVICE_BASE_URL + '/tests/bad_response', (req, res, ctx) => {
+		const patchResponse = {error: "an error has occurred when retrieving tests" };
+		return res(ctx.status(400), ctx.json(patchResponse));
+	}),
+
+	rest.patch(OAR_SERVICE_BASE_URL + '/tests/exception', (req, res, ctx) => {
+		throw new Error("Error occurred")
+	}),
 ];
 
 const server = setupServer(...restHandlers);
