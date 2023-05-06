@@ -1,5 +1,5 @@
-import type { OARServiceError, EnrichUIError, Test, TestQuery, TestQueryResult } from "./models";
-import { base64Encode } from "./models";
+import type { OARServiceError, EnrichUIError, Test, TestQuery, TestQueryResult } from './models';
+import { base64Encode } from './models';
 
 /*
 The OARServiceClient is the primary way of interacting with the oar-service from
@@ -45,7 +45,7 @@ export class OARServiceClient {
 			})
 			.catch((error) => {
 				console.error('Error occurred when adding test:', error);
-				return {"error": error};
+				return { error: error };
 			});
 	}
 
@@ -72,7 +72,7 @@ export class OARServiceClient {
 			})
 			.catch((error) => {
 				console.error('Error occurred when querying:', error);
-				return {"error": error};
+				return { error: error };
 			});
 	}
 
@@ -84,13 +84,17 @@ export class OARServiceClient {
 	@param offset - Offset for query
 	@param limit - Results returned limit
 	*/
-	async getTests(query: TestQuery, offset: number = 0, limit: number = 250): Promise<TestQueryResult | OARServiceError | EnrichUIError> {
+	async getTests(
+		query: TestQuery,
+		offset = 0,
+		limit = 250
+	): Promise<TestQueryResult | OARServiceError | EnrichUIError> {
 		const requestOptions = {
 			method: 'GET',
 			params: {
-				"query": base64Encode(query),
-				"offset": offset,
-				"limit": limit
+				query: base64Encode(query),
+				offset: offset,
+				limit: limit
 			}
 		};
 
@@ -104,7 +108,7 @@ export class OARServiceClient {
 			})
 			.catch((error) => {
 				console.error('Error occurred when getting tests:', error);
-				return {"error": error};
+				return { error: error };
 			});
 	}
 
@@ -122,7 +126,7 @@ export class OARServiceClient {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(test),
 			params: {
-				"query": base64Encode(query)
+				query: base64Encode(query)
 			}
 		};
 
@@ -135,7 +139,7 @@ export class OARServiceClient {
 			})
 			.catch((error) => {
 				console.error('Error occurred when enriching tests:', error);
-				return {"error": error};
+				return { error: error };
 			});
 	}
 }

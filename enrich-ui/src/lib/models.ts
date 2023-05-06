@@ -49,14 +49,14 @@ RequestError is what is returned when an error occurs from the oar-service
 */
 export type OARServiceError = {
 	error: string;
-}
+};
 
 /*
 EnrichUIError is what is returned when errors occur from the EnrichUI server.
 */
 export type EnrichUIError = {
 	error: string;
-}
+};
 
 export function isError(obj: object): obj is OARServiceError {
 	return (<OARServiceError>obj).error !== undefined;
