@@ -58,13 +58,13 @@ export class OARServiceClient {
 		return fetch(this.baseURL + this.queryEndpoint, requestOptions)
 			.then((response) => {
 				if (!response.ok) {
-					console.error('Error occurred when adding test:', response.json());
+					console.error('Error occurred when querying:', response.json());
 					return "";
 				}
 				return response.json();
 			})
 			.catch((error) => {
-				console.error('Error occurred when adding test:', error);
+				console.error('Error occurred when querying:', error);
 				return "";
 			});
 	}
