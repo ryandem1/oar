@@ -69,4 +69,43 @@ describe.concurrent('The oar-service client', () => {
 		const queryString = await client.query(query);
 		expect(queryString).toBeFalsy()
 	});
+
+	it('can get tests via a query', async() => {
+		const client = new OARServiceClient(OAR_SERVICE_BASE_URL);
+		client.queryEndpoint = "/tests"  // Triggers the mock
+
+		const query = {
+			"ids": [1]
+		}
+		const queryResults = await client.getTests(query)
+
+		expect(queryResults.count).toBe(1);
+		expect(queryResults.tests.length).toBe(1);
+	});
+
+	it('can handle response errors when getting tests', async() => {
+		const client = new OARServiceClient(OAR_SERVICE_BASE_URL);
+		client.testsEndpoint = "/tests/bad_response"  // Triggers the mock
+
+		const query = {
+			"ids": [1]
+		}
+		const queryResults = await client.getTests(query)
+
+		expect(queryResults.count).toBe(0);
+		expect(queryResults.tests.length).toBe(0);
+	});
+
+	it('can handle exceptions when getting tests', async() => {
+		const client = new OARServiceClient(OAR_SERVICE_BASE_URL);
+		client.testsEndpoint = "/tests/exception"  // Triggers the mock
+
+		const query = {
+			"ids": [1]
+		}
+		const queryResults = await client.getTests(query)
+
+		expect(queryResults.count).toBe(0);
+		expect(queryResults.tests.length).toBe(0);
+	})
 });

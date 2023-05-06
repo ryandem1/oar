@@ -39,7 +39,7 @@ export function base64Encode(query: TestQuery): string {
 /*
 TestQueryResult is the test results and metadata associated with a test query.
  */
-type TestQueryResult = {
+export type TestQueryResult = {
 	count: number;
 	tests: Test[];
 };

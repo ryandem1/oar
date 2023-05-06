@@ -30,6 +30,20 @@ export const restHandlers = [
 	rest.post(OAR_SERVICE_BASE_URL + "/query/exception", (req, res, ctx) => {
 		throw new Error("Error when querying")
 	}),
+
+	rest.get(OAR_SERVICE_BASE_URL + '/tests', (req, res, ctx) => {
+		const testQueryResult = {"count": 1, tests: [selectRandomItem(fakeTests)] };
+		return res(ctx.status(200), ctx.json(testQueryResult));
+	}),
+
+	rest.get(OAR_SERVICE_BASE_URL + '/tests/bad_response', (req, res, ctx) => {
+		const testQueryResult = {error: "an error has occurred when retrieving tests" };
+		return res(ctx.status(400), ctx.json(testQueryResult));
+	}),
+
+	rest.get(OAR_SERVICE_BASE_URL + '/tests/exception', (req, res, ctx) => {
+		throw new Error("Error occurred")
+	}),
 ];
 
 const server = setupServer(...restHandlers);
