@@ -128,13 +128,13 @@ export class OARServiceClient {
 		const requestOptions = {
 			method: 'PATCH',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(test),
-			params: {
-				query: base64Encode(query)
-			}
+			body: JSON.stringify(test)
+		};
+		const params = {
+			query: base64Encode(query)
 		};
 
-		return fetch(this.baseURL + this.testsEndpoint, requestOptions)
+		return fetch(this.baseURL + this.testsEndpoint + "?" + new URLSearchParams(params), requestOptions)
 			.then((response) => {
 				if (!response.ok) {
 					console.error('Error occurred when enriching tests:', response.json());
@@ -157,13 +157,13 @@ export class OARServiceClient {
 	*/
 	async deleteTests(query: TestQuery): Promise<number | OARServiceError | EnrichUIError> {
 		const requestOptions = {
-			method: 'DELETE',
-			params: {
-				query: base64Encode(query)
-			}
+			method: 'DELETE'
+		};
+		const params = {
+			query: base64Encode(query)
 		};
 
-		return fetch(this.baseURL + this.testsEndpoint, requestOptions)
+		return fetch(this.baseURL + this.testsEndpoint + "?" + new URLSearchParams(params), requestOptions)
 			.then((response) => {
 				if (!response.ok) {
 					console.error('Error occurred when deleting tests:', response.json());

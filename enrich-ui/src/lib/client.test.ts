@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { fakeTests, selectRandomItem } from '$lib/faker';
 import { OARServiceClient } from '$lib/client';
-import { isOARServiceError } from '$lib/models';
+import { isEnrichUIError, isOARServiceError } from "$lib/models";
 import { PUBLIC_OAR_SERVICE_BASE_URL } from "$env/static/public";
 
 describe.concurrent('The oar-service client', () => {
@@ -91,7 +91,7 @@ describe.concurrent('The oar-service client', () => {
 			ids: [1]
 		};
 		const queryResults = await client.getTests(query);
-		if (!isOARServiceError(queryResults)) {
+		if (!isOARServiceError(queryResults) && !isEnrichUIError(queryResults)) {
 			expect(queryResults.count).toBe(1);
 			expect(queryResults.tests.length).toBe(1);
 		}
