@@ -16,7 +16,7 @@
   };
 
   let headers = ["id", "summary", "outcome", "analysis", "resolution"]
-  const toTestTable = (tests: Test[]): any[][] => {
+  const toTestTable = (tests: Test[]): string[][] => {
     let out = [];
     tests.forEach((test) => {
       out.push([test.id, test.summary, test.outcome, test.analysis, test.resolution])

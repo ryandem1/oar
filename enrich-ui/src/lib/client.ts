@@ -1,6 +1,6 @@
 import type { OARServiceError, EnrichUIError, Test, TestQuery, TestQueryResult } from './models';
 import { base64Encode } from './models';
-import { PUBLIC_OAR_SERVICE_BASE_URL } from "$env/static/public";
+import { PUBLIC_OAR_SERVICE_BASE_URL } from '$env/static/public';
 
 /*
 The OARServiceClient is the primary way of interacting with the oar-service from
@@ -90,15 +90,15 @@ export class OARServiceClient {
 		offset = 0,
 		limit = 250
 	): Promise<TestQueryResult | OARServiceError | EnrichUIError> {
-		let params: Record<string, string> = {
+		const params: Record<string, string> = {
 			offset: offset.toString(),
 			limit: limit.toString()
-		}
+		};
 		if (query) {
-			params["query"] = base64Encode(query);
+			params['query'] = base64Encode(query);
 		}
 
-		return fetch(this.baseURL + this.testsEndpoint + "?" + new URLSearchParams(params))
+		return fetch(this.baseURL + this.testsEndpoint + '?' + new URLSearchParams(params))
 			.then((response) => {
 				if (!response.ok) {
 					console.error('Error occurred when getting tests:', response.json());
@@ -134,7 +134,10 @@ export class OARServiceClient {
 			query: base64Encode(query)
 		};
 
-		return fetch(this.baseURL + this.testsEndpoint + "?" + new URLSearchParams(params), requestOptions)
+		return fetch(
+			this.baseURL + this.testsEndpoint + '?' + new URLSearchParams(params),
+			requestOptions
+		)
 			.then((response) => {
 				if (!response.ok) {
 					console.error('Error occurred when enriching tests:', response.json());
@@ -163,7 +166,10 @@ export class OARServiceClient {
 			query: base64Encode(query)
 		};
 
-		return fetch(this.baseURL + this.testsEndpoint + "?" + new URLSearchParams(params), requestOptions)
+		return fetch(
+			this.baseURL + this.testsEndpoint + '?' + new URLSearchParams(params),
+			requestOptions
+		)
 			.then((response) => {
 				if (!response.ok) {
 					console.error('Error occurred when deleting tests:', response.json());
