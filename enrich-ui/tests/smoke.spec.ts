@@ -1,6 +1,12 @@
 import { expect, test } from '@playwright/test';
 
-test('index page has expected h1', async ({ page }) => {
+test('navbar displays correct version', async ({ page }) => {
 	await page.goto('/');
-	await expect(page.getByRole('heading', { name: 'Welcome to SvelteKit' })).toBeVisible();
+	const element = await page.getByText("OAR Enrich");
+	if (element === null) {
+		throw new Error("Could not find header with version in it!")
+	}
+
+	const text = await element.textContent();
+	expect(text).toContain("0.0.1");  // Hardcoded for now
 });
