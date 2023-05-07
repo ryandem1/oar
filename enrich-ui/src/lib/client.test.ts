@@ -130,7 +130,7 @@ describe.concurrent('The oar-service client', () => {
 		const test = selectRandomItem(fakeTests);
 		const response = await client.enrichTests(test, query);
 
-		expect(response).toBe(null);
+		expect(response).toBe(200);
 	});
 
 	it('can handle response errors when getting tests', async () => {
@@ -174,7 +174,7 @@ describe.concurrent('The oar-service client', () => {
 		};
 		const response = await client.deleteTests(query);
 
-		expect(response).toBe(null);
+		expect(response).toBe(200);
 	});
 
 	it('can handle response errors when deleting tests', async () => {

@@ -138,6 +138,7 @@ export class OARServiceClient {
 			.then((response) => {
 				if (!response.ok) {
 					console.error('Error occurred when enriching tests:', response.json());
+					return response.json();
 				}
 				return response.status;
 			})
@@ -166,6 +167,7 @@ export class OARServiceClient {
 			.then((response) => {
 				if (!response.ok) {
 					console.error('Error occurred when deleting tests:', response.json());
+					return response.json();
 				}
 				return response.status;
 			})
