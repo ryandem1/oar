@@ -58,6 +58,10 @@ export type EnrichUIError = {
 	error: string;
 };
 
-export function isError(obj: object): obj is OARServiceError {
+export function isOARServiceError(obj: object): obj is OARServiceError {
 	return (<OARServiceError>obj).error !== undefined;
+}
+
+export function isEnrichUIError(obj: object): obj is EnrichUIError {
+	return (<EnrichUIError>obj).error !== undefined;
 }
