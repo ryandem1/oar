@@ -23,6 +23,9 @@ enrich-ui:
 enrich-ui-dev:
 	cd enrich-ui; npm run build:css; npm run dev
 
+lint-enrich-ui:
+	cd enrich-ui; npm run format; npm run lint;
+
 # Runs the unit tests on the oar-service
 test-service:
 	cd service; go test -cover
