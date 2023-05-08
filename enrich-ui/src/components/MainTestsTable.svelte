@@ -9,7 +9,7 @@
   let fields = ["id", "summary", "outcome", "analysis", "resolution"]
 
   let testTable: string[][] = [];
-  $: testTable = testTable;
+  $: testTable = [];
 
   onMount(async () => {
     const response = await client.getTests(null, 0, 250);
