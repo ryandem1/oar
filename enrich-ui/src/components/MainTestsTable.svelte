@@ -3,10 +3,11 @@
   import { OARServiceClient } from "$lib/client";
   import { onMount } from "svelte";
   import { isEnrichUIError, isOARServiceError } from "$lib/models";
+  import { toTitleCase } from "$lib/util"
 
   const client = new OARServiceClient();
 
-  let fields = ["id", "summary", "outcome", "analysis", "resolution"]
+  let fields = ["id", "summary", "outcome", "analysis", "resolution", "owner", "type", "app"]
 
   let testTable: string[][] = [];
   $: testTable = [];
@@ -18,7 +19,7 @@
       return
     }
 
-    testTable = tableMapperValues(response.tests, fields);
+    testTable = tableMapperValues(response.tests, fields.map((f) => f.toLowerCase()));
   })
 
   let page = {
@@ -39,7 +40,13 @@
 </script>
 
 
-<Table interactive={true} source={{ head: fields, body: paginatedSource }} class="w-auto"/>
+<Table
+  interactive={true}
+  source={{ head: fields.map((f) => toTitleCase(f)), body: paginatedSource }}
+  element="table-auto w-full"
+  regionBody="bg-surface-50"
+  regionCell="pr-4 pb-4"
+/>
 <Paginator
   bind:settings={page}
   buttonClasses="btn-icon bg-surface-300"
