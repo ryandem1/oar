@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Paginator, Table, tableMapperValues } from "@skeletonlabs/skeleton";
+  import { Paginator, Table, tableMapperValues, AppBar } from "@skeletonlabs/skeleton";
   import { OARServiceClient } from "$lib/client";
   import { onMount } from "svelte";
   import { isEnrichUIError, isOARServiceError } from "$lib/models";
@@ -39,15 +39,15 @@
   );
 </script>
 
-
-<Table
-  interactive={true}
-  source={{ head: fields.map((f) => toTitleCase(f)), body: paginatedSource }}
-  element="table-auto w-full"
-  regionBody="bg-surface-50"
-  regionCell="pr-4 pb-4"
-/>
-<Paginator
-  bind:settings={page}
-  buttonClasses="btn-icon bg-surface-300"
-/>
+<div class="card bg-surface-50 mt-4 shadow-xl p-4 outline-double outline-4 outline-surface-400">
+  <Table
+    interactive={true}
+    source={{ head: fields.map((f) => toTitleCase(f)), body: paginatedSource }}
+    element="table-auto w-full"
+    regionCell="pr-4 pb-4"
+  />
+  <Paginator
+    bind:settings={page}
+    buttonClasses="btn-icon bg-surface-300"
+  />
+</div>
