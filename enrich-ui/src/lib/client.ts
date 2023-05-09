@@ -106,6 +106,17 @@ export class OARServiceClient {
 				}
 				return response.json();
 			})
+			.then((testQueryResult: TestQueryResult): TestQueryResult => {
+				// This will combine the "doc" attribute of each test into the test
+				// itself.
+				const { tests, ...remainingQuery } = testQueryResult;
+				const mergedTests: Test[] = [];
+				testQueryResult.tests.forEach((test) => {
+					const { doc, ...testWithoutDoc } = test;
+					mergedTests.push({ ...testWithoutDoc, ...(doc as object) });
+				});
+				return { tests: mergedTests, ...remainingQuery };
+			})
 			.catch((error) => {
 				console.error('Error occurred when getting tests:', error);
 				return { error: error };
