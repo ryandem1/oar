@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Paginator, Table, tableMapperValues, AppBar } from "@skeletonlabs/skeleton";
+  import { Paginator, Table, tableMapperValues } from "@skeletonlabs/skeleton";
   import { OARServiceClient } from "$lib/client";
   import { onMount } from "svelte";
   import { isEnrichUIError, isOARServiceError } from "$lib/models";
