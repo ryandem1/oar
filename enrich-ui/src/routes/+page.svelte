@@ -1,6 +1,6 @@
 <script>
-  import TestsPaginator from "../components/TestsPaginator.svelte";
+  import MainTestsTable from "../components/MainTestsTable.svelte";
 </script>
 
 
-<TestsPaginator/>
+<MainTestsTable/>
