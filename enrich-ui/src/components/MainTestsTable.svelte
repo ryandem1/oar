@@ -7,7 +7,14 @@
 
   const client = new OARServiceClient();
 
+  /*
+  TABLE LOAD AND PAGINATION FUNCTIONALITY
+  */
   let fields = ["id", "summary", "outcome", "analysis", "resolution", "owner", "type", "app"]
+  let testIDIndex: number = fields.findIndex((elem) => elem === "id");
+  if (testIDIndex === -1) {
+    console.error("Could not find test ID as a field in the table!");
+  }
 
   let testTable: string[][] = [];
   $: testTable = [];
@@ -37,11 +44,26 @@
     page.offset * page.limit,             // start
     page.offset * page.limit + page.limit // end
   );
+
+  /*
+  SELECT FUNCTIONALITY
+  */
+  let selectedTestIDs: number[];
+  $: selectedTestIDs = [];
+  $: {
+    console.log(selectedTestIDs)
+  }
+
+  const onTestRowSelect = (e: CustomEvent) => {
+    let testRow = e.detail;
+    selectedTestIDs = [...selectedTestIDs, testRow[testIDIndex]]
+  }
 </script>
 
 <div class="card bg-surface-50 mt-4 shadow-xl p-4 outline-double outline-4 outline-surface-400">
   <Table
     interactive={true}
+    on:selected={onTestRowSelect}
     source={{ head: fields.map((f) => toTitleCase(f)), body: paginatedSource }}
     element="table-auto w-full"
     regionCell="pr-4 pb-4"
