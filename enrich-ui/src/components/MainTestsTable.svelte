@@ -60,7 +60,7 @@
   }
 </script>
 
-<div class="card bg-surface-50 mt-4 shadow-xl p-4 outline-double outline-4 outline-surface-400">
+<div class="card bg-surface-50 shadow-xl p-2 outline-double outline-4 outline-surface-400">
   <Table
     interactive={true}
     on:selected={onTestRowSelect}
