@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { Paginator, Table, tableMapperValues } from "@skeletonlabs/skeleton";
+  import { Paginator, tableMapperValues } from "@skeletonlabs/skeleton";
   import { OARServiceClient } from "$lib/client";
   import { onMount } from "svelte";
   import { isEnrichUIError, isOARServiceError } from "$lib/models";
-  import { toTitleCase } from "$lib/util"
 
   const client = new OARServiceClient();
 
@@ -61,13 +60,34 @@
 </script>
 
 <div class="card bg-surface-50 shadow-xl p-2 outline-double outline-4 outline-surface-400">
-  <Table
-    interactive={true}
-    on:selected={onTestRowSelect}
-    source={{ head: fields.map((f) => toTitleCase(f)), body: paginatedSource }}
-    element="table-auto w-full"
-    regionCell="pr-4 pb-4"
-  />
+  <div class="table-container w-full">
+    <table class="table-auto table-compact table-interactive w-full">
+      <thead>
+      <tr>
+        {#each fields as header}
+          <th>{header}</th>
+        {/each}
+      </tr>
+      </thead>
+      <tbody>
+      {#each paginatedSource as row}
+        <tr>
+          {#each fields as field, i}
+            {#if field === "summary"}
+              <td class="pr-4 pb-4">{row[i]}</td>
+            {:else}
+              {#if row[i] === undefined}
+                <td class="pr-4 pb-4 text-center">-</td>
+              {:else}
+                <td class="pr-4 pb-4 text-center">{row[i]}</td>
+              {/if}
+            {/if}
+          {/each}
+        </tr>
+      {/each}
+      </tbody>
+    </table>
+  </div>
   <Paginator
     bind:settings={page}
     buttonClasses="btn-icon bg-surface-300"
