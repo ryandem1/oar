@@ -7,6 +7,9 @@
   export let width = "1em";
   export let height = "1em";
 
+  if (name === undefined) {
+    name = "default"
+  }
   $: icon = feather.icons[name];
   $: rotation = directions.indexOf(direction) * 45;
 </script>
