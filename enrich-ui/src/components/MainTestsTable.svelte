@@ -3,6 +3,7 @@
   import { OARServiceClient } from "$lib/client";
   import { onMount } from "svelte";
   import { isEnrichUIError, isOARServiceError } from "$lib/models";
+  import { to_number } from "svelte/internal";
 
   const client = new OARServiceClient();
 
@@ -49,15 +50,24 @@
   */
   let selectedTestIDs: number[];
   $: selectedTestIDs = [];
-  $: {
-    console.log(selectedTestIDs)
-  }
 
-  const onTestRowSelect = (e: CustomEvent) => {
-    let testRow = e.detail;
-    selectedTestIDs = [...selectedTestIDs, testRow[testIDIndex]]
+  function toggleRow(row: string[]) {
+    let testID = to_number(row[fields.indexOf("id")])
+
+    if (selectedTestIDs.includes(testID)) {
+      selectedTestIDs = selectedTestIDs.filter(i => i !== testID);
+    } else {
+      selectedTestIDs = [...selectedTestIDs, testID];
+    }
   }
 </script>
+
+<style>
+    .selected {
+        border: 2px dashed #7d5a5a;
+        background-color: #fff4f4;
+    }
+</style>
 
 <div class="card bg-surface-50 shadow-xl p-2 outline-double outline-4 outline-surface-400">
   <div class="table-container w-full">
@@ -70,16 +80,19 @@
       </tr>
       </thead>
       <tbody>
-      {#each paginatedSource as row}
-        <tr>
-          {#each fields as field, i}
+      {#each paginatedSource as row, i}
+        <tr
+          class:selected={selectedTestIDs.includes(row[fields.indexOf("id")])}
+          on:click={() => toggleRow(row)}
+        >
+          {#each fields as field, j}
             {#if field === "summary"}
-              <td class="pr-4 pb-4">{row[i]}</td>
+              <td class="pr-4 pb-4">{row[j]}</td>
             {:else}
-              {#if row[i] === undefined}
+              {#if row[j] === undefined}
                 <td class="pr-4 pb-4 text-center">-</td>
               {:else}
-                <td class="pr-4 pb-4 text-center">{row[i]}</td>
+                <td class="pr-4 pb-4 text-center">{row[j]}</td>
               {/if}
             {/if}
           {/each}
