@@ -12,10 +12,13 @@ import Icon from "./Icon.svelte";
     </div>
   </svelte:fragment>
   <svelte:fragment slot="trail">
-    <button type="button" class="btn bg-primary-300 border-r-2 border-primary-600 border-t-2 active:border-t-0 active:border-r-0">
+    <button type="button" class="btn bg-primary-400 border-r-2 border-primary-500 border-t-2 active:border-t-0 active:border-r-0">
+      <Icon name="eye"/>
+    </button>
+    <button type="button" class="btn bg-success-500 border-r-2 border-success-600 border-t-2 active:border-t-0 active:border-r-0">
       <Icon name="edit"/>
     </button>
-    <button type="button" class="btn bg-error-300 border-r-2 border-error-600 border-t-2 active:border-t-0 active:border-r-0">
+    <button type="button" class="btn bg-tertiary-500 border-r-2 border-tertiary-600 border-t-2 active:border-t-0 active:border-r-0">
       <Icon name="trash"/>
     </button>
   </svelte:fragment>
