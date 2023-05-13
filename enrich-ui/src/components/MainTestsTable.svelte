@@ -64,9 +64,23 @@
 
 <style>
     .selected {
-        border: 2px dashed #7d5a5a;
+        border-color: #7d5a5a;
         background-color: #fff4f4;
+        background-image: linear-gradient(90deg, silver 50%, transparent 50%), linear-gradient(90deg, silver 50%, transparent 50%), linear-gradient(0deg, silver 50%, transparent 50%), linear-gradient(0deg, silver 50%, transparent 50%);
+        background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+        background-size: 15px 2px, 15px 2px, 2px 15px, 2px 15px;
+        background-position: left top, right bottom, left bottom, right   top;
+        animation: border-dance 1s infinite linear;
     }
+    @keyframes border-dance {
+        0% {
+            background-position: left top, right bottom, left bottom, right   top;
+        }
+        100% {
+            background-position: left 15px top, right 15px bottom , left bottom 15px , right   top 15px;
+        }
+    }
+
 </style>
 
 <div class="card bg-surface-50 shadow-xl p-2 outline-double outline-4 outline-surface-400">

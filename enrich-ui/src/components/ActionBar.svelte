@@ -12,8 +12,8 @@ import Icon from "./Icon.svelte";
     </div>
   </svelte:fragment>
   <svelte:fragment slot="trail">
-    <button type="button" class="btn bg-primary-300 border-r-2 border-primary-700 border-t-2 active:border-t-0 active:border-r-0"><Icon name="edit"/></button>
-    <button type="button" class="btn bg-error-300 border-r-2 border-error-700 border-t-2 active:border-t-0 active:border-r-0"><Icon name="trash"/></button>
+    <button type="button" class="btn bg-primary-300 border-r-2 border-primary-600 border-t-2 active:border-t-0 active:border-r-0"><Icon name="edit"/></button>
+    <button type="button" class="btn bg-error-300 border-r-2 border-error-600 border-t-2 active:border-t-0 active:border-r-0"><Icon name="trash"/></button>
   </svelte:fragment>
 </AppBar>
 
