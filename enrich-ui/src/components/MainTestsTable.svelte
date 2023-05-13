@@ -4,6 +4,7 @@
   import { onMount } from "svelte";
   import { isEnrichUIError, isOARServiceError } from "$lib/models";
   import { to_number } from "svelte/internal";
+  import { selectedTestIDs } from "../stores";
 
   const client = new OARServiceClient();
 
@@ -48,19 +49,22 @@
   /*
   SELECT FUNCTIONALITY
   */
-  let selectedTestIDs: number[];
+  let localSelectedTestIDs: number[];
   let selectedTestIdxes: number[];
-  $: selectedTestIDs = [];
+  $: localSelectedTestIDs = [];
   $: selectedTestIdxes = [];
+  $: {
+    selectedTestIDs.set(localSelectedTestIDs)
+  }
 
   function toggleRow(row: string[], index: number) {
     let testID = to_number(row[fields.indexOf("id")])
 
-    if (selectedTestIDs.includes(testID)) {
-      selectedTestIDs = selectedTestIDs.filter(i => i !== testID);
+    if (localSelectedTestIDs.includes(testID)) {
+      localSelectedTestIDs = localSelectedTestIDs.filter(i => i !== testID);
       selectedTestIdxes = selectedTestIdxes.filter(i => i !== index)
     } else {
-      selectedTestIDs = [...selectedTestIDs, testID];
+      localSelectedTestIDs = [...localSelectedTestIDs, testID];
       selectedTestIdxes = [...selectedTestIdxes, index];
     }
   }
@@ -127,17 +131,17 @@
       <tbody>
       {#each paginatedSource as row, i}
         <tr
-          class:selected={selectedTestIDs.includes(row[fields.indexOf("id")])}
+          class:selected={localSelectedTestIDs.includes(row[fields.indexOf("id")])}
           class:top-selected={
-            selectedTestIDs.includes(row[fields.indexOf("id")]) &&
+            localSelectedTestIDs.includes(row[fields.indexOf("id")]) &&
             selectedTestIdxes.includes(i - 1)
           }
           class:bottom-selected={
-            selectedTestIDs.includes(row[fields.indexOf("id")]) &&
+            localSelectedTestIDs.includes(row[fields.indexOf("id")]) &&
             selectedTestIdxes.includes(i + 1)
           }
           class:top-and-bottom-selected={
-            selectedTestIDs.includes(row[fields.indexOf("id")]) &&
+            localSelectedTestIDs.includes(row[fields.indexOf("id")]) &&
             selectedTestIdxes.includes(i - 1) &&
             selectedTestIdxes.includes(i + 1)
           }

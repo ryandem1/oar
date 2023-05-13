@@ -1,7 +1,16 @@
-<script>
+<script lang="ts">
 import { version } from "$app/environment";
 import { AppBar } from "@skeletonlabs/skeleton";
 import Icon from "./Icon.svelte";
+import { selectedTestIDs } from "../stores.ts";
+
+let localSelectedTestIDs: number[];
+$: localSelectedTestIDs = [];
+
+selectedTestIDs.subscribe(ids => {
+  localSelectedTestIDs = ids;
+});
+
 </script>
 
 <AppBar background="bg-secondary-500" class="rounded-md" shadow="shadow-md">
