@@ -4,17 +4,11 @@
 
   export let name;
   export let direction = "n";
-  export let strokeWidth;
-  export let stroke;
   export let width = "1em";
   export let height = "1em";
 
   $: icon = feather.icons[name];
   $: rotation = directions.indexOf(direction) * 45;
-  $: if (icon) {
-    if (stroke) icon.attrs["stroke"] = stroke;
-    if (strokeWidth) icon.attrs["stroke-width"] = strokeWidth;
-  }
 </script>
 
 {#if icon}
