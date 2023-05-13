@@ -31,9 +31,9 @@
 
   let page = {
     offset: 0,
-    limit: 25,
+    limit: 7,
     size: testTable.length,
-    amounts: [5, 10, 25, 100],
+    amounts: [7, 15, 25, 100],
   };
 
   $: {
