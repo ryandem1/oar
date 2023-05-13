@@ -10,7 +10,7 @@
   $: icon = feather.icons[name];
   $: rotation = directions.indexOf(direction) * 45;
 </script>
-
+<!-- eslint-disable -->
 {#if icon}
   <svg
     {...icon.attrs}
