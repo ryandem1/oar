@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { Paginator, tableMapperValues } from "@skeletonlabs/skeleton";
+  import { Paginator } from "@skeletonlabs/skeleton";
   import { OARServiceClient } from "$lib/client";
   import { onMount } from "svelte";
-  import { isEnrichUIError, isOARServiceError } from "$lib/models";
   import { to_number } from "svelte/internal";
   import { refreshTestTable, selectedTestIDs } from "../stores";
-  import { throwFailureToast } from "$lib/toasts";
+  import { getTestTable } from "$lib/table";
 
   const client = new OARServiceClient();
 
@@ -21,23 +20,13 @@
   let testTable: string[][] = [];
   $: testTable = [];
 
-  const loadTests = async () => {
-    const response = await client.getTests(null, 0, 250);
-    if (isEnrichUIError(response) || isOARServiceError(response)) {
-      throwFailureToast(response.error)
-      return
-    }
-
-    testTable = tableMapperValues(response.tests, fields.map((f) => f.toLowerCase()));
-  }
-
   onMount(async () => {
     refreshTestTable.subscribe(async refresh => {
       if (refresh === true) {
         refreshTestTable.set(false);
         localSelectedTestIDs = [];
         selectedTestIdxes = [];
-        await loadTests()
+        testTable = await getTestTable(null, fields);
       }
     })
   })
