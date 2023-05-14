@@ -11,21 +11,20 @@ import { tableMapperValues } from "@skeletonlabs/skeleton";
 
 const client = new OARServiceClient();
 
-type TestTable = string[][];  // This is the format that needs to be displayed in the ui
+type TestTable = string[][]; // This is the format that needs to be displayed in the ui
 
 /*
 Will return the IDs of the tests that are currently selected in the test table.
 */
 export const getSelectedTestIDs = (): number[] => {
-  let localSelectedTestIDs: number[] = [];
-  const unsubscribe = selectedTestIDs.subscribe(ids => {
-    localSelectedTestIDs = ids;
-  });
-  unsubscribe();
+	let localSelectedTestIDs: number[] = [];
+	const unsubscribe = selectedTestIDs.subscribe((ids) => {
+		localSelectedTestIDs = ids;
+	});
+	unsubscribe();
 
-  return localSelectedTestIDs;
-}
-
+	return localSelectedTestIDs;
+};
 
 /*
 Will retrieve tests from the oar-service and format them like a test table
@@ -34,14 +33,17 @@ Will retrieve tests from the oar-service and format them like a test table
 @param headers - Headers to display on the table
 */
 export const getTestTable = async (
-  testQuery: TestQuery | null = null,
-  headers: string[]
+	testQuery: TestQuery | null = null,
+	headers: string[]
 ): Promise<TestTable> => {
-  const response = await client.getTests(testQuery, 0, 250);
-  if (isEnrichUIError(response) || isOARServiceError(response)) {
-    throwFailureToast(response.error);
-    return [];
-  }
+	const response = await client.getTests(testQuery, 0, 250);
+	if (isEnrichUIError(response) || isOARServiceError(response)) {
+		throwFailureToast(response.error);
+		return [];
+	}
 
-  return tableMapperValues(response.tests, headers.map((f) => f.toLowerCase()));
-}
+	return tableMapperValues(
+		response.tests,
+		headers.map((f) => f.toLowerCase())
+	);
+};
