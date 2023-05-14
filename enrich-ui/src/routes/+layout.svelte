@@ -9,8 +9,12 @@
   // Finally, your application's global stylesheet (sometimes labeled 'app.css')
   import "../app.postcss";
 
-  import { AppShell, Modal, Toast } from "@skeletonlabs/skeleton";
+  import { AppShell, Modal, storeHighlightJs, Toast } from "@skeletonlabs/skeleton";
   import ActionBar from "../components/ActionBar.svelte";
+  import hljs from "highlight.js";
+  import "highlight.js/styles/github-dark.css";
+
+  storeHighlightJs.set(hljs);
 </script>
 
 <Modal />
