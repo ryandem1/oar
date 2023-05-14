@@ -1,12 +1,11 @@
 <script lang="ts">
-  import { Paginator, tableMapperValues, toastStore } from "@skeletonlabs/skeleton";
+  import { Paginator, tableMapperValues } from "@skeletonlabs/skeleton";
   import { OARServiceClient } from "$lib/client";
   import { onMount } from "svelte";
   import { isEnrichUIError, isOARServiceError } from "$lib/models";
   import { to_number } from "svelte/internal";
-  import { selectedTestIDs, refreshTestTable } from "../stores";
+  import { refreshTestTable, selectedTestIDs } from "../stores";
   import { throwFailureToast } from "$lib/toasts";
-  import type { ToastSettings } from "@skeletonlabs/skeleton";
 
   const client = new OARServiceClient();
 
