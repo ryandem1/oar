@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 
   // Your selected Skeleton theme:
   import "../theme.postcss";

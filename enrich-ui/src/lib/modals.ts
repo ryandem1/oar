@@ -1,5 +1,6 @@
-import type { ModalSettings } from "@skeletonlabs/skeleton";
+import type { ModalComponent, ModalSettings } from "@skeletonlabs/skeleton";
 import { modalStore } from "@skeletonlabs/skeleton";
+import TestsDetailModal from "../components/TestsDetailModal.svelte";
 
 /*
 Display confirmation modal will present the standard confirmation modal to the user.
@@ -23,3 +24,20 @@ export const displayConfirmationModal = (
 
 	modalStore.trigger(deleteConfirmationModal);
 };
+
+
+export const displayViewModal = () => {
+	const modalComponent: ModalComponent = {
+		// Pass a reference to your custom component
+		ref: TestsDetailModal,
+	};
+
+	const displayModal: ModalSettings = {
+		type: 'component',
+		title: 'View Tests',
+		body: 'Test details:',
+		component: modalComponent,
+	};
+
+	modalStore.trigger(displayModal);
+}

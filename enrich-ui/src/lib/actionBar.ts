@@ -1,9 +1,8 @@
 import { refreshTestTable } from "../stores";
 import { OARServiceClient } from "$lib/client";
 import { getSelectedTestIDs } from "$lib/table";
-import { isEnrichUIError, isOARServiceError } from "$lib/models";
-import { throwFailureToast, throwSuccessToast, throwWarningToast } from "$lib/toasts";
-import { displayConfirmationModal } from "$lib/modals";
+import { throwSuccessToast, throwWarningToast } from "$lib/toasts";
+import { displayConfirmationModal, displayViewModal } from "$lib/modals";
 
 const client = new OARServiceClient();
 
@@ -37,9 +36,12 @@ export const onDeleteButtonClick = (): void => {
 Handler for the "view" button on the actions bar
 */
 export const onViewButtonClick = async (): Promise<void> => {
-	const result = await client.getTests({ ids: getSelectedTestIDs() });
-	if (isOARServiceError(result) || isEnrichUIError(result)) {
-		throwFailureToast(result.error);
+	const localSelectedTestIDs = getSelectedTestIDs();
+	const numSelectedTests = localSelectedTestIDs.length;
+	if (numSelectedTests === 0) {
+		throwWarningToast('No tests selected to view details of!');
 		return;
 	}
+
+	displayViewModal();
 };
