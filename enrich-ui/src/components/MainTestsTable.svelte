@@ -5,6 +5,7 @@
   import { isEnrichUIError, isOARServiceError } from "$lib/models";
   import { to_number } from "svelte/internal";
   import { selectedTestIDs, refreshTestTable } from "../stores";
+  import { throwFailureToast } from "$lib/toasts";
   import type { ToastSettings } from "@skeletonlabs/skeleton";
 
   const client = new OARServiceClient();
@@ -24,13 +25,7 @@
   const loadTests = async () => {
     const response = await client.getTests(null, 0, 250);
     if (isEnrichUIError(response) || isOARServiceError(response)) {
-      console.error(response.error)
-      const t: ToastSettings = {
-        message: response.error,
-        autohide: false,
-        background: "bg-error-400"
-      };
-      toastStore.trigger(t);
+      throwFailureToast(response.error)
       return
     }
 

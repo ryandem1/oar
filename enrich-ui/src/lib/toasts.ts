@@ -28,3 +28,18 @@ export const throwSuccessToast = (message: string): void => {
   };
   toastStore.trigger(t);
 }
+
+/*
+Will raise a new error toast with a given error message. This toast is not
+temporary and will have to get dismissed by the user.
+
+@param message - Text to display on the toast
+*/
+export const throwFailureToast = (message: string): void => {
+  const t: ToastSettings = {
+    message: message,
+    autohide: false,
+    background: "bg-error-400"
+  };
+  toastStore.trigger(t);
+}
