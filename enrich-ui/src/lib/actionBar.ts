@@ -1,9 +1,9 @@
-import type { ModalSettings, ToastSettings } from "@skeletonlabs/skeleton";
-import { modalStore, toastStore } from "@skeletonlabs/skeleton";
 import { refreshTestTable } from "../stores";
 import { OARServiceClient } from "$lib/client";
 import { getSelectedTestIDs } from "$lib/table";
 import { isEnrichUIError, isOARServiceError } from "$lib/models";
+import { throwSuccessToast, throwWarningToast } from "$lib/toasts";
+import { displayConfirmationModal } from "$lib/modals";
 
 const client = new OARServiceClient();
 
@@ -15,35 +15,22 @@ export const onDeleteButtonClick = (): void => {
   let numSelectedTests = localSelectedTestIDs.length;
 
   if (numSelectedTests === 0) {
-    const t: ToastSettings = {
-      message: "No selected tests to delete!",
-      timeout: 3000,
-      background: "bg-surface-400"
-    };
-    toastStore.trigger(t);
+    throwWarningToast("No tests selected to delete!")
     return
   }
 
-  const deleteConfirmationModal: ModalSettings = {
-    type: "confirm",
-    title: `Are you sure you would like to delete ${numSelectedTests} tests?`,
-    body: "WARNING, this is not reversible",
-    response: async (r: boolean) => {
+  displayConfirmationModal(
+    `Are you sure you would like to delete ${numSelectedTests} tests?`,
+    "WARNING, this is not reversible",
+    async (r: boolean) => {
       if (r) {
         await client.deleteTests({ids: localSelectedTestIDs});
         refreshTestTable.set(true);
 
-        const t: ToastSettings = {
-          message: "Tests deleted successfully",
-          timeout: 3000,
-          background: "bg-success-400"
-        };
-        toastStore.trigger(t);
+        throwSuccessToast("Tests deleted successfully!")
       }
-    },
-  };
-
-  modalStore.trigger(deleteConfirmationModal);
+    }
+  )
 }
 
 /*
