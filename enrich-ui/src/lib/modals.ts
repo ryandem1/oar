@@ -35,7 +35,6 @@ export const displayViewModal = () => {
 	const displayModal: ModalSettings = {
 		type: 'component',
 		title: 'View Tests',
-		body: 'Test details:',
 		component: modalComponent,
 	};
 
