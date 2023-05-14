@@ -42,6 +42,7 @@
       if (refresh === true) {
         refreshTestTable.set(false);
         localSelectedTestIDs = [];
+        selectedTestIdxes = [];
         await loadTests()
       }
     })
