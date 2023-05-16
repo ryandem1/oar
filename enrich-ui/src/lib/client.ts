@@ -1,6 +1,6 @@
-import type { OARServiceError, EnrichUIError, Test, TestQuery, TestQueryResult } from './models';
-import { base64Encode } from './models';
-import { PUBLIC_OAR_SERVICE_BASE_URL } from '$env/static/public';
+import type { EnrichUIError, OARServiceError, Test, TestQuery, TestQueryResult } from "./models";
+import { base64Encode } from "./models";
+import { PUBLIC_OAR_SERVICE_BASE_URL } from "$env/static/public";
 
 /*
 The OARServiceClient is the primary way of interacting with the oar-service from
@@ -100,11 +100,12 @@ export class OARServiceClient {
 
 		return fetch(this.baseURL + this.testsEndpoint + '?' + new URLSearchParams(params))
 			.then((response) => {
+				const body = response.json();
 				if (!response.ok) {
-					console.error('Error occurred when getting tests:', response.json());
-					return response.json();
+					console.error('Error occurred when getting tests:', body);
+					return body;
 				}
-				return response.json();
+				return body;
 			})
 			.then((testQueryResult: TestQueryResult): TestQueryResult => {
 				// This will combine the "doc" attribute of each test into the test
@@ -151,8 +152,9 @@ export class OARServiceClient {
 		)
 			.then((response) => {
 				if (!response.ok) {
-					console.error('Error occurred when enriching tests:', response.json());
-					return response.json();
+					const body = response.json();
+					console.error('Error occurred when enriching tests:', body);
+					return body;
 				}
 				return response.status;
 			})

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import MainTestsTable from "../components/MainTestsTable.svelte";
 </script>
 

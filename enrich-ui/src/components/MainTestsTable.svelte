@@ -1,16 +1,17 @@
 <script lang="ts">
-  import { Paginator, tableMapperValues } from "@skeletonlabs/skeleton";
+  import { Paginator } from "@skeletonlabs/skeleton";
   import { OARServiceClient } from "$lib/client";
   import { onMount } from "svelte";
-  import { isEnrichUIError, isOARServiceError } from "$lib/models";
   import { to_number } from "svelte/internal";
+  import { refreshTestTable, selectedTestIDs } from "../stores";
+  import { getTestQuery, getTestTable, getTestTableFields } from "$lib/table";
 
   const client = new OARServiceClient();
 
   /*
   TABLE LOAD AND PAGINATION FUNCTIONALITY
   */
-  let fields = ["id", "summary", "outcome", "analysis", "resolution", "owner", "type", "app"]
+  let fields = getTestTableFields();
   let testIDIndex: number = fields.findIndex((elem) => elem === "id");
   if (testIDIndex === -1) {
     console.error("Could not find test ID as a field in the table!");
@@ -20,13 +21,16 @@
   $: testTable = [];
 
   onMount(async () => {
-    const response = await client.getTests(null, 0, 250);
-    if (isEnrichUIError(response) || isOARServiceError(response)) {
-      console.error(response.error)
-      return
-    }
-
-    testTable = tableMapperValues(response.tests, fields.map((f) => f.toLowerCase()));
+    refreshTestTable.subscribe(async refresh => {
+      if (refresh === true) {
+        refreshTestTable.set(false);
+        localSelectedTestIDs = [];
+        selectedTestIdxes = [];
+        let tableQuery = getTestQuery();
+        fields = getTestTableFields();
+        testTable = await getTestTable(tableQuery, fields);
+      }
+    })
   })
 
   let page = {
@@ -48,19 +52,22 @@
   /*
   SELECT FUNCTIONALITY
   */
-  let selectedTestIDs: number[];
+  let localSelectedTestIDs: number[];
   let selectedTestIdxes: number[];
-  $: selectedTestIDs = [];
+  $: localSelectedTestIDs = [];
   $: selectedTestIdxes = [];
+  $: {
+    selectedTestIDs.set(localSelectedTestIDs)
+  }
 
   function toggleRow(row: string[], index: number) {
     let testID = to_number(row[fields.indexOf("id")])
 
-    if (selectedTestIDs.includes(testID)) {
-      selectedTestIDs = selectedTestIDs.filter(i => i !== testID);
+    if (localSelectedTestIDs.includes(testID)) {
+      localSelectedTestIDs = localSelectedTestIDs.filter(i => i !== testID);
       selectedTestIdxes = selectedTestIdxes.filter(i => i !== index)
     } else {
-      selectedTestIDs = [...selectedTestIDs, testID];
+      localSelectedTestIDs = [...localSelectedTestIDs, testID];
       selectedTestIdxes = [...selectedTestIdxes, index];
     }
   }
@@ -127,17 +134,17 @@
       <tbody>
       {#each paginatedSource as row, i}
         <tr
-          class:selected={selectedTestIDs.includes(row[fields.indexOf("id")])}
+          class:selected={localSelectedTestIDs.includes(row[fields.indexOf("id")])}
           class:top-selected={
-            selectedTestIDs.includes(row[fields.indexOf("id")]) &&
+            localSelectedTestIDs.includes(row[fields.indexOf("id")]) &&
             selectedTestIdxes.includes(i - 1)
           }
           class:bottom-selected={
-            selectedTestIDs.includes(row[fields.indexOf("id")]) &&
+            localSelectedTestIDs.includes(row[fields.indexOf("id")]) &&
             selectedTestIdxes.includes(i + 1)
           }
           class:top-and-bottom-selected={
-            selectedTestIDs.includes(row[fields.indexOf("id")]) &&
+            localSelectedTestIDs.includes(row[fields.indexOf("id")]) &&
             selectedTestIdxes.includes(i - 1) &&
             selectedTestIdxes.includes(i + 1)
           }
