@@ -88,7 +88,7 @@ func QueryTest(dbPool *pgx.ConnPool, query *TestQuery, limit int, offset int) (*
 	}
 
 	// Orders by the most recently modified tests being first
-	SQL += " " + "ORDER BY MODIFIED DESC"
+	SQL += " " + "ORDER BY CREATED DESC"
 
 	// Add offset and limit
 	SQL += " " + "OFFSET " + strconv.Itoa(offset) + " " + "LIMIT" + " " + strconv.Itoa(limit)
