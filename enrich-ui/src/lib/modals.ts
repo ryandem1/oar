@@ -27,48 +27,47 @@ export const displayConfirmationModal = (
 	modalStore.trigger(deleteConfirmationModal);
 };
 
-
 export const displayViewModal = () => {
 	const modalComponent: ModalComponent = {
 		// Pass a reference to your custom component
-		ref: TestsDetailModal,
+		ref: TestsDetailModal
 	};
 
 	const displayModal: ModalSettings = {
 		type: 'component',
 		title: 'View Tests',
-		component: modalComponent,
+		component: modalComponent
 	};
 
 	modalStore.trigger(displayModal);
-}
+};
 
 export const displayEnrichModal = () => {
 	const modalComponent: ModalComponent = {
 		// Pass a reference to your custom component
-		ref: TestsEnrichModal,
+		ref: TestsEnrichModal
 	};
 
 	const displayModal: ModalSettings = {
 		type: 'component',
 		title: 'Enrich Tests',
-		component: modalComponent,
+		component: modalComponent
 	};
 
 	modalStore.trigger(displayModal);
-}
+};
 
 export const displayFilterModal = () => {
 	const modalComponent: ModalComponent = {
 		// Pass a reference to your custom component
-		ref: TestsFilterModal,
+		ref: TestsFilterModal
 	};
 
 	const displayModal: ModalSettings = {
 		type: 'component',
 		title: 'Filter Tests',
-		component: modalComponent,
+		component: modalComponent
 	};
 
 	modalStore.trigger(displayModal);
-}
+};

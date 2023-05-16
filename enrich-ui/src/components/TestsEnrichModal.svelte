@@ -10,11 +10,11 @@
 
   interface ParentModal {
     onClose(): null
-    regionFooter: any
-    buttonNeutral: any
-    buttonTextCancel: any
-    buttonPositive: any
-    buttonTextSubmit: any
+    regionFooter: unknown
+    buttonNeutral: unknown
+    buttonTextCancel: unknown
+    buttonPositive: unknown
+    buttonTextSubmit: unknown
   }
   export let parent: ParentModal;
 

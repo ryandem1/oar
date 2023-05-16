@@ -2,7 +2,7 @@
 Contains functions to interact with the main test table
 */
 
-import { selectedTestIDs, testTableQuery } from "../stores";
+import { selectedTestIDs, testTableFields, testTableQuery } from "../stores";
 import type { TestQuery } from "$lib/models";
 import { isEnrichUIError, isOARServiceError } from "$lib/models";
 import { throwFailureToast } from "$lib/toasts";
@@ -37,6 +37,16 @@ export const getTestQuery = (): TestQuery | null => {
 	unsubscribe();
 
 	return localQuery;
+};
+
+export const getTestTableFields = (): string[] => {
+	let localFields: string[] = [];
+	const unsubscribe = testTableFields.subscribe((fields) => {
+		localFields = fields;
+	});
+	unsubscribe();
+
+	return localFields;
 };
 
 /*

@@ -4,14 +4,14 @@
   import { onMount } from "svelte";
   import { to_number } from "svelte/internal";
   import { refreshTestTable, selectedTestIDs } from "../stores";
-  import { getTestQuery, getTestTable } from "$lib/table";
+  import { getTestQuery, getTestTable, getTestTableFields } from "$lib/table";
 
   const client = new OARServiceClient();
 
   /*
   TABLE LOAD AND PAGINATION FUNCTIONALITY
   */
-  let fields = ["id", "summary", "outcome", "analysis", "resolution", "owner", "type", "app"]
+  let fields = getTestTableFields();
   let testIDIndex: number = fields.findIndex((elem) => elem === "id");
   if (testIDIndex === -1) {
     console.error("Could not find test ID as a field in the table!");
@@ -27,6 +27,7 @@
         localSelectedTestIDs = [];
         selectedTestIdxes = [];
         let tableQuery = getTestQuery();
+        fields = getTestTableFields();
         testTable = await getTestTable(tableQuery, fields);
       }
     })

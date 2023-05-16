@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let parent: any;
+  export let parent: unknown;
 
   import { CodeBlock, modalStore } from "@skeletonlabs/skeleton";
   import { OARServiceClient } from "$lib/client";

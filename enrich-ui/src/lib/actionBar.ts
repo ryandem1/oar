@@ -58,12 +58,11 @@ export const onEnrichButtonClick = () => {
 	}
 
 	displayEnrichModal();
-}
-
+};
 
 /*
 Handler for the "filter" button on the actions bar
 */
 export const onFilterButtonClick = () => {
-	displayFilterModal()
-}
+	displayFilterModal();
+};
