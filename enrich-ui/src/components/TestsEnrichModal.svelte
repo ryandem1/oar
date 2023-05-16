@@ -4,6 +4,7 @@
   import { OARServiceClient } from "$lib/client";
   import { getSelectedTestIDs } from "$lib/table";
   import type { Test } from "$lib/models";
+  import { isOARServiceError } from "$lib/models";
   import { throwFailureToast, throwSuccessToast, throwWarningToast } from "$lib/toasts";
   import { JSONEditor } from "svelte-jsoneditor";
 
@@ -32,13 +33,21 @@
   const onSubmit = async () => {
     const details: Test = JSON.parse(content.text)
     const testIDs = getSelectedTestIDs();
-    const statusCode = await client.enrichTests(details, {ids: testIDs})
+    const statusCodeOrError = await client.enrichTests(details, {ids: testIDs})
+    let statusCode: number;
+    let errorMessage: string;
+    if (isOARServiceError(statusCodeOrError)) {
+      errorMessage = statusCodeOrError.error;
+      statusCode = 400;
+    } else {
+      statusCode = statusCodeOrError;
+    }
     if (statusCode == 304) {
       throwWarningToast("No tests were changed!")
     } else if (statusCode == 200) {
       throwSuccessToast('Tests enriched successfully!');
     } else {
-      throwFailureToast("Error occurred when enriching tests!")
+      throwFailureToast(errorMessage)
     }
     parent.onClose()
     refreshTestTable.set(true);
