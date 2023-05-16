@@ -2,7 +2,7 @@
   import { version } from "$app/environment";
   import { AppBar } from "@skeletonlabs/skeleton";
   import Icon from "./Icon.svelte";
-  import { onDeleteButtonClick, onEnrichButtonClick, onViewButtonClick } from "$lib/actionBar";
+  import { onDeleteButtonClick, onEnrichButtonClick, onFilterButtonClick, onViewButtonClick } from "$lib/actionBar";
 </script>
 
 <AppBar background="bg-secondary-500" class="rounded-md" shadow="shadow-md">
@@ -13,6 +13,13 @@
     </div>
   </svelte:fragment>
   <svelte:fragment slot="trail">
+    <button
+      type="button"
+      on:click={onFilterButtonClick}
+      class="btn bg-surface-400 border-r-2 border-surface-500 border-t-2 active:border-t-0 active:border-r-0"
+    >
+      <Icon name="filter"/>
+    </button>
     <button
       type="button"
       on:click={onViewButtonClick}

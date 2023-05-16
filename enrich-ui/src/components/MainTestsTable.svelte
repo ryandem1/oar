@@ -4,7 +4,7 @@
   import { onMount } from "svelte";
   import { to_number } from "svelte/internal";
   import { refreshTestTable, selectedTestIDs } from "../stores";
-  import { getTestTable } from "$lib/table";
+  import { getTestQuery, getTestTable } from "$lib/table";
 
   const client = new OARServiceClient();
 
@@ -26,7 +26,8 @@
         refreshTestTable.set(false);
         localSelectedTestIDs = [];
         selectedTestIdxes = [];
-        testTable = await getTestTable(null, fields);
+        let tableQuery = getTestQuery();
+        testTable = await getTestTable(tableQuery, fields);
       }
     })
   })

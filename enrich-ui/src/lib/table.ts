@@ -2,7 +2,7 @@
 Contains functions to interact with the main test table
 */
 
-import { selectedTestIDs } from "../stores";
+import { selectedTestIDs, testTableQuery } from "../stores";
 import type { TestQuery } from "$lib/models";
 import { isEnrichUIError, isOARServiceError } from "$lib/models";
 import { throwFailureToast } from "$lib/toasts";
@@ -24,6 +24,19 @@ export const getSelectedTestIDs = (): number[] => {
 	unsubscribe();
 
 	return localSelectedTestIDs;
+};
+
+/*
+Will return the test query that is configured for the main test table
+*/
+export const getTestQuery = (): TestQuery | null => {
+	let localQuery: TestQuery | null = null;
+	const unsubscribe = testTableQuery.subscribe((query) => {
+		localQuery = query;
+	});
+	unsubscribe();
+
+	return localQuery;
 };
 
 /*
