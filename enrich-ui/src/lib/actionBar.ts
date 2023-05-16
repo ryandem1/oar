@@ -2,7 +2,7 @@ import { refreshTestTable } from "../stores";
 import { OARServiceClient } from "$lib/client";
 import { getSelectedTestIDs } from "$lib/table";
 import { throwSuccessToast, throwWarningToast } from "$lib/toasts";
-import { displayConfirmationModal, displayViewModal } from "$lib/modals";
+import { displayConfirmationModal, displayEnrichModal, displayViewModal } from "$lib/modals";
 
 const client = new OARServiceClient();
 
@@ -45,3 +45,17 @@ export const onViewButtonClick = async (): Promise<void> => {
 
 	displayViewModal();
 };
+
+/*
+Handler for the "enrich" button on the actions bar
+*/
+export const onEnrichButtonClick = () => {
+	const localSelectedTestIDs = getSelectedTestIDs();
+	const numSelectedTests = localSelectedTestIDs.length;
+	if (numSelectedTests === 0) {
+		throwWarningToast('No tests selected to enrich!');
+		return;
+	}
+
+	displayEnrichModal();
+}

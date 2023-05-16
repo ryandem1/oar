@@ -2,7 +2,7 @@
   import { version } from "$app/environment";
   import { AppBar } from "@skeletonlabs/skeleton";
   import Icon from "./Icon.svelte";
-  import { onViewButtonClick, onDeleteButtonClick } from "$lib/actionBar";
+  import { onDeleteButtonClick, onEnrichButtonClick, onViewButtonClick } from "$lib/actionBar";
 </script>
 
 <AppBar background="bg-secondary-500" class="rounded-md" shadow="shadow-md">
@@ -20,7 +20,11 @@
     >
       <Icon name="eye"/>
     </button>
-    <button type="button" class="btn bg-success-500 border-r-2 border-success-600 border-t-2 active:border-t-0 active:border-r-0">
+    <button
+      type="button"
+      on:click={onEnrichButtonClick}
+      class="btn bg-success-500 border-r-2 border-success-600 border-t-2 active:border-t-0 active:border-r-0"
+    >
       <Icon name="edit"/>
     </button>
     <button
