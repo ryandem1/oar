@@ -8,6 +8,7 @@ RUN npm install
 
 COPY . .
 
+RUN npm run build:css
 RUN npm run build
 
 
@@ -17,6 +18,7 @@ WORKDIR /app
 
 COPY --from=builder /app/package.json .
 COPY --from=builder /app/build ./build
+COPY --from=builder /app/output.css /app/build/client/output.css
 
 RUN npm install --omit dev
 
