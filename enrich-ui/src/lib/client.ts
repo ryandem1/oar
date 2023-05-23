@@ -78,7 +78,7 @@ export class OARServiceClient {
 	}
 
 	/*
-	getTests will return the tests that correspond to a TestQuery.
+	getTests will return the tests that correspond to a TestQuery
 
 	@param query - TestQuery to return results of. Will be converted into a base64 encoded string, similar to how the
 	/query endpoint would.
