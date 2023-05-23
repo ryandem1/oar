@@ -29,10 +29,10 @@ jobs:
         run: cd enrich-ui && npm version patch
 
       - name: Get version to tag image
-        run: echo "new_version=$(cd enrich-ui && cat package.json | jq -r '.version')" >> $GITHUB_ENV
+        run: echo "new_version=$(cat enrich-ui/package.json | jq -r '.version')" >> $GITHUB_ENV
 
       - name: Add stub .env file
-        run: echo "PUBLIC_OAR_SERVICE_BASE_URL='http://localhost:8080/'" >> .env
+        run: echo "PUBLIC_OAR_SERVICE_BASE_URL='http://localhost:8080/'" >> enrich-ui/.env
 
       - name: Build and push
         uses: docker/build-push-action@v2
