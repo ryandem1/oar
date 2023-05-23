@@ -1,0 +1,48 @@
+name: Enrich UI - Update Image
+
+on:
+  push:
+    paths:
+      - "enrich-ui/src/**"
+      - "enrich-ui/static/**"
+      - "!enrich-ui/package.json"
+    branches:
+      - main
+
+jobs:
+  enrich-ui-update-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+
+      - name: Docker login
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run:
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+
+      - name: Increment version
+        run: cd enrich-ui && npm version patch
+
+      - name: Get version to tag image
+        run: cd enrich-ui && cat package.json | jq -r '.version'
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./enrich-ui
+          file: ./enrich-ui/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USER }}/oar-enrich-ui:${{ env.new_version }}
+            ${{ secrets.DOCKER_USER }}/oar-enrich-ui:latest
+
+      - name: Publish VERSION file back to main
+        uses: mikeal/publish-to-github-action@master
+        env:
+          BRANCH_NAME: main
+          GITHUB_TOKEN: ${{ secrets.OAR_GITHUB_TOKEN }}

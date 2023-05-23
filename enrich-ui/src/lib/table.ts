@@ -2,12 +2,12 @@
 Contains functions to interact with the main test table
 */
 
-import { selectedTestIDs, testTableFields, testTableQuery } from "../stores";
-import type { TestQuery } from "$lib/models";
-import { isEnrichUIError, isOARServiceError } from "$lib/models";
-import { throwFailureToast } from "$lib/toasts";
-import { OARServiceClient } from "$lib/client";
-import { tableMapperValues } from "@skeletonlabs/skeleton";
+import { selectedTestIDs, testTableFields, testTableQuery } from '../stores';
+import type { TestQuery } from '$lib/models';
+import { isEnrichUIError, isOARServiceError } from '$lib/models';
+import { throwFailureToast } from '$lib/toasts';
+import { OARServiceClient } from '$lib/client';
+import { tableMapperValues } from '@skeletonlabs/skeleton';
 
 const client = new OARServiceClient();
 

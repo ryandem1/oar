@@ -8,5 +8,5 @@ test('navbar displays correct version', async ({ page }) => {
 	}
 
 	const text = await element.textContent();
-	expect(text).toContain('0.0.1'); // Hardcoded for now
+	expect(text).toContain('0.0'); // Hardcoded for now
 });

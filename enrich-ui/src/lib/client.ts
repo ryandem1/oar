@@ -1,6 +1,6 @@
-import type { EnrichUIError, OARServiceError, Test, TestQuery, TestQueryResult } from "./models";
-import { base64Encode } from "./models";
-import { PUBLIC_OAR_SERVICE_BASE_URL } from "$env/static/public";
+import type { EnrichUIError, OARServiceError, Test, TestQuery, TestQueryResult } from './models';
+import { base64Encode } from './models';
+import { PUBLIC_OAR_SERVICE_BASE_URL } from '$env/static/public';
 
 /*
 The OARServiceClient is the primary way of interacting with the oar-service from
@@ -78,7 +78,7 @@ export class OARServiceClient {
 	}
 
 	/*
-	getTests will return the tests that correspond to a TestQuery.
+	getTests will return the tests that correspond to a TestQuery
 
 	@param query - TestQuery to return results of. Will be converted into a base64 encoded string, similar to how the
 	/query endpoint would.
