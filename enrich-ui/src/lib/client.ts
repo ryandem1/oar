@@ -1,6 +1,6 @@
-import type { EnrichUIError, OARServiceError, Test, TestQuery, TestQueryResult } from "./models";
-import { base64Encode } from "./models";
-import { PUBLIC_OAR_SERVICE_BASE_URL } from "$env/static/public";
+import type { EnrichUIError, OARServiceError, Test, TestQuery, TestQueryResult } from './models';
+import { base64Encode } from './models';
+import { PUBLIC_OAR_SERVICE_BASE_URL } from '$env/static/public';
 
 /*
 The OARServiceClient is the primary way of interacting with the oar-service from

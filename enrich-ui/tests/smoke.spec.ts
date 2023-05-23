@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from '@playwright/test';
 
 test('navbar displays correct version', async ({ page }) => {
 	await page.goto('/');

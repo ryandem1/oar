@@ -1,8 +1,13 @@
-import { refreshTestTable } from "../stores";
-import { OARServiceClient } from "$lib/client";
-import { getSelectedTestIDs } from "$lib/table";
-import { throwSuccessToast, throwWarningToast } from "$lib/toasts";
-import { displayConfirmationModal, displayEnrichModal, displayFilterModal, displayViewModal } from "$lib/modals";
+import { refreshTestTable } from '../stores';
+import { OARServiceClient } from '$lib/client';
+import { getSelectedTestIDs } from '$lib/table';
+import { throwSuccessToast, throwWarningToast } from '$lib/toasts';
+import {
+	displayConfirmationModal,
+	displayEnrichModal,
+	displayFilterModal,
+	displayViewModal
+} from '$lib/modals';
 
 const client = new OARServiceClient();
 

@@ -1,8 +1,8 @@
-import type { ModalComponent, ModalSettings } from "@skeletonlabs/skeleton";
-import { modalStore } from "@skeletonlabs/skeleton";
-import TestsDetailModal from "../components/TestsDetailModal.svelte";
-import TestsEnrichModal from "../components/TestsEnrichModal.svelte";
-import TestsFilterModal from "../components/TestsFilterModal.svelte";
+import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
+import { modalStore } from '@skeletonlabs/skeleton';
+import TestsDetailModal from '../components/TestsDetailModal.svelte';
+import TestsEnrichModal from '../components/TestsEnrichModal.svelte';
+import TestsFilterModal from '../components/TestsFilterModal.svelte';
 
 /*
 Display confirmation modal will present the standard confirmation modal to the user.

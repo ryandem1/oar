@@ -1,5 +1,5 @@
-import type { ToastSettings } from "@skeletonlabs/skeleton";
-import { toastStore } from "@skeletonlabs/skeleton";
+import type { ToastSettings } from '@skeletonlabs/skeleton';
+import { toastStore } from '@skeletonlabs/skeleton';
 
 /*
 Will raise a new temporary warning toast with a given message
