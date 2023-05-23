@@ -44,7 +44,7 @@ jobs:
             ${{ secrets.DOCKER_USER }}/oar-enrich-ui:${{ env.new_version }}
             ${{ secrets.DOCKER_USER }}/oar-enrich-ui:latest
 
-      - name: Publish VERSION file back to main
+      - name: Publish package.json file with new version back to main
         uses: mikeal/publish-to-github-action@master
         env:
           BRANCH_NAME: main
