@@ -32,7 +32,7 @@ jobs:
         run: echo "new_version=$(cat enrich-ui/package.json | jq -r '.version')" >> $GITHUB_ENV
 
       - name: Add stub .env file
-        run: echo "PUBLIC_OAR_SERVICE_BASE_URL='http://localhost:8080/'" >> enrich-ui/.env
+        run: cp enrich-ui/template.env enrich-ui/.env
 
       - name: Build and push
         uses: docker/build-push-action@v2
