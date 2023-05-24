@@ -11,6 +11,7 @@ node_modules
  
 .prettierrc
 .pretieriignore
+.env
  
 README.md
  
