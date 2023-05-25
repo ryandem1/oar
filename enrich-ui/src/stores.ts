@@ -12,3 +12,4 @@ export const testTableFields: Writable<string[]> = writable([
 	'analysis',
 	'resolution'
 ]);
+export const oarServiceBaseURL: Writable<string> = writable("");
