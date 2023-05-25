@@ -22,6 +22,7 @@ export class OARServiceClient {
 	public testEndpoint: string;
 	public queryEndpoint: string;
 	public testsEndpoint: string;
+	public healthEndpoint: string;
 
 	constructor(baseURL: string = getOARServiceBaseURL()) {
 		this.baseURL = baseURL;
@@ -32,6 +33,7 @@ export class OARServiceClient {
 		this.testEndpoint = '/test';
 		this.queryEndpoint = '/query';
 		this.testsEndpoint = '/tests';
+		this.healthEndpoint = '/health';
 	}
 
 	/*
@@ -59,6 +61,21 @@ export class OARServiceClient {
 				console.error('Error occurred when adding test:', error);
 				return { error: error };
 			});
+	}
+
+	/*
+	Health will return the health status of the oar-service. Will return true if the oar-service is
+	healthy, it will return False if it is not.
+	*/
+	async health(): Promise<boolean> {
+		const requestOptions = {
+			method: 'GET'
+		};
+
+		return fetch(this.baseURL + this.healthEndpoint, requestOptions)
+			.then((response) => {
+				return response.ok
+			})
 	}
 
 	/*

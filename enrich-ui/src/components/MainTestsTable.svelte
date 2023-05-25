@@ -4,6 +4,8 @@
   import { to_number } from "svelte/internal";
   import { refreshTestTable, selectedTestIDs } from "../stores";
   import { getTestQuery, getTestTable, getTestTableFields } from "$lib/table";
+  import { getOARServiceBaseURL, OARServiceClient } from "$lib/client";
+  import { throwFailureToast } from "$lib/toasts";
 
   /*
   TABLE LOAD AND PAGINATION FUNCTIONALITY
@@ -25,6 +27,17 @@
         selectedTestIdxes = [];
         let tableQuery = getTestQuery();
         fields = getTestTableFields();
+
+        const client = new OARServiceClient();
+
+        if (!await client.health()) {
+          if (!getOARServiceBaseURL()) {
+            throwFailureToast("Configure the oar-service base URL in settings!")
+          } else {
+            throwFailureToast("oar-service failed healthcheck, double check URL in settings and service health")
+          }
+          return
+        }
         testTable = await getTestTable(tableQuery, fields);
       }
     })
