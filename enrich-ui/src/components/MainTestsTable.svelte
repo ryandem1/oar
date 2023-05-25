@@ -1,12 +1,9 @@
 <script lang="ts">
   import { Paginator } from "@skeletonlabs/skeleton";
-  import { OARServiceClient } from "$lib/client";
   import { onMount } from "svelte";
   import { to_number } from "svelte/internal";
   import { refreshTestTable, selectedTestIDs } from "../stores";
   import { getTestQuery, getTestTable, getTestTableFields } from "$lib/table";
-
-  const client = new OARServiceClient();
 
   /*
   TABLE LOAD AND PAGINATION FUNCTIONALITY

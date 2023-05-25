@@ -50,7 +50,7 @@
     <button
       type="button"
       on:click={onSettingsButtonClient}
-      class="btn bg-primary-500 border-r-2 border-primary-600 border-t-2 active:border-t-0 active:border-r-0"
+      class="btn bg-primary-400 border-r-2 border-primary-500 border-t-2 active:border-t-0 active:border-r-0"
     >
       <Icon name="settings"/>
     </button>

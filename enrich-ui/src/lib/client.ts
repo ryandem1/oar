@@ -1,6 +1,17 @@
-import type { EnrichUIError, OARServiceError, Test, TestQuery, TestQueryResult } from './models';
-import { base64Encode } from './models';
-import { PUBLIC_OAR_SERVICE_BASE_URL } from '$env/static/public';
+import type { EnrichUIError, OARServiceError, Test, TestQuery, TestQueryResult } from "./models";
+import { base64Encode } from "./models";
+import { oarServiceBaseURL } from "../stores";
+
+
+export const getOARServiceBaseURL = (): string => {
+	let url: string = "";
+	const unsubscribe = oarServiceBaseURL.subscribe((baseURL) => {
+		url = baseURL;
+	});
+	unsubscribe();
+
+	return url;
+};
 
 /*
 The OARServiceClient is the primary way of interacting with the oar-service from
@@ -12,7 +23,7 @@ export class OARServiceClient {
 	public queryEndpoint: string;
 	public testsEndpoint: string;
 
-	constructor(baseURL: string = PUBLIC_OAR_SERVICE_BASE_URL) {
+	constructor(baseURL: string = getOARServiceBaseURL()) {
 		this.baseURL = baseURL;
 		if (this.baseURL.endsWith('/')) {
 			this.baseURL = this.baseURL.slice(0, -1);
