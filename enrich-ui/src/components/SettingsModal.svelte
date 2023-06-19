@@ -14,10 +14,13 @@
   <div class="modal-example-form max-h-screen overflow-y-scroll {cBase}">
     <header class={cHeader}>{$modalStore[0].title ?? '(title missing)'}</header>
     <article>
-      <input class="input" type="text" placeholder="OAR Service Base URL" bind:value={$oarServiceBaseURL} />
+      <label class="p-2">
+        OAR Service Base URL
+        <input class="input outline-none p-2" type="text" placeholder="OAR Service Base URL" bind:value={$oarServiceBaseURL} />
+      </label>
     </article>
     <footer class="modal-footer {parent.regionFooter}">
-      <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>{parent.buttonTextCancel}</button>
+      <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>Close</button>
     </footer>
   </div>
 {/if}

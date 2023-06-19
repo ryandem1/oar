@@ -1,6 +1,7 @@
 import type { Writable } from 'svelte/store';
 import { writable } from 'svelte/store';
 import type { TestQuery } from '$lib/models';
+import { localStorageStore } from '@skeletonlabs/skeleton'
 
 export const selectedTestIDs: Writable<number[]> = writable([]);
 export const refreshTestTable: Writable<boolean> = writable(true);
@@ -12,4 +13,4 @@ export const testTableFields: Writable<string[]> = writable([
 	'analysis',
 	'resolution'
 ]);
-export const oarServiceBaseURL: Writable<string> = writable("");
+export const oarServiceBaseURL: Writable<string> = localStorageStore("oarServiceBaseURL", "");
