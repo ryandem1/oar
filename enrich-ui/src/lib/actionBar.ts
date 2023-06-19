@@ -5,9 +5,10 @@ import { throwSuccessToast, throwWarningToast } from '$lib/toasts';
 import {
 	displayConfirmationModal,
 	displayEnrichModal,
-	displayFilterModal, displaySettingsModal,
+	displayFilterModal,
+	displaySettingsModal,
 	displayViewModal
-} from "$lib/modals";
+} from '$lib/modals';
 
 const client = new OARServiceClient();
 
@@ -72,10 +73,9 @@ export const onFilterButtonClick = () => {
 	displayFilterModal();
 };
 
-
 /*
 Handler for the "settings" button on the actions bar
 */
 export const onSettingsButtonClient = () => {
-	displaySettingsModal()
-}
+	displaySettingsModal();
+};

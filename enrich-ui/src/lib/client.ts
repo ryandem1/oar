@@ -1,10 +1,9 @@
-import type { EnrichUIError, OARServiceError, Test, TestQuery, TestQueryResult } from "./models";
-import { base64Encode } from "./models";
-import { oarServiceBaseURL } from "../stores";
-
+import type { EnrichUIError, OARServiceError, Test, TestQuery, TestQueryResult } from './models';
+import { base64Encode } from './models';
+import { oarServiceBaseURL } from '../stores';
 
 export const getOARServiceBaseURL = (): string => {
-	let url: string = "";
+	let url = '';
 	const unsubscribe = oarServiceBaseURL.subscribe((baseURL) => {
 		url = baseURL;
 	});
@@ -72,10 +71,9 @@ export class OARServiceClient {
 			method: 'GET'
 		};
 
-		return fetch(this.baseURL + this.healthEndpoint, requestOptions)
-			.then((response) => {
-				return response.ok
-			})
+		return fetch(this.baseURL + this.healthEndpoint, requestOptions).then((response) => {
+			return response.ok;
+		});
 	}
 
 	/*
