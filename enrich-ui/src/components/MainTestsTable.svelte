@@ -1,10 +1,11 @@
 <script lang="ts">
   import { Paginator } from "@skeletonlabs/skeleton";
   import { onMount } from "svelte";
+  import {get} from "svelte/store"
   import { to_number } from "svelte/internal";
-  import { refreshTestTable, selectedTestIDs } from "../stores";
+  import { oarServiceBaseURL, refreshTestTable, selectedTestIDs } from "../stores";
   import { getTestQuery, getTestTable, getTestTableFields } from "$lib/table";
-  import { getOARServiceBaseURL, OARServiceClient } from "$lib/client";
+  import { OARServiceClient } from "$lib/client";
   import { throwFailureToast } from "$lib/toasts";
 
   /*
@@ -31,7 +32,7 @@
         const client = new OARServiceClient();
 
         if (!await client.health()) {
-          if (!getOARServiceBaseURL()) {
+          if (!get(oarServiceBaseURL)) {
             throwFailureToast("Configure the oar-service base URL in settings!")
           } else {
             throwFailureToast("oar-service failed healthcheck, double check URL in settings and service health")

@@ -1,16 +1,7 @@
 import type { EnrichUIError, OARServiceError, Test, TestQuery, TestQueryResult } from './models';
 import { base64Encode } from './models';
 import { oarServiceBaseURL } from '../stores';
-
-export const getOARServiceBaseURL = (): string => {
-	let url = '';
-	const unsubscribe = oarServiceBaseURL.subscribe((baseURL) => {
-		url = baseURL;
-	});
-	unsubscribe();
-
-	return url;
-};
+import { get } from 'svelte/store';
 
 /*
 The OARServiceClient is the primary way of interacting with the oar-service from
@@ -23,7 +14,7 @@ export class OARServiceClient {
 	public testsEndpoint: string;
 	public healthEndpoint: string;
 
-	constructor(baseURL: string = getOARServiceBaseURL()) {
+	constructor(baseURL: string = get(oarServiceBaseURL)) {
 		this.baseURL = baseURL;
 		if (this.baseURL.endsWith('/')) {
 			this.baseURL = this.baseURL.slice(0, -1);

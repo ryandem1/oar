@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { fakeTests, selectRandomItem } from '$lib/faker';
 import { OARServiceClient } from '$lib/client';
 import { isEnrichUIError, isOARServiceError } from '$lib/models';
-import { PUBLIC_OAR_SERVICE_BASE_URL } from '$env/static/public';
+import { oarServiceBaseURL } from '../stores';
+import { get } from 'svelte/store';
 
 describe.concurrent('The oar-service client', () => {
 	it('can be initialized', () => {
@@ -10,7 +11,7 @@ describe.concurrent('The oar-service client', () => {
 	});
 
 	it('can be initialized if base url ends with /', () => {
-		new OARServiceClient(PUBLIC_OAR_SERVICE_BASE_URL + '/');
+		new OARServiceClient(get(oarServiceBaseURL) + '/');
 	});
 
 	it('can add a test result', async () => {
