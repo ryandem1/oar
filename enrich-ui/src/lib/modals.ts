@@ -3,6 +3,7 @@ import { modalStore } from '@skeletonlabs/skeleton';
 import TestsDetailModal from '../components/TestsDetailModal.svelte';
 import TestsEnrichModal from '../components/TestsEnrichModal.svelte';
 import TestsFilterModal from '../components/TestsFilterModal.svelte';
+import SettingsModal from '../components/SettingsModal.svelte';
 
 /*
 Display confirmation modal will present the standard confirmation modal to the user.
@@ -66,6 +67,21 @@ export const displayFilterModal = () => {
 	const displayModal: ModalSettings = {
 		type: 'component',
 		title: 'Filter Tests',
+		component: modalComponent
+	};
+
+	modalStore.trigger(displayModal);
+};
+
+export const displaySettingsModal = () => {
+	const modalComponent: ModalComponent = {
+		// Pass a reference to your custom component
+		ref: SettingsModal
+	};
+
+	const displayModal: ModalSettings = {
+		type: 'component',
+		title: 'Settings',
 		component: modalComponent
 	};
 

@@ -6,6 +6,7 @@ import {
 	displayConfirmationModal,
 	displayEnrichModal,
 	displayFilterModal,
+	displaySettingsModal,
 	displayViewModal
 } from '$lib/modals';
 
@@ -70,4 +71,11 @@ Handler for the "filter" button on the actions bar
 */
 export const onFilterButtonClick = () => {
 	displayFilterModal();
+};
+
+/*
+Handler for the "settings" button on the actions bar
+*/
+export const onSettingsButtonClient = () => {
+	displaySettingsModal();
 };

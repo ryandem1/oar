@@ -9,8 +9,6 @@ import { throwFailureToast } from '$lib/toasts';
 import { OARServiceClient } from '$lib/client';
 import { tableMapperValues } from '@skeletonlabs/skeleton';
 
-const client = new OARServiceClient();
-
 type TestTable = string[][]; // This is the format that needs to be displayed in the ui
 
 /*
@@ -59,6 +57,7 @@ export const getTestTable = async (
 	testQuery: TestQuery | null = null,
 	headers: string[]
 ): Promise<TestTable> => {
+	const client = new OARServiceClient();
 	const response = await client.getTests(testQuery, 0, 250);
 	if (isEnrichUIError(response) || isOARServiceError(response)) {
 		throwFailureToast(response.error);

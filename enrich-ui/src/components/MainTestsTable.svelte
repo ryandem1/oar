@@ -1,12 +1,12 @@
 <script lang="ts">
   import { Paginator } from "@skeletonlabs/skeleton";
-  import { OARServiceClient } from "$lib/client";
   import { onMount } from "svelte";
+  import {get} from "svelte/store"
   import { to_number } from "svelte/internal";
-  import { refreshTestTable, selectedTestIDs } from "../stores";
+  import { oarServiceBaseURL, refreshTestTable, selectedTestIDs } from "../stores";
   import { getTestQuery, getTestTable, getTestTableFields } from "$lib/table";
-
-  const client = new OARServiceClient();
+  import { OARServiceClient } from "$lib/client";
+  import { throwFailureToast } from "$lib/toasts";
 
   /*
   TABLE LOAD AND PAGINATION FUNCTIONALITY
@@ -28,6 +28,17 @@
         selectedTestIdxes = [];
         let tableQuery = getTestQuery();
         fields = getTestTableFields();
+
+        const client = new OARServiceClient();
+
+        if (!await client.health()) {
+          if (!get(oarServiceBaseURL)) {
+            throwFailureToast("Configure the oar-service base URL in settings!")
+          } else {
+            throwFailureToast("oar-service failed healthcheck, double check URL in settings and service health")
+          }
+          return
+        }
         testTable = await getTestTable(tableQuery, fields);
       }
     })
