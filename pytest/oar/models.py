@@ -3,7 +3,7 @@ import datetime
 import json
 from typing import Any
 
-from pydantic import BaseModel, Field, Extra
+from pydantic.v1 import BaseModel, Field, Extra
 
 from oar.consts import Outcome, Analysis, Resolution
 

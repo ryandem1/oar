@@ -6,7 +6,7 @@ import typing
 from datetime import datetime
 from pathlib import Path
 
-from pydantic import ValidationError
+from pydantic.v1 import ValidationError
 from pytest import fixture, FixtureRequest, hookimpl, Item, CallInfo, StashKey, CollectReport
 
 from oar.client import Client

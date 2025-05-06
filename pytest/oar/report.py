@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import TypeVar
 
-from pydantic import BaseModel
+from pydantic.v1 import BaseModel
 
 from oar.models import Test
 
