@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 import tomli
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 
 class EnvConfig(BaseSettings):
